@@ -444,7 +444,13 @@ function App() {
                 key={lesson.id}
                 onClick={() => !isLoading && handleOpenLesson(lesson)}
                 onMouseEnter={() => playSound('hover')}
-                className={`bg-slate-800 border border-slate-700 rounded-2xl p-6 hover:shadow-2xl hover:shadow-purple-500/10 transition-all duration-300 cursor-pointer group hover:-translate-y-2 relative overflow-hidden ${isLoading ? 'scale-[0.98] ring-2 ring-blue-500/50' : ''}`}
+                className={`
+                  bg-slate-800 border rounded-2xl p-6 hover:shadow-2xl transition-all duration-300 cursor-pointer group hover:-translate-y-2 relative overflow-hidden
+                  ${isLoading ? 'scale-[0.98] ring-2 ring-blue-500/50' : ''}
+                  ${isCompleted 
+                    ? 'border-green-500/50 shadow-green-900/20 bg-green-900/10' 
+                    : 'border-slate-700 hover:shadow-purple-500/10'}
+                `}
               >
                 {/* Loading Overlay on Card */}
                 {isLoading && (

@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { X, ArrowLeft, Loader2, Video, Play, AlertCircle } from 'lucide-react';
 import { Lesson } from '../types';
@@ -83,7 +84,16 @@ const LessonModal: React.FC<LessonModalProps> = ({
     } catch (err: any) {
       console.error(err);
       if (err.message && err.message.includes("Requested entity was not found")) {
-         setVideoError("הייתה בעיה עם מפתח ה-API. נסה שוב.");
+         if (window.aistudio) {
+           try {
+             await window.aistudio.openSelectKey();
+             setVideoError("מפתח ה-API עודכן. אנא נסה שוב.");
+           } catch {
+             setVideoError("הייתה בעיה עם מפתח ה-API. נסה שוב.");
+           }
+         } else {
+           setVideoError("הייתה בעיה עם מפתח ה-API. נסה שוב.");
+         }
       } else {
          setVideoError("אירעה שגיאה ביצירת הסרטון. ייתכן שאין הרשאות מתאימות.");
       }
