@@ -42,3 +42,11 @@ export interface UserStats {
   lastLoginDate: string; // ISO date string
   badges: string[]; // Array of badge IDs
 }
+
+// Global declaration for the AI Studio helper
+declare global {
+  interface AIStudio {
+    hasSelectedApiKey: () => Promise<boolean>;
+    openSelectKey: () => Promise<void>;
+  }
+}

@@ -42,12 +42,11 @@ const LessonModal: React.FC<LessonModalProps> = ({
     if (!lesson) return;
 
     // Check for API Key first
-    const aiStudio = (window as any).aistudio;
-    if (aiStudio) {
-      const hasKey = await aiStudio.hasSelectedApiKey();
+    if (window.aistudio) {
+      const hasKey = await window.aistudio.hasSelectedApiKey();
       if (!hasKey) {
         try {
-          await aiStudio.openSelectKey();
+          await window.aistudio.openSelectKey();
           // We assume success if openSelectKey resolves without throwing
         } catch (e) {
           console.error("User cancelled key selection or error", e);
@@ -85,9 +84,9 @@ const LessonModal: React.FC<LessonModalProps> = ({
     } catch (err: any) {
       console.error(err);
       if (err.message && err.message.includes("Requested entity was not found")) {
-         if ((window as any).aistudio) {
+         if (window.aistudio) {
            try {
-             await (window as any).aistudio.openSelectKey();
+             await window.aistudio.openSelectKey();
              setVideoError("מפתח ה-API עודכן. אנא נסה שוב.");
            } catch {
              setVideoError("הייתה בעיה עם מפתח ה-API. נסה שוב.");

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BookOpen, Trophy, Home, Settings, Coins, Search, Mail, Flame, Award, ExternalLink, WifiOff, Globe, Share2, Star, Crown, RefreshCw, Loader2, CheckCircle } from 'lucide-react';
+import { BookOpen, Trophy, Home, Settings, Coins, Search, Mail, Flame, Award, ExternalLink, WifiOff, Globe, Share2, Star, Crown, RefreshCw, Loader2, CheckCircle, Copy } from 'lucide-react';
 import LessonModal from './components/LessonModal';
 import { LESSONS, CATEGORIES, BADGES, EXTERNAL_LINKS } from './constants';
 import { Lesson, UserStats, Category, Badge } from './types';
@@ -186,8 +186,8 @@ function App() {
     e.stopPropagation();
     const shareData = {
       title: `FinKidz: ${lesson.title}`,
-      text: `גיליתי את "${lesson.title}" באפליקציית FinKidz! בואו ללמוד חינוך פיננסי בכיף.`,
-      url: window.location.origin
+      text: `למדתי על "${lesson.title}" ב-FinKidz! בואו ללמוד חינוך פיננסי בכיף.`,
+      url: window.location.href
     };
 
     if (navigator.share) {
@@ -444,13 +444,7 @@ function App() {
                 key={lesson.id}
                 onClick={() => !isLoading && handleOpenLesson(lesson)}
                 onMouseEnter={() => playSound('hover')}
-                className={`
-                  bg-slate-800 border rounded-2xl p-6 hover:shadow-2xl transition-all duration-300 cursor-pointer group hover:-translate-y-2 relative overflow-hidden
-                  ${isLoading ? 'scale-[0.98] ring-2 ring-blue-500/50' : ''}
-                  ${isCompleted 
-                    ? 'border-green-500 ring-2 ring-green-500/30 shadow-green-900/20 bg-green-900/10' 
-                    : 'border-slate-700 hover:shadow-purple-500/10'}
-                `}
+                className={`bg-slate-800 border border-slate-700 rounded-2xl p-6 hover:shadow-2xl hover:shadow-purple-500/10 transition-all duration-300 cursor-pointer group hover:-translate-y-2 relative overflow-hidden ${isLoading ? 'scale-[0.98] ring-2 ring-blue-500/50' : ''}`}
               >
                 {/* Loading Overlay on Card */}
                 {isLoading && (
@@ -475,14 +469,12 @@ function App() {
                           : 'hover:bg-white/10 text-slate-400 hover:text-white'
                       }`}
                       title={isCopied ? "הועתק!" : "שתף שיעור"}
-                      aria-label={isCopied ? "הועתק ללוח" : `שתף את השיעור ${lesson.title}`}
                     >
                       {isCopied ? <CheckCircle className="w-4 h-4" /> : <Share2 className="w-4 h-4" />}
                     </button>
                     {isCompleted && (
-                      <div className="bg-green-500 text-slate-900 px-3 py-1 rounded-full flex items-center gap-1 shadow-lg font-bold text-xs">
-                        <CheckCircle className="w-3.5 h-3.5" />
-                        הושלם
+                      <div className="bg-green-500/20 text-green-400 px-2 py-1 rounded-full flex items-center gap-1">
+                        <CheckCircle className="w-4 h-4" />
                       </div>
                     )}
                   </div>
@@ -512,7 +504,7 @@ function App() {
                       רמה: {lesson.difficulty}
                     </div>
                     <span className="text-blue-400 text-sm font-medium group-hover:translate-x-1 transition-transform flex items-center gap-1">
-                      {isCompleted ? 'חזור על השיעור' : 'התחל ללמוד'}
+                      התחל ללמוד
                       <span className="text-lg">←</span>
                     </span>
                   </div>
