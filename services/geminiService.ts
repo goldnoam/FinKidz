@@ -1,15 +1,13 @@
 import { GoogleGenAI, GenerateContentResponse } from "@google/genai";
 
 // Safely access process.env to prevent crashes if process is undefined in the browser
-const getApiKey = () => (typeof process !== 'undefined' && process.env) ? process.env.API_KEY : '';
+const apiKey = (typeof process !== 'undefined' && process.env) ? process.env.API_KEY : '';
+const ai = new GoogleGenAI({ apiKey: apiKey || 'DUMMY_KEY_TO_PREVENT_INIT_CRASH' });
 
 export const askFinancialTutor = async (question: string, ageGroup: string = 'נוער'): Promise<string> => {
-  const apiKey = getApiKey();
   if (!apiKey) {
     return "נראה שאין מפתח API מוגדר. לא ניתן להתחבר למורה החכם כרגע.";
   }
-
-  const ai = new GoogleGenAI({ apiKey });
 
   try {
     const prompt = `
@@ -45,10 +43,7 @@ export const askFinancialTutor = async (question: string, ageGroup: string = 'נ
 };
 
 export const generateQuizQuestion = async (topic: string): Promise<{question: string, options: string[], answer: number, explanation: string} | null> => {
-  const apiKey = getApiKey();
   if (!apiKey) return null;
-
-  const ai = new GoogleGenAI({ apiKey });
 
   try {
     const prompt = `
@@ -81,49 +76,3 @@ export const generateQuizQuestion = async (topic: string): Promise<{question: st
     return null;
   }
 }
-
-export const generateLessonVideo = async (title: string, description: string): Promise<string | null> => {
-  const apiKey = getApiKey();
-  if (!apiKey) {
-    throw new Error("No API key available");
-  }
-
-  // Always create a new instance to ensure we use the fresh key
-  const ai = new GoogleGenAI({ apiKey });
-
-  try {
-    const prompt = `A short educational 3D animation clip suitable for children explaining the financial concept of: ${title}. Context: ${description}. Bright colors, friendly style, abstract minimalist representation of money and growth.`;
-
-    let operation = await ai.models.generateVideos({
-      model: 'veo-3.1-fast-generate-preview',
-      prompt: prompt,
-      config: {
-        numberOfVideos: 1,
-        resolution: '720p', 
-        aspectRatio: '16:9'
-      }
-    });
-
-    // Poll until complete
-    while (!operation.done) {
-      await new Promise(resolve => setTimeout(resolve, 5000)); // Poll every 5s
-      operation = await ai.operations.getVideosOperation({operation: operation});
-    }
-
-    const downloadLink = operation.response?.generatedVideos?.[0]?.video?.uri;
-    if (!downloadLink) return null;
-
-    // Fetch the video bytes using the key
-    const response = await fetch(`${downloadLink}&key=${apiKey}`);
-    if (!response.ok) {
-      throw new Error("Failed to download video");
-    }
-    
-    const blob = await response.blob();
-    return URL.createObjectURL(blob);
-
-  } catch (error) {
-    console.error("Error generating video:", error);
-    throw error;
-  }
-};

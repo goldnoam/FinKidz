@@ -1,23 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { BookOpen, Trophy, Home, Settings, Coins, Search, Mail, Flame, Award, ExternalLink, WifiOff, Globe, Share2, Star, Crown, RefreshCw, Loader2, CheckCircle, Copy } from 'lucide-react';
+import { BookOpen, Trophy, Home, Settings, Coins, Search, Mail, Flame, Award, ExternalLink, WifiOff, Globe } from 'lucide-react';
 import LessonModal from './components/LessonModal';
 import { LESSONS, CATEGORIES, BADGES, EXTERNAL_LINKS } from './constants';
 import { Lesson, UserStats, Category, Badge } from './types';
 import { getIcon } from './components/Icons';
 import { playSound } from './utils/sounds';
 
-const DIFFICULTY_TOOLTIPS: Record<string, string> = {
-  'מתחיל': 'צעדים ראשונים ומושגי יסוד בעולם הכסף',
-  'מתקדם': 'הבנת מנגנונים כלכליים, בנקים ושוק ההון',
-  'מומחה': 'אסטרטגיות השקעה וניתוח שוק מעמיק'
-};
-
 function App() {
   // State
   const [currentView, setCurrentView] = useState<'home' | 'lessons'>('home');
   const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null);
-  const [isLessonLoading, setIsLessonLoading] = useState(false); // Used for transitions inside the modal
-  const [loadingLessonId, setLoadingLessonId] = useState<string | null>(null); // Used for loading on the card
   const [userStats, setUserStats] = useState<UserStats>({ 
     points: 0, 
     completedLessons: [],
@@ -28,21 +20,10 @@ function App() {
   const [selectedCategory, setSelectedCategory] = useState<Category | 'all'>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [isOnline, setIsOnline] = useState(navigator.onLine);
-  
-  // Offline/Sync State
-  const [isSyncing, setIsSyncing] = useState(false);
-  const [syncStatus, setSyncStatus] = useState<'idle' | 'success' | 'error'>('idle');
-  const [syncMessage, setSyncMessage] = useState<string>('');
-
-  // Share feedback state
-  const [copiedLessonId, setCopiedLessonId] = useState<string | null>(null);
 
   // Network status listener
   useEffect(() => {
-    const handleOnline = () => {
-      setIsOnline(true);
-      setSyncStatus('idle');
-    };
+    const handleOnline = () => setIsOnline(true);
     const handleOffline = () => setIsOnline(false);
     window.addEventListener('online', handleOnline);
     window.addEventListener('offline', handleOffline);
@@ -51,17 +32,6 @@ function App() {
       window.removeEventListener('offline', handleOffline);
     };
   }, []);
-
-  const checkForNewBadges = (currentStats: UserStats): string[] => {
-    const earnedNow: string[] = [];
-    BADGES.forEach(badge => {
-      if (!currentStats.badges.includes(badge.id) && badge.condition(currentStats)) {
-        earnedNow.push(badge.id);
-        playSound('success'); // Badge sound!
-      }
-    });
-    return earnedNow;
-  };
 
   // Load stats from local storage on mount and calculate streak
   useEffect(() => {
@@ -106,6 +76,17 @@ function App() {
     localStorage.setItem('finkidz_stats', JSON.stringify(userStats));
   }, [userStats]);
 
+  const checkForNewBadges = (currentStats: UserStats): string[] => {
+    const earnedNow: string[] = [];
+    BADGES.forEach(badge => {
+      if (!currentStats.badges.includes(badge.id) && badge.condition(currentStats)) {
+        earnedNow.push(badge.id);
+        playSound('success'); // Badge sound!
+      }
+    });
+    return earnedNow;
+  };
+
   const handleLessonComplete = (id: string) => {
     if (!userStats.completedLessons.includes(id)) {
       playSound('success');
@@ -134,102 +115,11 @@ function App() {
     }
   };
 
-  const handleOpenLesson = (lesson: Lesson) => {
-    playSound('click');
-    
-    if (selectedLesson) {
-      // If modal is already open (e.g. Next Lesson), show loading inside the modal
-      setIsLessonLoading(true);
-      setSelectedLesson(lesson);
-      setTimeout(() => {
-        setIsLessonLoading(false);
-      }, 800);
-    } else {
-      // If opening from the grid, show loading on the card first
-      setLoadingLessonId(lesson.id);
-      setTimeout(() => {
-        setLoadingLessonId(null);
-        setSelectedLesson(lesson);
-      }, 800);
-    }
-  };
-
-  const handleManualSync = async () => {
-    setIsSyncing(true);
-    setSyncStatus('idle');
-    playSound('click');
-
-    // Simulate network sync attempt
-    await new Promise(resolve => setTimeout(resolve, 1500));
-
-    if (navigator.onLine) {
-      setSyncStatus('success');
-      setSyncMessage('החיבור חודש! מסנכרן נתונים...');
-      playSound('success');
-      
-      setIsOnline(true);
-      setTimeout(() => {
-        setSyncStatus('idle');
-      }, 3000);
-    } else {
-      setSyncStatus('error');
-      setSyncMessage('עדיין אין חיבור. נסה שוב מאוחר יותר.');
-      
-      setTimeout(() => {
-        setSyncStatus('idle');
-      }, 3000);
-    }
-    setIsSyncing(false);
-  };
-
-  const handleShare = async (e: React.MouseEvent, lesson: Lesson) => {
-    e.stopPropagation();
-    const shareData = {
-      title: `FinKidz: ${lesson.title}`,
-      text: `למדתי על "${lesson.title}" ב-FinKidz! בואו ללמוד חינוך פיננסי בכיף.`,
-      url: window.location.href
-    };
-
-    if (navigator.share) {
-      try {
-        await navigator.share(shareData);
-      } catch (err) {
-        console.log('Error sharing', err);
-      }
-    } else {
-      try {
-        await navigator.clipboard.writeText(`${shareData.text} ${shareData.url}`);
-        setCopiedLessonId(lesson.id);
-        playSound('success');
-        setTimeout(() => setCopiedLessonId(null), 2000);
-      } catch (err) {
-        console.error('Failed to copy', err);
-      }
-    }
-  };
-
   const filteredLessons = LESSONS.filter(lesson => {
     const matchesCategory = selectedCategory === 'all' || lesson.category === selectedCategory;
-    const query = searchQuery.toLowerCase();
-    const matchesSearch = lesson.title.toLowerCase().includes(query) || lesson.description.toLowerCase().includes(query);
+    const matchesSearch = lesson.title.includes(searchQuery) || lesson.description.includes(searchQuery);
     return matchesCategory && matchesSearch;
   });
-
-  // Calculate Next Lesson for Modal
-  const currentLessonIndex = selectedLesson ? LESSONS.findIndex(l => l.id === selectedLesson.id) : -1;
-  const nextLesson = (currentLessonIndex !== -1 && currentLessonIndex < LESSONS.length - 1) 
-    ? LESSONS[currentLessonIndex + 1] 
-    : null;
-
-  // Calculate User Rank Title
-  const getRankTitle = () => {
-    if (userStats.badges.includes('rank_expert')) return { title: 'גורו פיננסי', color: 'text-yellow-400' };
-    if (userStats.badges.includes('rank_advanced')) return { title: 'משקיע מתקדם', color: 'text-blue-300' };
-    if (userStats.badges.includes('rank_beginner')) return { title: 'מתחיל מבטיח', color: 'text-green-300' };
-    return { title: 'טירון פיננסי', color: 'text-slate-300' };
-  };
-
-  const rank = getRankTitle();
 
   const renderHome = () => (
     <div className="space-y-10 animate-in fade-in duration-500">
@@ -238,16 +128,9 @@ function App() {
         <div className="relative z-10">
           <div className="flex justify-between items-start">
              <div>
-                <div className="flex items-center gap-3 mb-2">
-                  <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight drop-shadow-md">
-                     היי אלוף! 👋
-                  </h1>
-                  {userStats.badges.includes('rank_expert') && <Crown className="w-8 h-8 text-yellow-300 animate-bounce" />}
-                </div>
-                <div className="flex items-center gap-2 mb-4 bg-white/10 w-fit px-3 py-1 rounded-full backdrop-blur-sm border border-white/20">
-                  <span className="text-sm opacity-80">דרגה נוכחית:</span>
-                  <span className={`font-bold ${rank.color}`}>{rank.title}</span>
-                </div>
+                <h1 className="text-3xl md:text-5xl font-extrabold mb-4 tracking-tight drop-shadow-md">
+                   היי אלוף הפיננסים! 👋
+                </h1>
                 <p className="text-lg md:text-xl font-medium opacity-90 max-w-xl text-purple-50">
                    העולם הפיננסי מחכה לך. בוא נשבור שיאים חדשים היום!
                 </p>
@@ -327,7 +210,7 @@ function App() {
                   }`}
                   title={badge.name + (isEarned ? '' : ' (נעול)')}
                 >
-                  {getIcon(badge.icon, "w-8 h-8 text-white")}
+                  <Trophy className="w-8 h-8 text-white" />
                 </div>
               );
             })}
@@ -345,33 +228,17 @@ function App() {
           {EXTERNAL_LINKS.map(link => (
             <a 
               key={link.id}
-              href={isOnline ? link.url : undefined}
-              target={isOnline ? "_blank" : undefined}
+              href={link.url}
+              target="_blank"
               rel="noopener noreferrer"
-              onClick={(e) => {
-                if (!isOnline) {
-                  e.preventDefault();
-                } else {
-                  playSound('click');
-                }
-              }}
-              className={`
-                bg-slate-800 border border-slate-700 p-4 rounded-2xl flex flex-col items-center gap-3 text-center transition-all duration-300 
-                relative overflow-hidden
-                ${isOnline 
-                  ? 'hover:bg-slate-750 hover:border-blue-500/50 hover:-translate-y-1 hover:shadow-lg hover:shadow-blue-900/10 group cursor-pointer' 
-                  : 'opacity-50 cursor-not-allowed grayscale'
-                }
-              `}
+              onClick={() => playSound('click')}
+              className="bg-slate-800 hover:bg-slate-750 border border-slate-700 hover:border-blue-500/50 p-4 rounded-2xl flex flex-col items-center gap-3 text-center transition-all duration-300 group hover:-translate-y-1 hover:shadow-lg hover:shadow-blue-900/10 relative overflow-hidden"
             >
-              {isOnline && <div className={`absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity bg-gradient-to-br ${link.color}`}></div>}
-              <div className={`p-3 rounded-xl text-white shadow-lg ${link.color} ${isOnline ? 'group-hover:scale-110 group-hover:shadow-xl' : ''} transition-all duration-300 relative z-10`}>
+              <div className={`absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity bg-gradient-to-br ${link.color}`}></div>
+              <div className={`p-3 rounded-xl text-white shadow-lg ${link.color} group-hover:scale-110 group-hover:shadow-xl transition-all duration-300 relative z-10`}>
                 {getIcon(link.iconName, "w-6 h-6")}
               </div>
-              <span className={`font-bold text-slate-200 text-sm relative z-10 ${isOnline ? 'group-hover:text-white' : ''} transition-colors`}>
-                {link.title}
-                {!isOnline && <span className="block text-[10px] font-normal text-slate-400 mt-1">(לא מקוון)</span>}
-              </span>
+              <span className="font-bold text-slate-200 text-sm relative z-10 group-hover:text-white transition-colors">{link.title}</span>
             </a>
           ))}
         </div>
@@ -394,129 +261,110 @@ function App() {
                 placeholder="חפש שיעור..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-slate-900 text-white px-4 py-3 pl-10 rounded-xl focus:outline-none border border-slate-700 placeholder-slate-500"
+                className="w-full bg-transparent border-none text-white text-sm px-4 py-3 pr-10 focus:outline-none placeholder-slate-500"
               />
-              <Search className="w-5 h-5 text-slate-400 absolute left-3" />
+              <Search className="w-4 h-4 text-slate-400 absolute top-3.5 right-3" />
             </div>
           </div>
         </div>
 
         {/* Categories */}
-        <div className="flex gap-3 overflow-x-auto pb-4 scrollbar-hide">
-          <button
+        <div className="flex gap-3 overflow-x-auto pb-2 md:pb-0 scrollbar-hide">
+          <button 
             onClick={() => { playSound('click'); setSelectedCategory('all'); }}
-            className={`px-5 py-2.5 rounded-full whitespace-nowrap transition-all font-medium border ${
-              selectedCategory === 'all'
-                ? 'bg-blue-600 border-blue-500 text-white shadow-lg shadow-blue-500/25'
-                : 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700'
+            className={`px-5 py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all shadow-md ${
+              selectedCategory === 'all' 
+                ? 'bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-blue-900/40 ring-2 ring-blue-400/30' 
+                : 'bg-slate-800 text-slate-400 border border-slate-700 hover:bg-slate-750 hover:text-white'
             }`}
           >
-            הכל <span className="text-xs opacity-60 mr-1">({LESSONS.length})</span>
+            הכל
           </button>
           {CATEGORIES.map(cat => (
             <button
               key={cat.id}
               onClick={() => { playSound('click'); setSelectedCategory(cat.id as Category); }}
-              className={`px-5 py-2.5 rounded-full whitespace-nowrap transition-all font-medium border flex items-center gap-2 ${
-                selectedCategory === cat.id
-                  ? 'bg-white text-slate-900 border-white shadow-lg'
-                  : 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700'
+              className={`px-5 py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all shadow-md ${
+                selectedCategory === cat.id 
+                  ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-purple-900/40 ring-2 ring-purple-400/30' 
+                  : 'bg-slate-800 text-slate-400 border border-slate-700 hover:bg-slate-750 hover:text-white'
               }`}
             >
-              <div className={`w-2 h-2 rounded-full ${cat.color}`}></div>
               {cat.name}
-              <span className="text-xs opacity-60 mr-1">({LESSONS.filter(l => l.category === cat.id).length})</span>
             </button>
           ))}
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredLessons.length > 0 ? (
-          filteredLessons.map((lesson) => {
-            const isCompleted = userStats.completedLessons.includes(lesson.id);
-            const categoryColor = CATEGORIES.find(c => c.id === lesson.category)?.color || 'bg-gray-500';
-            const isCopied = copiedLessonId === lesson.id;
-            const isLoading = loadingLessonId === lesson.id;
-
-            return (
-              <div 
-                key={lesson.id}
-                onClick={() => !isLoading && handleOpenLesson(lesson)}
-                onMouseEnter={() => playSound('hover')}
-                className={`bg-slate-800 border border-slate-700 rounded-2xl p-6 hover:shadow-2xl hover:shadow-purple-500/10 transition-all duration-300 cursor-pointer group hover:-translate-y-2 relative overflow-hidden ${isLoading ? 'scale-[0.98] ring-2 ring-blue-500/50' : ''}`}
-              >
-                {/* Loading Overlay on Card */}
-                {isLoading && (
-                   <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center">
-                      <Loader2 className="w-10 h-10 text-blue-500 animate-spin" />
-                   </div>
-                )}
-
-                {/* Card Background Gradient on Hover */}
-                <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-
-                <div className="flex justify-between items-start mb-4 relative z-10">
-                  <div className={`p-3 rounded-xl ${isCompleted ? 'bg-green-500/20 text-green-400' : 'bg-slate-700 text-slate-300 group-hover:bg-white group-hover:text-purple-600'} transition-colors duration-300`}>
-                    {getIcon(lesson.iconName)}
-                  </div>
-                  <div className="flex gap-2">
-                    <button 
-                      onClick={(e) => handleShare(e, lesson)}
-                      className={`p-2 rounded-full transition-all duration-300 ${
-                        isCopied 
-                          ? 'bg-green-500/20 text-green-400' 
-                          : 'hover:bg-white/10 text-slate-400 hover:text-white'
-                      }`}
-                      title={isCopied ? "הועתק!" : "שתף שיעור"}
-                    >
-                      {isCopied ? <CheckCircle className="w-4 h-4" /> : <Share2 className="w-4 h-4" />}
-                    </button>
-                    {isCompleted && (
-                      <div className="bg-green-500/20 text-green-400 px-2 py-1 rounded-full flex items-center gap-1">
-                        <CheckCircle className="w-4 h-4" />
-                      </div>
-                    )}
-                  </div>
+          filteredLessons.map((lesson, index) => (
+            <div 
+              key={lesson.id}
+              onClick={() => { playSound('click'); setSelectedLesson(lesson); }}
+              style={{ animationDelay: `${index * 50}ms`, animationFillMode: 'both' }}
+              className={`
+                bg-slate-800/60 backdrop-blur-md rounded-[2rem] p-6 shadow-xl border border-slate-700/50 
+                hover:border-slate-500/50 hover:bg-slate-800/80 hover:shadow-2xl hover:-translate-y-1 hover:scale-[1.02]
+                transition-all duration-300 cursor-pointer relative overflow-hidden group h-full flex flex-col 
+                animate-in fade-in slide-in-from-bottom-8
+              `}
+            >
+              {/* Dynamic colorful background blob */}
+              <div className={`absolute -top-10 -right-10 w-40 h-40 bg-gradient-to-br opacity-20 rounded-full blur-2xl transition-all duration-700 group-hover:scale-150 group-hover:opacity-30
+                ${lesson.category === 'basics' ? 'from-green-400 to-emerald-600' : 
+                  lesson.category === 'banking' ? 'from-blue-400 to-indigo-600' : 
+                  'from-purple-400 to-pink-600'}`} 
+              />
+              
+              <div className="flex justify-between items-start mb-4 relative z-10">
+                <div className={`p-3.5 rounded-2xl shadow-inner ${
+                  userStats.completedLessons.includes(lesson.id) 
+                    ? 'bg-green-500/20 text-green-400 ring-1 ring-green-500/30' 
+                    : 'bg-slate-900/50 text-slate-300 ring-1 ring-white/10'
+                }`}>
+                  {getIcon(lesson.iconName)}
                 </div>
-                
-                <div className="space-y-2 relative z-10">
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className={`h-1.5 w-8 rounded-full ${categoryColor}`}></span>
-                    <span className="text-xs font-medium text-slate-400 uppercase tracking-wider">
-                      {CATEGORIES.find(c => c.id === lesson.category)?.name}
-                    </span>
-                  </div>
-                  
-                  <h3 className="font-bold text-xl text-white group-hover:text-purple-300 transition-colors">
-                    {lesson.title}
-                  </h3>
-                  
-                  <p className="text-slate-400 text-sm leading-relaxed line-clamp-2">
-                    {lesson.description}
-                  </p>
-
-                  <div className="pt-4 flex items-center justify-between">
-                    <div 
-                      className="text-xs px-2 py-1 rounded-md bg-slate-900 border border-slate-700 text-slate-400 cursor-help"
-                      title={DIFFICULTY_TOOLTIPS[lesson.difficulty]}
-                    >
-                      רמה: {lesson.difficulty}
-                    </div>
-                    <span className="text-blue-400 text-sm font-medium group-hover:translate-x-1 transition-transform flex items-center gap-1">
-                      התחל ללמוד
-                      <span className="text-lg">←</span>
-                    </span>
-                  </div>
-                </div>
+                <span className={`text-xs px-2.5 py-1 rounded-full font-bold tracking-wide border shadow-sm ${
+                  lesson.difficulty === 'מתחיל' ? 'border-green-500/30 text-green-300 bg-green-500/10' :
+                  lesson.difficulty === 'מתקדם' ? 'border-yellow-500/30 text-yellow-300 bg-yellow-500/10' :
+                  'border-red-500/30 text-red-300 bg-red-500/10'
+                }`}>
+                  {lesson.difficulty}
+                </span>
               </div>
-            );
-          })
+
+              <h3 className="text-xl font-bold text-white mb-2 relative z-10">{lesson.title}</h3>
+              <p className="text-slate-400 text-sm leading-relaxed mb-6 flex-1 relative z-10">{lesson.description}</p>
+              
+              <div className="mt-auto pt-4 border-t border-slate-700/50 flex items-center justify-between text-sm relative z-10">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    playSound('click');
+                    setSelectedLesson(lesson);
+                  }}
+                  className="bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold py-2 px-6 rounded-full transition-all duration-300 shadow-md hover:shadow-blue-500/40 flex items-center gap-2 group/btn"
+                >
+                  למד עוד
+                  <span className="group-hover/btn:-translate-x-1 transition-transform">←</span>
+                </button>
+                {userStats.completedLessons.includes(lesson.id) && (
+                  <span className="flex items-center gap-1.5 text-green-400 font-bold bg-green-900/20 px-2 py-1 rounded-lg">
+                    <Trophy className="w-3.5 h-3.5" />
+                    הושלם
+                  </span>
+                )}
+              </div>
+            </div>
+          ))
         ) : (
-          <div className="col-span-full flex flex-col items-center justify-center py-20 text-slate-500">
-            <Search className="w-16 h-16 mb-4 opacity-30" />
-            <h3 className="text-xl font-bold text-slate-400 mb-2">לא נמצאו שיעורים</h3>
-            <p className="text-sm">נסה לחפש מילה אחרת או שנה את הקטגוריה</p>
+          <div className="col-span-full text-center py-16">
+            <div className="bg-slate-800/50 inline-block p-6 rounded-full mb-4">
+               <Search className="w-10 h-10 text-slate-600" />
+            </div>
+            <h3 className="text-xl font-bold text-slate-300">לא נמצאו שיעורים</h3>
+            <p className="text-slate-500 mt-2">נסה לחפש מילה אחרת או שנה את הקטגוריה</p>
           </div>
         )}
       </div>
@@ -524,161 +372,138 @@ function App() {
   );
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-200 font-sans pb-20 selection:bg-purple-500/30">
+    <div className="min-h-screen bg-[#0B0F19] text-slate-200 pb-24 md:pb-0 font-sans selection:bg-pink-500/30 selection:text-pink-200">
       
-      {/* Offline/Sync Banner */}
-      {!isOnline && (
-        <div className="bg-red-500/10 border-b border-red-500/20 backdrop-blur-md sticky top-0 z-40 transition-all duration-300">
-           <div className="max-w-5xl mx-auto px-4 py-3 flex flex-col md:flex-row items-center justify-between gap-3 text-center md:text-right">
-             <div className="flex items-center gap-3">
-               <WifiOff className="w-5 h-5 text-red-400 shrink-0" />
-               <div>
-                 <p className="text-sm font-bold text-red-200">
-                   {syncStatus === 'success' ? 'החיבור חזר!' : 'מצב לא מקוון'}
-                 </p>
-                 <p className="text-xs text-red-300/80">
-                   {syncStatus === 'success' 
-                      ? 'הנתונים מסתנכרנים...' 
-                      : 'השיעורים שמורים במכשיר שלך. ניתן להמשיך ללמוד כרגיל.'}
-                 </p>
-               </div>
-             </div>
-
-             <div className="flex items-center gap-3 w-full md:w-auto">
-               {syncMessage && (
-                 <span className={`text-xs font-medium ${syncStatus === 'success' ? 'text-green-400' : 'text-red-300'}`}>
-                   {syncMessage}
-                 </span>
-               )}
-               <button 
-                 onClick={handleManualSync}
-                 disabled={isSyncing}
-                 className={`flex items-center justify-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold transition-all w-full md:w-auto
-                   ${isSyncing 
-                     ? 'bg-slate-800 text-slate-400 cursor-wait' 
-                     : 'bg-red-500/20 text-red-300 hover:bg-red-500/30 hover:text-white border border-red-500/30'}
-                 `}
-               >
-                 {isSyncing ? (
-                   <>
-                     <Loader2 className="w-3 h-3 animate-spin" />
-                     מסנכרן...
-                   </>
-                 ) : (
-                   <>
-                     <RefreshCw className="w-3 h-3" />
-                     סנכרן עכשיו
-                   </>
-                 )}
-               </button>
-             </div>
-           </div>
-        </div>
-      )}
-
-      {/* Main Container */}
-      <div className="max-w-5xl mx-auto p-4 md:p-8 space-y-8">
+      {/* Desktop Sidebar / Mobile Topbar */}
+      <div className="max-w-7xl mx-auto flex flex-col md:flex-row min-h-screen">
         
-        {/* App Header (Mobile Only) */}
-        <div className="md:hidden flex justify-between items-center py-2">
-          <div className="flex items-center gap-2">
-            <div className="bg-gradient-to-tr from-blue-600 to-purple-600 p-2 rounded-lg">
-              <BookOpen className="text-white w-6 h-6" />
+        {/* Navigation Sidebar (Desktop) */}
+        <div className="hidden md:flex flex-col w-72 bg-[#0f1422] border-l border-slate-800 h-screen sticky top-0 p-6 z-20 shadow-2xl">
+          <div className="flex items-center gap-3 mb-10">
+            <div className="bg-gradient-to-tr from-blue-600 to-purple-600 p-2 rounded-xl text-white shadow-lg shadow-blue-900/20">
+              <Settings className="w-6 h-6" />
             </div>
-            <span className="font-bold text-xl text-white tracking-tight">FinKidz</span>
+            <span className="font-extrabold text-2xl tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-400">FinKidz</span>
           </div>
-          <div className="flex items-center gap-3 bg-slate-900 px-3 py-1 rounded-full border border-slate-800">
-            <Coins className="w-4 h-4 text-yellow-400" />
-            <span className="font-bold text-white">{userStats.points}</span>
+
+          <nav className="space-y-3 flex-1">
+            <button 
+              onClick={() => handleNavClick('home')}
+              className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl transition-all duration-200 group ${
+                currentView === 'home' 
+                  ? 'bg-gradient-to-r from-blue-600/10 to-purple-600/10 text-blue-400 font-bold border border-blue-500/20' 
+                  : 'text-slate-400 hover:bg-slate-800/50 hover:text-slate-200'
+              }`}
+            >
+              <Home className={`w-5 h-5 ${currentView === 'home' ? 'text-blue-500' : 'group-hover:text-slate-300'}`} />
+              דף הבית
+            </button>
+            <button 
+              onClick={() => handleNavClick('lessons')}
+              className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl transition-all duration-200 group ${
+                currentView === 'lessons' 
+                  ? 'bg-gradient-to-r from-blue-600/10 to-purple-600/10 text-blue-400 font-bold border border-blue-500/20' 
+                  : 'text-slate-400 hover:bg-slate-800/50 hover:text-slate-200'
+              }`}
+            >
+              <BookOpen className={`w-5 h-5 ${currentView === 'lessons' ? 'text-blue-500' : 'group-hover:text-slate-300'}`} />
+              שיעורים
+            </button>
+            
+            {/* Offline Indicator in Menu */}
+            {!isOnline && (
+              <div className="mt-4 px-4 py-3 bg-red-900/20 border border-red-900/50 rounded-xl flex items-center gap-3 text-red-400 text-sm">
+                <WifiOff className="w-4 h-4" />
+                <span>מצב לא מקוון</span>
+              </div>
+            )}
+            
+            {/* Offline Capable Note */}
+            <div className="mt-2 px-4 py-2 text-xs text-slate-500 flex items-center gap-2">
+               <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+               השיעורים זמינים גם ללא אינטרנט
+            </div>
+          </nav>
+
+          {/* Footer Desktop */}
+          <div className="mt-8 mb-6 text-xs text-slate-500 space-y-3 border-t border-slate-800/50 pt-6">
+            <p className="font-medium">(C) Noam Gold AI 2025</p>
+            <a href="mailto:gold.noam@gmail.com" className="flex items-center gap-2 hover:text-blue-400 transition-colors group">
+              <Mail className="w-3.5 h-3.5 group-hover:scale-110 transition-transform" />
+              שלח משוב
+            </a>
+            <div className="text-[10px] text-slate-600 bg-slate-900/50 p-2 rounded-lg break-all border border-slate-800">gold.noam@gmail.com</div>
+          </div>
+
+          <div className="bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700/50 p-5 rounded-2xl text-white relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-20 h-20 bg-yellow-500/10 rounded-full blur-xl -mr-5 -mt-5"></div>
+            <div className="text-xs text-slate-400 mb-1 relative z-10">הנקודות שלי</div>
+            <div className="text-3xl font-black flex items-center gap-2 relative z-10">
+              <Coins className="text-yellow-400 w-6 h-6 fill-yellow-400" />
+              {userStats.points}
+            </div>
           </div>
         </div>
 
-        {/* Desktop Sidebar / Header */}
-        <header className="hidden md:flex justify-between items-center mb-8">
-           <div className="flex items-center gap-3">
-             <div className="bg-gradient-to-tr from-blue-600 to-purple-600 p-2.5 rounded-xl shadow-lg shadow-blue-500/20">
-               <BookOpen className="text-white w-7 h-7" />
-             </div>
-             <div className="flex flex-col">
-               <span className="font-bold text-2xl text-white tracking-tight leading-none">FinKidz</span>
-               <span className="text-sm text-slate-400 tracking-wide">חינוך פיננסי לדור הבא</span>
-             </div>
-           </div>
+        {/* Mobile Header */}
+        <div className="md:hidden bg-[#0f1422]/95 backdrop-blur-md border-b border-slate-800 p-4 sticky top-0 z-30 shadow-lg flex items-center justify-between">
+          <div className="font-bold text-xl text-white flex items-center gap-2">
+            <div className="bg-gradient-to-tr from-blue-600 to-purple-600 p-1.5 rounded-lg">
+               <Settings className="w-5 h-5" />
+            </div>
+            FinKidz
+          </div>
+          <div className="flex items-center gap-2">
+            {!isOnline && <WifiOff className="w-4 h-4 text-red-400" />}
+            <div className="bg-slate-800 border border-slate-700 px-3 py-1.5 rounded-full text-sm font-bold flex items-center gap-1.5 text-white shadow-sm">
+              <Coins className="w-4 h-4 text-yellow-500 fill-yellow-500" />
+              {userStats.points}
+            </div>
+          </div>
+        </div>
 
-           <nav className="flex bg-slate-900/80 backdrop-blur p-1.5 rounded-2xl border border-slate-800">
-             <button 
-               onClick={() => handleNavClick('home')}
-               className={`px-6 py-2.5 rounded-xl font-medium transition-all flex items-center gap-2 ${currentView === 'home' ? 'bg-slate-800 text-white shadow-sm' : 'text-slate-400 hover:text-white hover:bg-slate-800/50'}`}
-             >
-               <Home className="w-4 h-4" />
-               בית
-             </button>
-             <button 
-               onClick={() => handleNavClick('lessons')}
-               className={`px-6 py-2.5 rounded-xl font-medium transition-all flex items-center gap-2 ${currentView === 'lessons' ? 'bg-slate-800 text-white shadow-sm' : 'text-slate-400 hover:text-white hover:bg-slate-800/50'}`}
-             >
-               <BookOpen className="w-4 h-4" />
-               שיעורים
-             </button>
-           </nav>
-        </header>
+        {/* Main Content Area */}
+        <main className="flex-1 p-4 md:p-10 max-w-6xl mx-auto w-full">
+          {currentView === 'home' && renderHome()}
+          {currentView === 'lessons' && renderLessons()}
 
-        {/* Content Area */}
-        <main className="min-h-[60vh]">
-          {currentView === 'home' ? renderHome() : renderLessons()}
+          {/* Footer Mobile */}
+          <div className="md:hidden mt-16 text-center text-xs text-slate-500 space-y-3 pb-8 border-t border-slate-800 pt-8">
+            <p className="font-medium text-slate-400">(C) Noam Gold AI 2025</p>
+            <div className="flex justify-center items-center gap-2 text-slate-600">
+               <Mail className="w-3.5 h-3.5" />
+               <span>gold.noam@gmail.com</span>
+            </div>
+          </div>
         </main>
-        
-        {/* Footer */}
-        <footer className="mt-20 border-t border-slate-800 pt-8 text-center text-slate-500 text-sm">
-           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-             <p>© 2025 Noam Gold AI. כל הזכויות שמורות.</p>
-             <a 
-               href="mailto:gold.noam@gmail.com" 
-               className="flex items-center gap-2 hover:text-purple-400 transition-colors"
-             >
-               <Mail className="w-4 h-4" />
-               שלח משוב: gold.noam@gmail.com
-             </a>
-           </div>
-        </footer>
+
+        {/* Mobile Bottom Navigation */}
+        <div className="md:hidden fixed bottom-0 left-0 right-0 bg-[#0f1422]/95 backdrop-blur-lg border-t border-slate-800 p-2 z-30 flex justify-around shadow-[0_-4px_20px_-1px_rgba(0,0,0,0.3)] safe-area-bottom">
+           <button 
+            onClick={() => handleNavClick('home')}
+            className={`flex flex-col items-center p-2 rounded-xl w-24 transition-colors ${currentView === 'home' ? 'text-blue-400' : 'text-slate-500'}`}
+          >
+            <Home className={`w-6 h-6 mb-1 ${currentView === 'home' ? 'fill-blue-400/20' : ''}`} />
+            <span className="text-[10px] font-bold">בית</span>
+          </button>
+           <button 
+            onClick={() => handleNavClick('lessons')}
+            className={`flex flex-col items-center p-2 rounded-xl w-24 transition-colors ${currentView === 'lessons' ? 'text-blue-400' : 'text-slate-500'}`}
+          >
+            <BookOpen className={`w-6 h-6 mb-1 ${currentView === 'lessons' ? 'fill-blue-400/20' : ''}`} />
+            <span className="text-[10px] font-bold">למידה</span>
+          </button>
+        </div>
+
       </div>
 
-      {/* Mobile Bottom Navigation */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-slate-900/90 backdrop-blur-lg border-t border-slate-800 p-4 pb-6 flex justify-around z-30">
-        <button 
-          onClick={() => handleNavClick('home')}
-          className={`flex flex-col items-center gap-1 ${currentView === 'home' ? 'text-purple-400' : 'text-slate-500'}`}
-        >
-          <Home className={`w-6 h-6 ${currentView === 'home' ? 'fill-current' : ''}`} />
-          <span className="text-xs font-medium">בית</span>
-        </button>
-        <button 
-          onClick={() => handleNavClick('lessons')}
-          className={`flex flex-col items-center gap-1 ${currentView === 'lessons' ? 'text-purple-400' : 'text-slate-500'}`}
-        >
-          <BookOpen className={`w-6 h-6 ${currentView === 'lessons' ? 'fill-current' : ''}`} />
-          <span className="text-xs font-medium">שיעורים</span>
-        </button>
-        <button className="flex flex-col items-center gap-1 text-slate-500 opacity-50 cursor-not-allowed">
-          <Settings className="w-6 h-6" />
-          <span className="text-xs font-medium">הגדרות</span>
-        </button>
-      </div>
-
-      {/* Lesson Modal */}
+      {/* Modals */}
       <LessonModal 
         lesson={selectedLesson}
         isOpen={!!selectedLesson}
-        isLoading={isLessonLoading}
         onClose={() => setSelectedLesson(null)}
         onComplete={handleLessonComplete}
         isCompleted={selectedLesson ? userStats.completedLessons.includes(selectedLesson.id) : false}
-        nextLesson={nextLesson}
-        onNext={() => {
-          if (nextLesson) {
-             handleOpenLesson(nextLesson);
-          }
-        }}
       />
     </div>
   );

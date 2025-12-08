@@ -1,4 +1,3 @@
-
 export type Category = 'basics' | 'banking' | 'investing' | 'advanced';
 
 export interface Lesson {
@@ -41,12 +40,4 @@ export interface UserStats {
   currentStreak: number;
   lastLoginDate: string; // ISO date string
   badges: string[]; // Array of badge IDs
-}
-
-// Global declaration for the AI Studio helper
-declare global {
-  interface AIStudio {
-    hasSelectedApiKey: () => Promise<boolean>;
-    openSelectKey: () => Promise<void>;
-  }
 }

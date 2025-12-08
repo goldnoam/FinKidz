@@ -147,44 +147,20 @@ export const BADGES: Badge[] = [
     condition: (stats) => stats.completedLessons.length >= 3
   },
   {
+    id: 'expert',
+    name: 'מומחה עולמי',
+    description: 'סיימת את כל השיעורים!',
+    icon: 'trophy',
+    color: 'from-yellow-400 to-orange-500',
+    condition: (stats) => stats.completedLessons.length === LESSONS.length
+  },
+  {
     id: 'streak_3',
     name: 'על הגל',
     description: 'למדת 3 ימים ברציפות',
     icon: 'flame',
     color: 'from-red-500 to-orange-500',
     condition: (stats) => stats.currentStreak >= 3
-  },
-  {
-    id: 'rank_beginner',
-    name: 'מתחיל מבטיח',
-    description: 'סיימת שיעור ברמת מתחיל',
-    icon: 'star',
-    color: 'from-green-400 to-emerald-500',
-    condition: (stats) => stats.completedLessons.some(id => LESSONS.find(l => l.id === id)?.difficulty === 'מתחיל')
-  },
-  {
-    id: 'rank_advanced',
-    name: 'משקיע מתקדם',
-    description: 'סיימת שיעור ברמת מתקדם',
-    icon: 'medal',
-    color: 'from-blue-400 to-indigo-500',
-    condition: (stats) => stats.completedLessons.some(id => LESSONS.find(l => l.id === id)?.difficulty === 'מתקדם')
-  },
-  {
-    id: 'rank_expert',
-    name: 'גורו פיננסי',
-    description: 'סיימת שיעור ברמת מומחה',
-    icon: 'crown',
-    color: 'from-amber-300 to-yellow-500',
-    condition: (stats) => stats.completedLessons.some(id => LESSONS.find(l => l.id === id)?.difficulty === 'מומחה')
-  },
-  {
-    id: 'expert',
-    name: 'מאסטר עולמי',
-    description: 'סיימת את כל השיעורים!',
-    icon: 'trophy',
-    color: 'from-fuchsia-500 to-purple-600',
-    condition: (stats) => stats.completedLessons.length === LESSONS.length
   }
 ];
 

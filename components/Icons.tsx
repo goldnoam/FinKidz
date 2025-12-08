@@ -14,11 +14,7 @@ import {
   ArrowRightLeft,
   ShieldCheck,
   Gamepad2,
-  Newspaper,
-  Share2,
-  Medal,
-  Crown,
-  Star
+  Newspaper
 } from 'lucide-react';
 
 export const getIcon = (name: string, className?: string) => {
@@ -39,10 +35,6 @@ export const getIcon = (name: string, className?: string) => {
     case 'safe': return <ShieldCheck {...props} />;
     case 'game': return <Gamepad2 {...props} />;
     case 'news': return <Newspaper {...props} />;
-    case 'share': return <Share2 {...props} />;
-    case 'medal': return <Medal {...props} />;
-    case 'crown': return <Crown {...props} />;
-    case 'star': return <Star {...props} />;
     default: return <Coins {...props} />;
   }
 };
