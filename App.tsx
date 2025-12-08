@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BookOpen, Trophy, Home, Settings, Coins, Search, Mail, Flame, Award, ExternalLink, WifiOff, Globe, Loader2 } from 'lucide-react';
+import { BookOpen, Trophy, Home, Settings, Coins, Search, Mail, Flame, Award, ExternalLink, WifiOff, Globe, Loader2, Share2, Check } from 'lucide-react';
 import LessonModal from './components/LessonModal';
 import { LESSONS, CATEGORIES, BADGES, EXTERNAL_LINKS } from './constants';
 import { Lesson, UserStats, Category, Badge } from './types';
@@ -11,6 +11,7 @@ function App() {
   const [currentView, setCurrentView] = useState<'home' | 'lessons'>('home');
   const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null);
   const [loadingLessonId, setLoadingLessonId] = useState<string | null>(null);
+  const [copiedLessonId, setCopiedLessonId] = useState<string | null>(null);
   const [userStats, setUserStats] = useState<UserStats>({ 
     points: 0, 
     completedLessons: [],
@@ -128,6 +129,32 @@ function App() {
     }, 800);
   };
 
+  const handleShare = async (e: React.MouseEvent, lesson: Lesson) => {
+    e.stopPropagation();
+    playSound('click');
+    const shareData = {
+      title: lesson.title,
+      text: `למדתי על ${lesson.title} ב-FinKidz! בואו ללמוד חינוך פיננסי:`,
+      url: window.location.href
+    };
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+      } catch (err) {
+        console.log('Share canceled');
+      }
+    } else {
+      try {
+        await navigator.clipboard.writeText(`${shareData.text} ${shareData.url}`);
+        setCopiedLessonId(lesson.id);
+        setTimeout(() => setCopiedLessonId(null), 2000);
+      } catch (err) {
+        console.error('Failed to copy');
+      }
+    }
+  };
+
   const filteredLessons = LESSONS.filter(lesson => {
     const matchesCategory = selectedCategory === 'all' || lesson.category === selectedCategory;
     const matchesSearch = lesson.title.includes(searchQuery) || lesson.description.includes(searchQuery);
@@ -136,6 +163,17 @@ function App() {
 
   const renderHome = () => (
     <div className="space-y-10 animate-in fade-in duration-500">
+      {/* Offline Banner (Large) */}
+      {!isOnline && (
+        <div className="bg-red-900/20 border border-red-500/30 rounded-2xl p-6 text-center animate-in slide-in-from-top-4">
+          <div className="flex justify-center mb-2">
+            <WifiOff className="w-8 h-8 text-red-400" />
+          </div>
+          <h2 className="text-xl font-bold text-red-200 mb-2">מצב לא מקוון</h2>
+          <p className="text-red-200/70">חלק מהתכונות מוגבלות. השיעורים זמינים לקריאה גם ללא אינטרנט.</p>
+        </div>
+      )}
+
       {/* Hero Section */}
       <div className="bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 rounded-3xl p-8 text-white shadow-2xl relative overflow-hidden ring-1 ring-white/10 group">
         <div className="relative z-10">
@@ -360,13 +398,23 @@ function App() {
                 }`}>
                   {getIcon(lesson.iconName)}
                 </div>
-                <span className={`text-xs px-2.5 py-1 rounded-full font-bold tracking-wide border shadow-sm ${
-                  lesson.difficulty === 'מתחיל' ? 'border-green-500/30 text-green-300 bg-green-500/10' :
-                  lesson.difficulty === 'מתקדם' ? 'border-yellow-500/30 text-yellow-300 bg-yellow-500/10' :
-                  'border-red-500/30 text-red-300 bg-red-500/10'
-                }`}>
-                  {lesson.difficulty}
-                </span>
+                <div className="flex gap-2">
+                   {/* Share Button */}
+                  <button
+                    onClick={(e) => handleShare(e, lesson)}
+                    className="p-2 rounded-full bg-slate-700/50 hover:bg-slate-600 text-slate-300 transition-colors"
+                    aria-label="שתף שיעור"
+                  >
+                    {copiedLessonId === lesson.id ? <Check className="w-4 h-4 text-green-400" /> : <Share2 className="w-4 h-4" />}
+                  </button>
+                  <span className={`text-xs px-2.5 py-1.5 rounded-full font-bold tracking-wide border shadow-sm flex items-center ${
+                    lesson.difficulty === 'מתחיל' ? 'border-green-500/30 text-green-300 bg-green-500/10' :
+                    lesson.difficulty === 'מתקדם' ? 'border-yellow-500/30 text-yellow-300 bg-yellow-500/10' :
+                    'border-red-500/30 text-red-300 bg-red-500/10'
+                  }`}>
+                    {lesson.difficulty}
+                  </span>
+                </div>
               </div>
 
               <h3 className="text-xl font-bold text-white mb-2 relative z-10">{lesson.title}</h3>
