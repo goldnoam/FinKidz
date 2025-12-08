@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BookOpen, Trophy, Home, Settings, Coins, Search, Mail, Flame, Award, ExternalLink, WifiOff, Globe } from 'lucide-react';
+import { BookOpen, Trophy, Home, Settings, Coins, Search, Mail, Flame, Award, ExternalLink, WifiOff, Globe, Loader2 } from 'lucide-react';
 import LessonModal from './components/LessonModal';
 import { LESSONS, CATEGORIES, BADGES, EXTERNAL_LINKS } from './constants';
 import { Lesson, UserStats, Category, Badge } from './types';
@@ -10,6 +10,7 @@ function App() {
   // State
   const [currentView, setCurrentView] = useState<'home' | 'lessons'>('home');
   const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null);
+  const [loadingLessonId, setLoadingLessonId] = useState<string | null>(null);
   const [userStats, setUserStats] = useState<UserStats>({ 
     points: 0, 
     completedLessons: [],
@@ -113,6 +114,18 @@ function App() {
       playSound('click');
       setCurrentView(view);
     }
+  };
+
+  const handleOpenLesson = (lesson: Lesson) => {
+    if (loadingLessonId === lesson.id) return;
+    playSound('click');
+    setLoadingLessonId(lesson.id);
+    
+    // Simulate processing/fetching delay
+    setTimeout(() => {
+      setSelectedLesson(lesson);
+      setLoadingLessonId(null);
+    }, 800);
   };
 
   const filteredLessons = LESSONS.filter(lesson => {
@@ -231,11 +244,23 @@ function App() {
               href={link.url}
               target="_blank"
               rel="noopener noreferrer"
-              onClick={() => playSound('click')}
-              className="bg-slate-800 hover:bg-slate-750 border border-slate-700 hover:border-blue-500/50 p-4 rounded-2xl flex flex-col items-center gap-3 text-center transition-all duration-300 group hover:-translate-y-1 hover:shadow-lg hover:shadow-blue-900/10 relative overflow-hidden"
+              onClick={(e) => {
+                if (!isOnline) {
+                  e.preventDefault();
+                } else {
+                  playSound('click');
+                }
+              }}
+              className={`
+                bg-slate-800 border border-slate-700 p-4 rounded-2xl flex flex-col items-center gap-3 text-center transition-all duration-300 group relative overflow-hidden
+                ${isOnline 
+                  ? 'hover:bg-slate-750 hover:border-blue-500/50 hover:-translate-y-1 hover:shadow-lg hover:shadow-blue-900/10 cursor-pointer' 
+                  : 'opacity-50 cursor-not-allowed grayscale'
+                }
+              `}
             >
-              <div className={`absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity bg-gradient-to-br ${link.color}`}></div>
-              <div className={`p-3 rounded-xl text-white shadow-lg ${link.color} group-hover:scale-110 group-hover:shadow-xl transition-all duration-300 relative z-10`}>
+              {isOnline && <div className={`absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity bg-gradient-to-br ${link.color}`}></div>}
+              <div className={`p-3 rounded-xl text-white shadow-lg ${link.color} ${isOnline ? 'group-hover:scale-110 group-hover:shadow-xl' : ''} transition-all duration-300 relative z-10`}>
                 {getIcon(link.iconName, "w-6 h-6")}
               </div>
               <span className="font-bold text-slate-200 text-sm relative z-10 group-hover:text-white transition-colors">{link.title}</span>
@@ -301,13 +326,14 @@ function App() {
           filteredLessons.map((lesson, index) => (
             <div 
               key={lesson.id}
-              onClick={() => { playSound('click'); setSelectedLesson(lesson); }}
+              onClick={() => handleOpenLesson(lesson)}
               style={{ animationDelay: `${index * 50}ms`, animationFillMode: 'both' }}
               className={`
                 bg-slate-800/60 backdrop-blur-md rounded-[2rem] p-6 shadow-xl border border-slate-700/50 
                 hover:border-slate-500/50 hover:bg-slate-800/80 hover:shadow-2xl hover:-translate-y-1 hover:scale-[1.02]
                 transition-all duration-300 cursor-pointer relative overflow-hidden group h-full flex flex-col 
                 animate-in fade-in slide-in-from-bottom-8
+                ${loadingLessonId === lesson.id ? 'scale-[0.98] opacity-90 cursor-wait' : ''}
               `}
             >
               {/* Dynamic colorful background blob */}
@@ -316,6 +342,15 @@ function App() {
                   lesson.category === 'banking' ? 'from-blue-400 to-indigo-600' : 
                   'from-purple-400 to-pink-600'}`} 
               />
+
+              {/* Loading Overlay */}
+              {loadingLessonId === lesson.id && (
+                <div className="absolute inset-0 z-30 bg-slate-900/50 backdrop-blur-[2px] flex items-center justify-center rounded-[2rem] animate-in fade-in duration-200">
+                  <div className="bg-slate-800 p-4 rounded-full shadow-2xl ring-1 ring-white/10">
+                    <Loader2 className="w-8 h-8 text-blue-400 animate-spin" />
+                  </div>
+                </div>
+              )}
               
               <div className="flex justify-between items-start mb-4 relative z-10">
                 <div className={`p-3.5 rounded-2xl shadow-inner ${
@@ -341,8 +376,7 @@ function App() {
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
-                    playSound('click');
-                    setSelectedLesson(lesson);
+                    handleOpenLesson(lesson);
                   }}
                   className="bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold py-2 px-6 rounded-full transition-all duration-300 shadow-md hover:shadow-blue-500/40 flex items-center gap-2 group/btn"
                 >
