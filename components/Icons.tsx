@@ -14,7 +14,13 @@ import {
   ArrowRightLeft,
   ShieldCheck,
   Gamepad2,
-  Newspaper
+  Newspaper,
+  Medal,
+  Crown,
+  Star,
+  Flame,
+  Book,
+  Trophy
 } from 'lucide-react';
 
 export const getIcon = (name: string, className?: string) => {
@@ -25,6 +31,7 @@ export const getIcon = (name: string, className?: string) => {
     case 'bank': return <Landmark {...props} />;
     case 'budget': return <Wallet {...props} />;
     case 'goals': return <Target {...props} />;
+    case 'target': return <Target {...props} />;
     case 'money': return <Coins {...props} />;
     case 'global': return <Globe {...props} />;
     case 'learn': return <School {...props} />;
@@ -35,6 +42,15 @@ export const getIcon = (name: string, className?: string) => {
     case 'safe': return <ShieldCheck {...props} />;
     case 'game': return <Gamepad2 {...props} />;
     case 'news': return <Newspaper {...props} />;
+    
+    // Badge Icons
+    case 'medal': return <Medal {...props} />;
+    case 'crown': return <Crown {...props} />;
+    case 'star': return <Star {...props} />;
+    case 'flame': return <Flame {...props} />;
+    case 'book': return <Book {...props} />;
+    case 'trophy': return <Trophy {...props} />;
+    
     default: return <Coins {...props} />;
   }
 };

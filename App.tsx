@@ -161,6 +161,15 @@ function App() {
     return matchesCategory && matchesSearch;
   });
 
+  const getHighestRank = () => {
+    if (userStats.badges.includes('rank_expert')) return { text: 'מומחה פיננסי', icon: 'star', color: 'text-purple-200' };
+    if (userStats.badges.includes('rank_advanced')) return { text: 'משקיע מתקדם', icon: 'crown', color: 'text-blue-200' };
+    if (userStats.badges.includes('rank_beginner')) return { text: 'חוסך מתחיל', icon: 'medal', color: 'text-green-200' };
+    return { text: 'טירון פיננסי', icon: 'learn', color: 'text-slate-200' };
+  };
+
+  const currentRank = getHighestRank();
+
   const renderHome = () => (
     <div className="space-y-10 animate-in fade-in duration-500">
       {/* Offline Banner (Large) */}
@@ -185,14 +194,18 @@ function App() {
                 <p className="text-lg md:text-xl font-medium opacity-90 max-w-xl text-purple-50">
                    העולם הפיננסי מחכה לך. בוא נשבור שיאים חדשים היום!
                 </p>
+                <div className="mt-6 inline-flex items-center gap-2 bg-white/20 backdrop-blur-md px-4 py-2 rounded-full border border-white/20 shadow-lg animate-in fade-in slide-in-from-bottom-2">
+                  {getIcon(currentRank.icon, `w-5 h-5 ${currentRank.color} drop-shadow`)}
+                  <span className="font-bold text-sm md:text-base text-white">{currentRank.text}</span>
+                </div>
              </div>
              <div className="hidden md:block">
-               <div className="bg-white/20 backdrop-blur-md p-4 rounded-2xl border border-white/30 flex flex-col items-center">
+               <div className="bg-white/20 backdrop-blur-md p-4 rounded-2xl border border-white/30 flex flex-col items-center shadow-lg">
                  <div className="flex items-center gap-2 text-yellow-300 mb-1">
                    <Flame className="w-6 h-6 fill-yellow-300" />
                    <span className="font-bold text-2xl">{userStats.currentStreak}</span>
                  </div>
-                 <span className="text-xs font-medium uppercase tracking-wider">ימי רצף</span>
+                 <span className="text-xs font-medium uppercase tracking-wider text-purple-100">ימי רצף</span>
                </div>
              </div>
           </div>
@@ -213,9 +226,9 @@ function App() {
       {/* Stats & Badges Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Points Card */}
-        <div className="bg-slate-800/80 backdrop-blur border border-slate-700 p-6 rounded-2xl shadow-xl flex flex-col items-center justify-center gap-3 relative overflow-hidden">
+        <div className="bg-slate-800/80 backdrop-blur border border-slate-700 p-6 rounded-2xl shadow-xl flex flex-col items-center justify-center gap-3 relative overflow-hidden group hover:border-yellow-500/30 transition-colors">
           <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/10 to-transparent"></div>
-          <div className="p-4 bg-yellow-500/20 text-yellow-400 rounded-full ring-4 ring-yellow-500/10">
+          <div className="p-4 bg-yellow-500/20 text-yellow-400 rounded-full ring-4 ring-yellow-500/10 group-hover:scale-110 transition-transform">
             <Coins className="w-8 h-8" />
           </div>
           <div className="text-3xl font-black text-white z-10">{userStats.points}</div>
@@ -223,9 +236,9 @@ function App() {
         </div>
         
         {/* Progress Card */}
-        <div className="bg-slate-800/80 backdrop-blur border border-slate-700 p-6 rounded-2xl shadow-xl flex flex-col items-center justify-center gap-3 relative overflow-hidden">
+        <div className="bg-slate-800/80 backdrop-blur border border-slate-700 p-6 rounded-2xl shadow-xl flex flex-col items-center justify-center gap-3 relative overflow-hidden group hover:border-green-500/30 transition-colors">
           <div className="absolute inset-0 bg-gradient-to-br from-green-500/10 to-transparent"></div>
-          <div className="p-4 bg-green-500/20 text-green-400 rounded-full ring-4 ring-green-500/10">
+          <div className="p-4 bg-green-500/20 text-green-400 rounded-full ring-4 ring-green-500/10 group-hover:scale-110 transition-transform">
             <Award className="w-8 h-8" />
           </div>
           <div className="text-3xl font-black text-white z-10">{userStats.completedLessons.length}/{LESSONS.length}</div>
@@ -256,12 +269,12 @@ function App() {
                   key={badge.id}
                   className={`flex-shrink-0 w-16 h-16 rounded-2xl flex items-center justify-center border-2 transition-all ${
                     isEarned 
-                      ? `bg-gradient-to-br ${badge.color} border-white/20 shadow-lg` 
-                      : 'bg-slate-700/50 border-slate-600 grayscale opacity-40'
+                      ? `bg-gradient-to-br ${badge.color} border-white/20 shadow-lg scale-100` 
+                      : 'bg-slate-700/50 border-slate-600 grayscale opacity-40 scale-95'
                   }`}
                   title={badge.name + (isEarned ? '' : ' (נעול)')}
                 >
-                  <Trophy className="w-8 h-8 text-white" />
+                  {getIcon(badge.icon, "w-8 h-8 text-white drop-shadow-md")}
                 </div>
               );
             })}
