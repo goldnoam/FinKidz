@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BookOpen, Trophy, Home, Settings, Coins, Search, Mail, Flame, Award, ExternalLink, WifiOff, Globe, Share2, Check } from 'lucide-react';
+import { BookOpen, Trophy, Home, Settings, Coins, Search, Mail, Flame, Award, ExternalLink, WifiOff, Globe } from 'lucide-react';
 import LessonModal from './components/LessonModal';
 import { LESSONS, CATEGORIES, BADGES, EXTERNAL_LINKS } from './constants';
 import { Lesson, UserStats, Category, Badge } from './types';
@@ -20,7 +20,6 @@ function App() {
   const [selectedCategory, setSelectedCategory] = useState<Category | 'all'>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [isOnline, setIsOnline] = useState(navigator.onLine);
-  const [copiedLessonId, setCopiedLessonId] = useState<string | null>(null);
 
   // Network status listener
   useEffect(() => {
@@ -113,35 +112,6 @@ function App() {
     if (currentView !== view) {
       playSound('click');
       setCurrentView(view);
-    }
-  };
-
-  const handleShare = async (e: React.MouseEvent, lesson: Lesson) => {
-    e.stopPropagation();
-    const shareData = {
-      title: lesson.title,
-      text: lesson.description,
-      url: window.location.href
-    };
-
-    if (navigator.share) {
-      try {
-        await navigator.share(shareData);
-        playSound('success');
-      } catch (err) {
-        console.log('Share canceled');
-      }
-    } else {
-      // Fallback to clipboard
-      const textToShare = `${lesson.title}\n${lesson.description}\n${window.location.href}`;
-      try {
-        await navigator.clipboard.writeText(textToShare);
-        setCopiedLessonId(lesson.id);
-        playSound('success');
-        setTimeout(() => setCopiedLessonId(null), 2000);
-      } catch (err) {
-        console.error('Failed to copy');
-      }
     }
   };
 
@@ -258,24 +228,11 @@ function App() {
           {EXTERNAL_LINKS.map(link => (
             <a 
               key={link.id}
-              href={isOnline ? link.url : '#'}
-              target={isOnline ? "_blank" : "_self"}
+              href={link.url}
+              target="_blank"
               rel="noopener noreferrer"
-              onClick={(e) => {
-                if (!isOnline) {
-                  e.preventDefault();
-                  // Ideally show a small toast here
-                } else {
-                  playSound('click');
-                }
-              }}
-              className={`
-                bg-slate-800 border border-slate-700 p-4 rounded-2xl flex flex-col items-center gap-3 text-center transition-all duration-300 relative overflow-hidden group
-                ${isOnline 
-                  ? 'hover:bg-slate-750 hover:border-blue-500/50 hover:-translate-y-1 hover:shadow-lg hover:shadow-blue-900/10 cursor-pointer' 
-                  : 'opacity-50 grayscale cursor-not-allowed'
-                }
-              `}
+              onClick={() => playSound('click')}
+              className="bg-slate-800 hover:bg-slate-750 border border-slate-700 hover:border-blue-500/50 p-4 rounded-2xl flex flex-col items-center gap-3 text-center transition-all duration-300 group hover:-translate-y-1 hover:shadow-lg hover:shadow-blue-900/10 relative overflow-hidden"
             >
               <div className={`absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity bg-gradient-to-br ${link.color}`}></div>
               <div className={`p-3 rounded-xl text-white shadow-lg ${link.color} group-hover:scale-110 group-hover:shadow-xl transition-all duration-300 relative z-10`}>
@@ -380,26 +337,24 @@ function App() {
               <h3 className="text-xl font-bold text-white mb-2 relative z-10">{lesson.title}</h3>
               <p className="text-slate-400 text-sm leading-relaxed mb-6 flex-1 relative z-10">{lesson.description}</p>
               
-              <div className="mt-auto pt-4 border-t border-slate-700/50 flex items-center justify-between text-sm relative z-10 gap-2">
+              <div className="mt-auto pt-4 border-t border-slate-700/50 flex items-center justify-between text-sm relative z-10">
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
                     playSound('click');
                     setSelectedLesson(lesson);
                   }}
-                  className="flex-1 bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold py-2 px-4 rounded-full transition-all duration-300 shadow-md hover:shadow-blue-500/40 flex items-center justify-center gap-2 group/btn"
+                  className="bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold py-2 px-6 rounded-full transition-all duration-300 shadow-md hover:shadow-blue-500/40 flex items-center gap-2 group/btn"
                 >
                   למד עוד
                   <span className="group-hover/btn:-translate-x-1 transition-transform">←</span>
                 </button>
-                
-                <button
-                  onClick={(e) => handleShare(e, lesson)}
-                  className="bg-slate-700 hover:bg-slate-600 text-white p-2 rounded-full transition-colors shadow-md"
-                  aria-label="שתף שיעור"
-                >
-                   {copiedLessonId === lesson.id ? <Check className="w-4 h-4 text-green-400" /> : <Share2 className="w-4 h-4" />}
-                </button>
+                {userStats.completedLessons.includes(lesson.id) && (
+                  <span className="flex items-center gap-1.5 text-green-400 font-bold bg-green-900/20 px-2 py-1 rounded-lg">
+                    <Trophy className="w-3.5 h-3.5" />
+                    הושלם
+                  </span>
+                )}
               </div>
             </div>
           ))
@@ -419,13 +374,6 @@ function App() {
   return (
     <div className="min-h-screen bg-[#0B0F19] text-slate-200 pb-24 md:pb-0 font-sans selection:bg-pink-500/30 selection:text-pink-200">
       
-      {/* Offline Banner */}
-      {!isOnline && (
-        <div className="bg-red-900/90 text-red-100 px-4 py-2 text-center text-sm font-bold border-b border-red-700/50 sticky top-0 z-50 backdrop-blur-sm animate-in slide-in-from-top">
-          אתה במצב לא מקוון. חלק מהתכונות עשויות להיות מוגבלות.
-        </div>
-      )}
-
       {/* Desktop Sidebar / Mobile Topbar */}
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row min-h-screen">
         
