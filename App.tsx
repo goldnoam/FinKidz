@@ -162,10 +162,10 @@ function App() {
   });
 
   const getHighestRank = () => {
-    if (userStats.badges.includes('rank_expert')) return { text: 'מומחה פיננסי', icon: 'star', color: 'text-purple-200' };
-    if (userStats.badges.includes('rank_advanced')) return { text: 'משקיע מתקדם', icon: 'crown', color: 'text-blue-200' };
-    if (userStats.badges.includes('rank_beginner')) return { text: 'חוסך מתחיל', icon: 'medal', color: 'text-green-200' };
-    return { text: 'טירון פיננסי', icon: 'learn', color: 'text-slate-200' };
+    if (userStats.badges.includes('rank_expert')) return { text: 'מומחה פיננסי', icon: 'star', color: 'text-purple-200', desc: 'דרגת מומחה - השלמת שיעורי מומחים' };
+    if (userStats.badges.includes('rank_advanced')) return { text: 'משקיע מתקדם', icon: 'crown', color: 'text-blue-200', desc: 'דרגת מתקדם - השלמת שיעורי מתקדמים' };
+    if (userStats.badges.includes('rank_beginner')) return { text: 'חוסך מתחיל', icon: 'medal', color: 'text-green-200', desc: 'דרגת מתחיל - השלמת שיעורי מתחילים' };
+    return { text: 'טירון פיננסי', icon: 'learn', color: 'text-slate-200', desc: 'התחל ללמוד כדי להתקדם בדרגות!' };
   };
 
   const currentRank = getHighestRank();
@@ -194,8 +194,11 @@ function App() {
                 <p className="text-lg md:text-xl font-medium opacity-90 max-w-xl text-purple-50">
                    העולם הפיננסי מחכה לך. בוא נשבור שיאים חדשים היום!
                 </p>
-                <div className="mt-6 inline-flex items-center gap-2 bg-white/20 backdrop-blur-md px-4 py-2 rounded-full border border-white/20 shadow-lg animate-in fade-in slide-in-from-bottom-2">
-                  {getIcon(currentRank.icon, `w-5 h-5 ${currentRank.color} drop-shadow`)}
+                <div 
+                  className="mt-6 inline-flex items-center gap-2 bg-white/20 backdrop-blur-md px-4 py-2 rounded-full border border-white/20 shadow-lg animate-in fade-in slide-in-from-bottom-2 hover:bg-white/30 transition-colors cursor-help"
+                  title={currentRank.desc}
+                >
+                  {getIcon(currentRank.icon, `w-5 h-5 ${currentRank.color} drop-shadow`, currentRank.desc)}
                   <span className="font-bold text-sm md:text-base text-white">{currentRank.text}</span>
                 </div>
              </div>
@@ -267,14 +270,14 @@ function App() {
               return (
                 <div 
                   key={badge.id}
-                  className={`flex-shrink-0 w-16 h-16 rounded-2xl flex items-center justify-center border-2 transition-all ${
+                  className={`flex-shrink-0 w-16 h-16 rounded-2xl flex items-center justify-center border-2 transition-all cursor-help ${
                     isEarned 
                       ? `bg-gradient-to-br ${badge.color} border-white/20 shadow-lg scale-100` 
                       : 'bg-slate-700/50 border-slate-600 grayscale opacity-40 scale-95'
                   }`}
-                  title={badge.name + (isEarned ? '' : ' (נעול)')}
+                  title={badge.name + (isEarned ? '' : ' (נעול)') + ' - ' + badge.description}
                 >
-                  {getIcon(badge.icon, "w-8 h-8 text-white drop-shadow-md")}
+                  {getIcon(badge.icon, "w-8 h-8 text-white drop-shadow-md", badge.description)}
                 </div>
               );
             })}

@@ -23,8 +23,12 @@ import {
   Trophy
 } from 'lucide-react';
 
-export const getIcon = (name: string, className?: string) => {
-  const props = { className: className || "w-6 h-6" };
+export const getIcon = (name: string, className?: string, title?: string) => {
+  const props = { 
+    className: className || "w-6 h-6",
+    ...(title ? { title } : {}) 
+  };
+  
   switch (name) {
     case 'savings': return <PiggyBank {...props} />;
     case 'investing': return <TrendingUp {...props} />;
