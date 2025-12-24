@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { BookOpen, Trophy, Home, Mail, Flame, Award, WifiOff, Globe, Loader2, Share2, Check, ArrowRight, Sparkles, X, PiggyBank, Gamepad2, Coins, Search, SortAsc, Filter, Moon, Sun, Languages, Heart } from 'lucide-react';
+// Added X to imports from lucide-react to fix line 317 error
+import { BookOpen, Trophy, Home, Flame, Award, WifiOff, Check, Sparkles, PiggyBank, Gamepad2, Coins, Search, SortAsc, Moon, Sun, Languages, Heart, ExternalLink, Info, X } from 'lucide-react';
 import LessonModal from './components/LessonModal';
 import FinancialGame from './components/FinancialGame';
 import { LESSONS, CATEGORIES, BADGES, EXTERNAL_LINKS, UI_TRANSLATIONS } from './constants';
@@ -24,7 +25,9 @@ const EASTER_EGG_FACTS = [
   "הידעת? המטבעות הראשונים הומצאו בממלכת לידיה לפני כ-2,600 שנה!",
   "הידעת? שטרות כסף עשויים בדרך כלל מכותנה ופשתן, לא מנייר רגיל.",
   "הידעת? המילה 'בנק' מגיעה מהמילה האיטלקית 'banco' שפירושה ספסל.",
-  "הידעת? מונופול מדפיס יותר כסף בשנה מאשר הבנק המרכזי של ארה״ב!"
+  "הידעת? מונופול מדפיס יותר כסף בשנה מאשר הבנק המרכזי של ארה״ב!",
+  "הידעת? בשנת 1946 בהונגריה הודפס שטר של 100 קווינטיליון פנגה!",
+  "הידעת? הכספומט הראשון הותקן בלונדון בשנת 1967."
 ];
 
 type SortOption = 'default' | 'difficulty-asc' | 'difficulty-desc' | 'title';
@@ -34,6 +37,7 @@ function App() {
   const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null);
   const [loadingLessonId, setLoadingLessonId] = useState<string | null>(null);
   const [justCompletedId, setJustCompletedId] = useState<string | null>(null);
+  // Default theme set to dark as requested
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
   const [lang, setLang] = useState<Language>('he');
   const [showOnlyFavorites, setShowOnlyFavorites] = useState(false);
@@ -57,13 +61,11 @@ function App() {
   const t = (key: string) => UI_TRANSLATIONS[lang][key] || UI_TRANSLATIONS['he'][key] || key;
   const isRtl = lang === 'he';
 
-  // Fix: Added missing toggleTheme function
   const toggleTheme = () => {
     playSound('click');
     setTheme(prev => prev === 'dark' ? 'light' : 'dark');
   };
 
-  // Fix: Added missing handleToggleFavorite function
   const handleToggleFavorite = (e: React.MouseEvent, lessonId: string) => {
     e.stopPropagation();
     playSound('click');
@@ -83,7 +85,7 @@ function App() {
       setRandomFact(EASTER_EGG_FACTS[Math.floor(Math.random() * EASTER_EGG_FACTS.length)]);
       setShowEasterEgg(true);
       logoClickCount.current = 0;
-      setTimeout(() => setShowEasterEgg(false), 5000);
+      setTimeout(() => setShowEasterEgg(false), 8000);
     } else {
       playSound('click');
     }
@@ -196,14 +198,6 @@ function App() {
 
   const renderHome = () => (
     <div className="space-y-10 animate-in fade-in duration-500">
-      {/* Offline Banner */}
-      {!isOnline && (
-        <div className="bg-red-600 text-white p-3 rounded-xl text-center font-bold flex items-center justify-center gap-2 animate-pulse sticky top-4 z-50 shadow-lg">
-          <WifiOff className="w-5 h-5" />
-          {isRtl ? 'אתה במצב לא מקוון. השיעורים שכבר נטענו זמינים, אך קישורים חיצוניים חסומים.' : 'You are offline. Loaded lessons are available, but external links are disabled.'}
-        </div>
-      )}
-
       <div className="text-center py-6" data-aos="fade-down">
         <h1 className={`text-4xl md:text-6xl font-black mb-2 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 drop-shadow-sm`}>
           {t('heroTitle')}
@@ -268,7 +262,7 @@ function App() {
               const isEarned = (userStats.badges || []).includes(badge.id);
               return (
                 <div key={badge.id} className={`flex-shrink-0 w-16 h-16 rounded-2xl flex items-center justify-center border-2 transition-all ${isEarned ? `bg-gradient-to-br ${badge.color} border-white/20 shadow-lg` : 'bg-slate-700/50 grayscale opacity-40'}`}>
-                  {getIcon(badge.icon, "w-8 h-8 text-white drop-shadow-md", badge.name)}
+                  {getIcon(badge.icon, "w-8 h-8 text-white drop-shadow-md", `${badge.name}: ${badge.description}`)}
                 </div>
               );
             })}
@@ -276,22 +270,71 @@ function App() {
         </div>
       </div>
 
+      {/* External Resources Section - Disabled when offline */}
+      <div className="mt-12">
+        <h3 className={`text-2xl font-bold mb-6 flex items-center gap-2 ${isRtl ? 'justify-end' : 'justify-start'} ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>
+           {isRtl ? 'כלים ומשאבים חיצוניים' : 'External Tools & Resources'}
+           <ExternalLink className="w-6 h-6 text-blue-400" />
+        </h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {EXTERNAL_LINKS.map(link => (
+            <a 
+              key={link.id}
+              href={isOnline ? link.url : '#'}
+              target={isOnline ? "_blank" : "_self"}
+              rel="noopener noreferrer"
+              onClick={(e) => { if(!isOnline) e.preventDefault(); playSound('click'); }}
+              className={`p-5 rounded-2xl border transition-all flex flex-col gap-3 group ${!isOnline ? 'grayscale opacity-60 cursor-not-allowed bg-slate-800 border-slate-700' : 'hover:scale-[1.02] hover:shadow-xl ' + (theme === 'dark' ? 'bg-slate-800 border-slate-700 text-white' : 'bg-white border-slate-200 text-slate-900')}`}
+            >
+              <div className={`p-3 rounded-xl w-fit ${link.color} text-white`}>{getIcon(link.iconName)}</div>
+              <div>
+                <div className="font-bold flex items-center gap-2">
+                  {link.title}
+                  {isOnline && <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />}
+                </div>
+                {!isOnline && <span className="text-[10px] text-red-400 font-bold uppercase">{isRtl ? 'זמין רק בחיבור לרשת' : 'Online Only'}</span>}
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+
       {showEasterEgg && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center pointer-events-none">
-          <div className="bg-indigo-600 text-white p-8 rounded-3xl shadow-2xl border-4 border-yellow-400 animate-in zoom-in slide-in-from-bottom-10 duration-500 flex flex-col items-center gap-4 max-w-sm text-center">
-            <Sparkles className="w-12 h-12 text-yellow-300 animate-bounce" />
-            <h3 className="text-2xl font-black">בונוס סודי!</h3>
-            <p className="text-lg font-medium">{randomFact}</p>
-          </div>
-          <div className="absolute inset-0 overflow-hidden">
-             {Array.from({length: 30}).map((_, i) => (
-               <div key={i} className="absolute w-4 h-4 rounded-full animate-celebrate" style={{
-                 left: `${Math.random() * 100}%`,
-                 top: `110%`,
-                 backgroundColor: ['#fbbf24', '#f59e0b', '#6366f1', '#ec4899'][Math.floor(Math.random() * 4)],
-                 animationDelay: `${Math.random() * 2}s`
-               }} />
-             ))}
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-in fade-in duration-300">
+          <div className="bg-indigo-600 text-white p-8 rounded-[2.5rem] shadow-2xl border-4 border-yellow-400 animate-in zoom-in slide-in-from-bottom-10 duration-500 flex flex-col items-center gap-6 max-w-sm text-center relative overflow-hidden">
+            {/* Confetti Animation Background */}
+            <div className="absolute inset-0 pointer-events-none">
+              {Array.from({length: 20}).map((_, i) => (
+                <div key={i} className="absolute w-2 h-2 rounded-full animate-celebrate" style={{
+                  left: `${Math.random() * 100}%`,
+                  top: `110%`,
+                  backgroundColor: ['#fbbf24', '#f59e0b', '#ffffff', '#ec4899'][Math.floor(Math.random() * 4)],
+                  animationDelay: `${Math.random() * 1.5}s`,
+                  animationDuration: `${1 + Math.random()}s`
+                }} />
+              ))}
+            </div>
+
+            <button onClick={() => setShowEasterEgg(false)} className="absolute top-4 right-4 p-2 bg-white/10 hover:bg-white/20 rounded-full text-white pointer-events-auto">
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="bg-yellow-400 p-5 rounded-full shadow-lg">
+              <Sparkles className="w-12 h-12 text-indigo-700 animate-bounce" />
+            </div>
+            
+            <div className="z-10">
+              <h3 className="text-3xl font-black mb-2">{isRtl ? 'מצאת בונוס סודי! 🎁' : 'You Found a Secret! 🎁'}</h3>
+              <div className="h-px w-24 bg-white/30 mx-auto mb-4" />
+              <p className="text-xl font-medium leading-relaxed">{randomFact}</p>
+            </div>
+            
+            <button 
+              onClick={() => setShowEasterEgg(false)}
+              className="mt-4 bg-white text-indigo-700 px-8 py-3 rounded-xl font-bold hover:bg-yellow-50 transition-all pointer-events-auto"
+            >
+              {isRtl ? 'מגניב!' : 'Cool!'}
+            </button>
           </div>
         </div>
       )}
@@ -404,7 +447,27 @@ function App() {
 
   return (
     <div className={`min-h-screen pb-20 md:pb-0 font-sans transition-colors duration-300 ${theme === 'dark' ? 'bg-slate-900 text-slate-100' : 'bg-slate-50 text-slate-900'}`}>
-      <div className={`md:hidden p-4 sticky top-0 z-40 flex justify-between items-center backdrop-blur-lg border-b ${theme === 'dark' ? 'bg-slate-900/80 border-slate-800' : 'bg-white/80 border-slate-200'}`}>
+      
+      {/* Offline Mode Banner */}
+      {!isOnline && (
+        <div className="bg-gradient-to-r from-red-600 to-orange-600 text-white py-3 px-4 text-center sticky top-0 z-[60] shadow-xl flex items-center justify-center gap-4 animate-in slide-in-from-top duration-300">
+          <div className="flex items-center gap-2 font-black uppercase tracking-wider text-sm">
+            <WifiOff className="w-5 h-5 animate-pulse" />
+            {isRtl ? 'מצב לא מקוון פעיל' : 'Offline Mode Active'}
+          </div>
+          <div className="h-4 w-px bg-white/30 hidden sm:block" />
+          <p className="text-xs md:text-sm font-medium">
+            {isRtl 
+              ? 'שיעורים ומשחקים טעונים זמינים כעת. חלק מהתכונות (קישורים, תרגום AI) מושבתות.' 
+              : 'Loaded lessons and games are available. Online features like links are disabled.'}
+          </p>
+          <button onClick={() => window.location.reload()} className="bg-white/20 hover:bg-white/30 px-3 py-1 rounded-lg text-xs font-bold transition-all">
+            {isRtl ? 'נסה שוב' : 'Retry'}
+          </button>
+        </div>
+      )}
+
+      <div className={`md:hidden p-4 sticky ${!isOnline ? 'top-[52px]' : 'top-0'} z-40 flex justify-between items-center backdrop-blur-lg border-b ${theme === 'dark' ? 'bg-slate-900/80 border-slate-800' : 'bg-white/80 border-slate-200'}`}>
         <div className="flex items-center gap-2 font-black text-xl tracking-tighter cursor-pointer" onClick={triggerEasterEgg}>
           <div className="bg-gradient-to-tr from-indigo-500 to-purple-600 p-2 rounded-lg text-white"><PiggyBank className="w-6 h-6" /></div>
           <span className={`bg-clip-text text-transparent bg-gradient-to-r ${theme === 'dark' ? 'from-white to-slate-400' : 'from-slate-900 to-slate-600'}`}>FinKidz</span>
@@ -413,7 +476,8 @@ function App() {
            <select value={lang} onChange={(e) => { playSound('click'); setLang(e.target.value as Language); }} className="bg-transparent text-sm border-none focus:outline-none">
               {LANGS.map(l => <option key={l.id} value={l.id} className="text-black">{l.flag}</option>)}
            </select>
-           <button onClick={toggleTheme} className="p-2">{theme === 'dark' ? <Sun className="w-5 h-5 text-yellow-400" /> : <Moon className="w-5 h-5 text-slate-600" />}</button>
+           {/* Mobile theme toggle */}
+           <button onClick={toggleTheme} className="p-2 transition-transform hover:scale-110 active:scale-90">{theme === 'dark' ? <Sun className="w-6 h-6 text-yellow-400" /> : <Moon className="w-6 h-6 text-slate-600" />}</button>
         </div>
       </div>
 
@@ -442,7 +506,8 @@ function App() {
                 {LANGS.map(l => <option key={l.id} value={l.id} className="text-black">{l.flag} {l.label}</option>)}
               </select>
             </div>
-            <button onClick={toggleTheme} className={`w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-bold ${theme === 'dark' ? 'bg-slate-800 text-yellow-400' : 'bg-slate-100 text-slate-600'}`}>
+            {/* Desktop theme toggle switcher */}
+            <button onClick={toggleTheme} className={`w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-bold transition-all transform active:scale-95 ${theme === 'dark' ? 'bg-slate-800 text-yellow-400 border border-slate-700' : 'bg-slate-100 text-slate-600 border border-slate-200 shadow-sm'}`}>
               {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
               {theme === 'dark' ? 'Day Mode' : 'Night Mode'}
             </button>
@@ -450,7 +515,7 @@ function App() {
 
           <div className={`mt-6 pt-6 border-t ${theme === 'dark' ? 'border-slate-800' : 'border-slate-100'}`}>
             <div className={`rounded-xl p-4 border text-center ${theme === 'dark' ? 'bg-slate-800/50 border-slate-700/50' : 'bg-slate-50 border-slate-200'}`}>
-              <p className="text-xs text-slate-500 mb-1">(C) Noam Gold AI 2025</p>
+              <p className="text-xs text-slate-500 mb-1 font-bold">(C) Noam Gold AI 2025</p>
               <div className="flex flex-col gap-1">
                 <span className="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Send Feedback</span>
                 <a href="mailto:goldnoamai@gmail.com" className="text-xs text-indigo-400 hover:text-indigo-300 font-bold">goldnoamai@gmail.com</a>
@@ -464,8 +529,9 @@ function App() {
             {currentView === 'home' ? renderHome() : currentView === 'lessons' ? renderLessons() : <FinancialGame />}
           </div>
           
+          {/* Mobile Footer with info and email */}
           <footer className={`mt-12 py-6 border-t ${theme === 'dark' ? 'border-slate-800' : 'border-slate-200'} text-center md:hidden`}>
-             <p className="text-xs text-slate-500 mb-1">(C) Noam Gold AI 2025</p>
+             <p className="text-xs text-slate-500 mb-1 font-bold">(C) Noam Gold AI 2025</p>
              <div className="flex flex-col gap-1">
                <span className="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Send Feedback</span>
                <a href="mailto:goldnoamai@gmail.com" className="text-xs text-indigo-400 hover:text-indigo-300 font-bold">goldnoamai@gmail.com</a>

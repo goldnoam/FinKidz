@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { 
   PiggyBank, 
@@ -26,6 +27,7 @@ import {
 export const getIcon = (name: string, className?: string, tooltipText?: string) => {
   const props = { 
     className: className || "w-6 h-6",
+    // Tooltip functionality via the 'title' attribute
     ...(tooltipText ? { title: tooltipText } : {}) 
   };
   
