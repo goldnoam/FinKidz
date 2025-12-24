@@ -12,7 +12,8 @@ export const UI_TRANSLATIONS: Record<Language, Record<string, string>> = {
     streak: 'ימי רצף',
     search: 'חפש שיעור...',
     feedback: 'שלח משוב',
-    all: 'הכל'
+    all: 'הכל',
+    favorites: 'מועדפים'
   },
   en: {
     home: 'Home',
@@ -25,7 +26,8 @@ export const UI_TRANSLATIONS: Record<Language, Record<string, string>> = {
     streak: 'Streak',
     search: 'Search lesson...',
     feedback: 'Feedback',
-    all: 'All'
+    all: 'All',
+    favorites: 'Favorites'
   },
   zh: {
     home: '首页',
@@ -38,7 +40,8 @@ export const UI_TRANSLATIONS: Record<Language, Record<string, string>> = {
     streak: '连续天数',
     search: '搜索课程...',
     feedback: '反馈',
-    all: '全部'
+    all: '全部',
+    favorites: '收藏'
   },
   hi: {
     home: 'होम',
@@ -51,7 +54,8 @@ export const UI_TRANSLATIONS: Record<Language, Record<string, string>> = {
     streak: 'लगातार दिन',
     search: 'पाठ खोजें...',
     feedback: 'प्रतिक्रिया',
-    all: 'सभी'
+    all: 'सभी',
+    favorites: 'पसंदीदा'
   },
   de: {
     home: 'Startseite',
@@ -64,7 +68,8 @@ export const UI_TRANSLATIONS: Record<Language, Record<string, string>> = {
     streak: 'Serie',
     search: 'Lektion suchen...',
     feedback: 'Feedback',
-    all: 'Alle'
+    all: 'Alle',
+    favorites: 'Favoriten'
   },
   es: {
     home: 'Inicio',
@@ -77,7 +82,8 @@ export const UI_TRANSLATIONS: Record<Language, Record<string, string>> = {
     streak: 'Racha',
     search: 'Buscar lección...',
     feedback: 'Comentarios',
-    all: 'Todos'
+    all: 'Todos',
+    favorites: 'Favoritos'
   },
   fr: {
     home: 'Accueil',
@@ -90,7 +96,8 @@ export const UI_TRANSLATIONS: Record<Language, Record<string, string>> = {
     streak: 'Série',
     search: 'Chercher une leçon...',
     feedback: 'Commentaires',
-    all: 'Tout'
+    all: 'Tout',
+    favorites: 'Favoris'
   }
 };
 

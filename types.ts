@@ -40,6 +40,7 @@ export interface ResourceLink {
 export interface UserStats {
   points: number;
   completedLessons: string[];
+  favorites: string[];
   currentStreak: number;
   lastLoginDate: string; // ISO date string
   badges: string[]; // Array of badge IDs

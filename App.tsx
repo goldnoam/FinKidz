@@ -1,6 +1,5 @@
-
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { BookOpen, Trophy, Home, Mail, Flame, Award, WifiOff, Globe, Loader2, Share2, Check, ArrowRight, Sparkles, X, PiggyBank, Gamepad2, Coins, Search, SortAsc, Filter, Moon, Sun, Languages } from 'lucide-react';
+import { BookOpen, Trophy, Home, Mail, Flame, Award, WifiOff, Globe, Loader2, Share2, Check, ArrowRight, Sparkles, X, PiggyBank, Gamepad2, Coins, Search, SortAsc, Filter, Moon, Sun, Languages, Heart } from 'lucide-react';
 import LessonModal from './components/LessonModal';
 import FinancialGame from './components/FinancialGame';
 import { LESSONS, CATEGORIES, BADGES, EXTERNAL_LINKS, UI_TRANSLATIONS } from './constants';
@@ -40,9 +39,11 @@ function App() {
   const [justCompletedId, setJustCompletedId] = useState<string | null>(null);
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
   const [lang, setLang] = useState<Language>('he');
+  const [showOnlyFavorites, setShowOnlyFavorites] = useState(false);
   const [userStats, setUserStats] = useState<UserStats>({ 
     points: 0, 
     completedLessons: [],
+    favorites: [],
     currentStreak: 1,
     lastLoginDate: new Date().toISOString(),
     badges: []
@@ -59,10 +60,23 @@ function App() {
   const t = (key: string) => UI_TRANSLATIONS[lang][key] || UI_TRANSLATIONS['he'][key] || key;
   const isRtl = lang === 'he';
 
-  // Define toggleTheme to handle dark/light mode switching
   const toggleTheme = () => {
     setTheme(prev => prev === 'dark' ? 'light' : 'dark');
     playSound('click');
+  };
+
+  const handleToggleFavorite = (e: React.MouseEvent, lessonId: string) => {
+    e.stopPropagation();
+    playSound('click');
+    setUserStats(prev => {
+      const isFav = prev.favorites.includes(lessonId);
+      return {
+        ...prev,
+        favorites: isFav 
+          ? prev.favorites.filter(id => id !== lessonId)
+          : [...prev.favorites, lessonId]
+      };
+    });
   };
 
   useEffect(() => {
@@ -101,7 +115,12 @@ function App() {
         if (diffDays <= 2) newStreak += 1; else newStreak = 1;
       }
 
-      setUserStats({ ...parsedStats, currentStreak: newStreak, lastLoginDate: today.toISOString() });
+      setUserStats({ 
+        ...parsedStats, 
+        currentStreak: newStreak, 
+        lastLoginDate: today.toISOString(),
+        favorites: parsedStats.favorites || []
+      });
     }
   }, []);
 
@@ -150,17 +169,29 @@ function App() {
       const lessonDesc = lesson.translations?.[lang]?.description || lesson.description;
       const matchesSearch = lessonTitle.toLowerCase().includes(searchQuery.toLowerCase()) || 
                             lessonDesc.toLowerCase().includes(searchQuery.toLowerCase());
-      return matchesCategory && matchesSearch;
+      const matchesFavorite = !showOnlyFavorites || userStats.favorites.includes(lesson.id);
+      
+      return matchesCategory && matchesSearch && matchesFavorite;
     });
     const difficultyMap = { 'מתחיל': 1, 'מתקדם': 2, 'מומחה': 3 };
     if (sortBy === 'difficulty-asc') result.sort((a, b) => difficultyMap[a.difficulty] - difficultyMap[b.difficulty]);
     else if (sortBy === 'difficulty-desc') result.sort((a, b) => difficultyMap[b.difficulty] - difficultyMap[a.difficulty]);
     else if (sortBy === 'title') result.sort((a, b) => (a.translations?.[lang]?.title || a.title).localeCompare(b.translations?.[lang]?.title || b.title));
     return result;
-  }, [selectedCategory, searchQuery, sortBy, lang]);
+  }, [selectedCategory, searchQuery, sortBy, lang, showOnlyFavorites, userStats.favorites]);
 
   const renderHome = () => (
     <div className="space-y-10 animate-in fade-in duration-500">
+      {/* Brand Title Section */}
+      <div className="text-center py-6" data-aos="fade-down">
+        <h1 className={`text-4xl md:text-6xl font-black mb-2 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 drop-shadow-sm`}>
+          השקעות לקטנטנים
+        </h1>
+        <p className={`text-lg md:text-2xl font-bold ${theme === 'dark' ? 'text-slate-400' : 'text-slate-600'}`}>
+          חינוך פיננסי לגיל הצעיר
+        </p>
+      </div>
+
       <div className="bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 rounded-3xl p-8 text-white shadow-2xl relative overflow-hidden ring-1 ring-white/10">
         <div className="relative z-10">
           <div className={`flex justify-between items-start ${isRtl ? 'flex-row' : 'flex-row-reverse'}`}>
@@ -250,6 +281,14 @@ function App() {
              </select>
            </div>
            <div className={`flex gap-3 overflow-x-auto pb-2 scrollbar-hide ${isRtl ? 'flex-row-reverse' : 'flex-row'}`}>
+            <button 
+              onClick={() => setShowOnlyFavorites(!showOnlyFavorites)} 
+              className={`px-5 py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all flex items-center gap-2 ${showOnlyFavorites ? 'bg-pink-600 text-white shadow-lg ring-2 ring-pink-400/30' : 'bg-slate-800 text-slate-400'}`}
+            >
+              <Heart className={`w-4 h-4 ${showOnlyFavorites ? 'fill-current' : ''}`} />
+              {t('favorites')}
+            </button>
+            <div className="w-px h-8 bg-slate-700 self-center" />
             <button onClick={() => setSelectedCategory('all')} className={`px-5 py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all ${selectedCategory === 'all' ? 'bg-indigo-600 text-white' : 'bg-slate-800 text-slate-400'}`}>{t('all')} ({LESSONS.length})</button>
             {CATEGORIES.map(cat => (
               <button key={cat.id} onClick={() => setSelectedCategory(cat.id as Category)} className={`px-5 py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all ${selectedCategory === cat.id ? 'bg-indigo-600 text-white' : 'bg-slate-800 text-slate-400'}`}>{cat.name}</button>
@@ -261,14 +300,31 @@ function App() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredAndSortedLessons.map((lesson, index) => {
           const isCompleted = userStats.completedLessons.includes(lesson.id);
+          const isJustCompleted = justCompletedId === lesson.id;
+          const isFavorite = userStats.favorites.includes(lesson.id);
           const activeTitle = lesson.translations?.[lang]?.title || lesson.title;
           const activeDesc = lesson.translations?.[lang]?.description || lesson.description;
 
           return (
-            <div key={lesson.id} data-aos="fade-up" onClick={() => handleOpenLesson(lesson)} className={`group relative h-full flex flex-col p-6 rounded-[1.75rem] border shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer ${theme === 'dark' ? 'bg-[#1e293b] border-slate-700' : 'bg-white border-slate-200'} ${isCompleted ? 'ring-2 ring-green-500/30' : ''}`}>
+            <div 
+              key={lesson.id} 
+              data-aos="fade-up" 
+              onClick={() => handleOpenLesson(lesson)} 
+              className={`group relative h-full flex flex-col p-6 rounded-[1.75rem] border shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer 
+                ${theme === 'dark' ? 'bg-[#1e293b] border-slate-700' : 'bg-white border-slate-200'} 
+                ${isCompleted ? 'ring-2 ring-green-500/30' : ''}
+                ${isJustCompleted ? 'animate-completion-bounce ring-4 ring-green-500/50' : ''}
+              `}
+            >
               <div className={`flex justify-between items-start mb-4 ${isRtl ? '' : 'flex-row-reverse'}`}>
                 <div className={`p-3.5 rounded-2xl ${isCompleted ? 'bg-green-500/10 text-green-400' : 'bg-slate-900/60 text-slate-300'}`}>{getIcon(lesson.iconName)}</div>
                 <div className="flex gap-2">
+                  <button 
+                    onClick={(e) => handleToggleFavorite(e, lesson.id)} 
+                    className={`p-2.5 rounded-full transition-all ${isFavorite ? 'text-pink-500 bg-pink-500/10' : 'text-slate-500 bg-slate-100 hover:bg-slate-200'} ${theme === 'dark' ? 'bg-slate-800 hover:bg-slate-700' : ''}`}
+                  >
+                    <Heart className={`w-4 h-4 ${isFavorite ? 'fill-current' : ''}`} />
+                  </button>
                   <span className={`text-xs px-2.5 py-1.5 rounded-full font-bold border ${lesson.difficulty === 'מתחיל' ? 'border-green-500/20 text-green-300' : 'border-yellow-500/20 text-yellow-300'}`}>{lesson.difficulty}</span>
                 </div>
               </div>
@@ -278,6 +334,21 @@ function App() {
                 <button className="bg-blue-600 text-white text-sm font-bold py-2.5 px-6 rounded-full transition-all">{t('learnMore')}</button>
                 {isCompleted && <span className="flex items-center gap-1.5 text-green-400 font-bold"><Check className="w-3.5 h-3.5" />{t('completed')}</span>}
               </div>
+
+              {isJustCompleted && (
+                <div className="absolute inset-0 z-40 flex items-center justify-center pointer-events-none overflow-hidden rounded-[1.75rem]">
+                   <div className="absolute inset-0 bg-green-500/10 animate-pulse"></div>
+                   {Array.from({ length: 15 }).map((_, i) => (
+                     <div key={i} className="absolute w-2 h-2 rounded-full animate-celebrate" style={{
+                       left: `${Math.random() * 100}%`,
+                       top: `${Math.random() * 100}%`,
+                       backgroundColor: ['#ef4444', '#3b82f6', '#fbbf24', '#10b981', '#a855f7'][Math.floor(Math.random() * 5)],
+                       animationDelay: `${Math.random() * 0.5}s`,
+                       animationDuration: `${0.5 + Math.random() * 1}s`
+                     }} />
+                   ))}
+                </div>
+              )}
             </div>
           );
         })}
@@ -301,7 +372,6 @@ function App() {
       </div>
 
       <div className="flex">
-        {/* Fixed Desktop Sidebar */}
         <div className={`hidden md:flex flex-col w-72 h-screen border-l fixed ${isRtl ? 'right-0' : 'left-0'} top-0 z-50 p-6 transition-colors ${theme === 'dark' ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 shadow-xl'}`}>
            <div className={`flex items-center gap-3 font-black text-2xl tracking-tighter mb-10 cursor-pointer ${isRtl ? 'flex-row' : 'flex-row-reverse'}`} onClick={() => setCurrentView('home')}>
             <div className="bg-gradient-to-tr from-indigo-500 to-purple-600 p-2.5 rounded-xl text-white shadow-lg"><PiggyBank className="w-8 h-8" /></div>
@@ -332,7 +402,6 @@ function App() {
             </button>
           </div>
 
-          {/* Sidebar Footer */}
           <div className={`mt-6 pt-6 border-t ${theme === 'dark' ? 'border-slate-800' : 'border-slate-100'}`}>
             <div className={`rounded-xl p-4 border text-center ${theme === 'dark' ? 'bg-slate-800/50 border-slate-700/50' : 'bg-slate-50 border-slate-200'}`}>
               <p className="text-xs text-slate-500 mb-1">(C) Noam Gold AI 2025</p>
@@ -344,13 +413,11 @@ function App() {
           </div>
         </div>
 
-        {/* Main Content Area */}
         <div className={`flex-1 md:${isRtl ? 'mr-72' : 'ml-72'} p-4 md:p-8 max-w-7xl mx-auto w-full flex flex-col min-h-screen`}>
           <div className="flex-1">
             {currentView === 'home' ? renderHome() : currentView === 'lessons' ? renderLessons() : <FinancialGame />}
           </div>
           
-          {/* Mobile-only Footer */}
           <footer className={`mt-12 py-6 border-t ${theme === 'dark' ? 'border-slate-800' : 'border-slate-200'} text-center md:hidden`}>
              <p className="text-xs text-slate-500 mb-1">(C) Noam Gold AI 2025</p>
              <div className="flex flex-col gap-1">
