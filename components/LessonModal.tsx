@@ -1,8 +1,9 @@
+
 import React, { useMemo, useState, useEffect } from 'react';
 import { X, WifiOff, ArrowLeft, Sparkles, Volume2, VolumeX } from 'lucide-react';
-import { Lesson } from '../types';
+import { Lesson, Language } from '../types';
 import { getIcon } from './Icons';
-import { LESSONS } from '../constants';
+import { LESSONS, UI_TRANSLATIONS } from '../constants';
 
 interface LessonModalProps {
   lesson: Lesson | null;
@@ -12,7 +13,7 @@ interface LessonModalProps {
   onSelectNext?: (lesson: Lesson) => void;
   isCompleted: boolean;
   isOnline?: boolean;
-  language?: string;
+  language?: Language;
 }
 
 const LessonModal: React.FC<LessonModalProps> = ({ 
@@ -26,13 +27,14 @@ const LessonModal: React.FC<LessonModalProps> = ({
   language = 'he'
 }) => {
   const [isSpeaking, setIsSpeaking] = useState(false);
+  const t = (key: string) => UI_TRANSLATIONS[language][key] || UI_TRANSLATIONS['he'][key] || key;
 
   const nextLesson = useMemo(() => {
     if (!lesson) return null;
-    const currentIndex = LESSONS.findIndex(l => l.id === lesson.id);
+    const currentIndex = LESSONS.findIndex((l: Lesson) => l.id === lesson.id);
     
-    const sameCategoryLessons = LESSONS.filter(l => l.category === lesson.category);
-    const indexInCat = sameCategoryLessons.findIndex(l => l.id === lesson.id);
+    const sameCategoryLessons = LESSONS.filter((l: Lesson) => l.category === lesson.category);
+    const indexInCat = sameCategoryLessons.findIndex((l: Lesson) => l.id === lesson.id);
     if (indexInCat !== -1 && indexInCat < sameCategoryLessons.length - 1) {
       return sameCategoryLessons[indexInCat + 1];
     }
@@ -59,7 +61,6 @@ const LessonModal: React.FC<LessonModalProps> = ({
       window.speechSynthesis.cancel();
       setIsSpeaking(false);
     } else {
-      // Clean HTML tags for speech
       const tempDiv = document.createElement('div');
       tempDiv.innerHTML = activeContent.content;
       const plainText = `${activeContent.title}. ${tempDiv.textContent || tempDiv.innerText}`;
@@ -98,10 +99,10 @@ const LessonModal: React.FC<LessonModalProps> = ({
             <div className="p-3 bg-white/10 rounded-lg backdrop-blur-sm">
               {getIcon(lesson.iconName, "w-8 h-8 text-white")}
             </div>
-            <div className="text-right">
-              <div className="flex items-center gap-2 justify-end">
+            <div className={language === 'he' ? 'text-right' : 'text-left'}>
+              <div className={`flex items-center gap-2 ${language === 'he' ? 'justify-end' : 'justify-start'}`}>
                 {!isOnline && (
-                  <div className="bg-red-500/20 px-2 py-0.5 rounded text-xs font-bold text-red-200 flex items-center gap-1 border border-red-500/30" title="מצב לא מקוון">
+                  <div className="bg-red-500/20 px-2 py-0.5 rounded text-xs font-bold text-red-200 flex items-center gap-1 border border-red-500/30" title="Offline">
                     <WifiOff className="w-3 h-3" />
                     <span>offline</span>
                   </div>
@@ -116,7 +117,7 @@ const LessonModal: React.FC<LessonModalProps> = ({
           <div className="flex gap-2">
             <button 
               onClick={toggleSpeech}
-              title={isSpeaking ? "עצור הקראה" : "הקרא שיעור"}
+              title={isSpeaking ? "Stop" : "Speak"}
               className={`p-2 rounded-full transition-all ${isSpeaking ? 'bg-red-500 text-white animate-pulse' : 'bg-white/10 text-white hover:bg-white/20'}`}
             >
               {isSpeaking ? <VolumeX className="w-6 h-6" /> : <Volume2 className="w-6 h-6" />}
@@ -137,18 +138,18 @@ const LessonModal: React.FC<LessonModalProps> = ({
 
         {/* Footer */}
         <div className={`p-6 border-t border-slate-800 bg-slate-900/50 flex items-center gap-4 justify-between ${language === 'he' ? 'flex-row-reverse' : 'flex-row'}`}>
-          <div className={`flex items-center gap-3 ${language === 'he' ? 'flex-row-reverse' : 'flex-row'}`}>
+          <div className={`flex items-center gap-3 w-full ${language === 'he' ? 'flex-row-reverse' : 'flex-row'}`}>
             {!isCompleted ? (
               <button
                 onClick={() => onComplete(lesson.id)}
                 className="bg-indigo-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-indigo-500 shadow-lg shadow-indigo-500/30 transition-all transform active:scale-95 flex items-center gap-2"
               >
-                {language === 'he' ? 'סיימתי ללמוד ✓' : 'Finish Lesson ✓'}
+                {t('finishLesson')}
               </button>
             ) : (
-              <div className={`flex items-center gap-4 ${language === 'he' ? 'flex-row-reverse' : 'flex-row'}`}>
+              <div className={`flex items-center gap-4 w-full justify-between ${language === 'he' ? 'flex-row-reverse' : 'flex-row'}`}>
                 <span className="text-green-400 font-bold flex items-center gap-1.5 bg-green-500/10 px-4 py-2 rounded-xl border border-green-500/20">
-                  {language === 'he' ? 'הושלם! 🎉' : 'Completed! 🎉'}
+                  {t('completed')} 🎉
                 </span>
                 
                 {nextLesson && onSelectNext && (
@@ -157,7 +158,7 @@ const LessonModal: React.FC<LessonModalProps> = ({
                     className="bg-white text-indigo-900 px-6 py-3 rounded-xl font-black hover:bg-blue-50 shadow-xl shadow-white/5 transition-all transform active:scale-95 flex items-center gap-2 animate-in slide-in-from-right-4"
                   >
                     {language !== 'he' && <ArrowLeft className="w-5 h-5 rotate-180" />}
-                    {language === 'he' ? 'השיעור הבא:' : 'Next Lesson:'} {nextLesson.translations?.[language]?.title || nextLesson.title}
+                    <span>{t('nextLesson')} {nextLesson.translations?.[language]?.title || nextLesson.title}</span>
                     {language === 'he' && <ArrowLeft className="w-5 h-5" />}
                     <Sparkles className="w-4 h-4 text-yellow-500" />
                   </button>
