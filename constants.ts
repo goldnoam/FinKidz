@@ -79,41 +79,41 @@ export const LESSONS: Lesson[] = [
   },
   {
     id: 'inflation',
-    title: 'אינפלציה - למה המחירים עולים?',
-    description: 'הכסף שלנו שווה פחות? בואו נבין למה הכל מתייקר לאורך זמן.',
+    title: 'אינפלציה: הכוח שמשנה מחירים',
+    description: 'למה מה שקנינו בשקל פעם עולה היום חמישה? בואו נלמד על אינפלציה.',
     category: 'basics',
     difficulty: 'מתקדם',
     iconName: 'chart',
     content: `
       <h3>מהי אינפלציה?</h3>
-      <p>אינפלציה היא מצב שבו המחירים של מוצרים ושירותים עולים לאורך זמן. זה אומר שעם אותה כמות כסף, אנחנו יכולים לקנות פחות דברים.</p>
+      <p>אינפלציה היא עלייה מתמשכת במחירים של מוצרים ושירותים. כשיש אינפלציה, הכוח של הכסף שלנו לקנות דברים (כוח הקנייה) יורד.</p>
       <br>
       <h3>איך מודדים אותה?</h3>
-      <p>המדד המרכזי הוא <strong>מדד המחירים לצרכן (CPI)</strong>. המדינה בודקת כמה עולה "סל מוצרים" ממוצע (כמו לחם, חלב וחשמל) בכל חודש.</p>
+      <p>המדד המפורסם ביותר הוא <strong>מדד המחירים לצרכן (CPI)</strong>. המדינה בודקת "סל" של מוצרים ושירותים שמשפחה ממוצעת צורכת (אוכל, דיור, בגדים) ובודקת כמה הוא התייקר.</p>
       <br>
-      <h3>מה ההשפעה שלה?</h3>
+      <h3>השפעות האינפלציה:</h3>
       <ul class="list-disc list-inside space-y-2">
-        <li><strong>כוח הקנייה יורד:</strong> הכסף בחיסכון שלכם קונה פחות.</li>
-        <li><strong>עלויות הייצור עולות:</strong> לעסקים יקר יותר לייצר דברים.</li>
-        <li><strong>השקעות:</strong> אנשים מחפשים להשקיע במקומות ששומרים על ערך הכסף (כמו נדל"ן או מניות).</li>
+        <li><strong>עליית מחירים:</strong> הכל נהיה יקר יותר.</li>
+        <li><strong>שחיקת חסכונות:</strong> אם הכסף "שוכב" בבנק בלי להרוויח ריבית, הוא שווה פחות.</li>
+        <li><strong>שינוי בריביות:</strong> הבנקים המרכזיים מעלים ריבית כדי להילחם באינפלציה גבוהה.</li>
       </ul>
     `,
     translations: {
       en: {
-        title: 'Inflation - Why Prices Rise',
-        description: 'Is our money worth less? Understand why things get more expensive over time.',
+        title: 'Inflation: The Force Behind Rising Prices',
+        description: 'Why do things cost more today than they did years ago? Let\'s learn about inflation.',
         content: `
           <h3>What is Inflation?</h3>
-          <p>Inflation is the general increase in prices and fall in the purchasing value of money. It means your money buys less than it did before.</p>
+          <p>Inflation is the general increase in prices and fall in the purchasing value of money. When inflation occurs, each unit of currency buys fewer goods and services.</p>
           <br>
           <h3>How is it measured?</h3>
-          <p>It is measured using the <strong>Consumer Price Index (CPI)</strong>, which tracks the cost of a fixed "basket" of goods and services like food, rent, and fuel.</p>
+          <p>Economists use the <strong>Consumer Price Index (CPI)</strong>. This index tracks the price of a "basket" of common goods and services like housing, food, and transportation.</p>
           <br>
-          <h3>Why does it matter?</h3>
+          <h3>Effects of Inflation:</h3>
           <ul class="list-disc list-inside space-y-2">
-            <li><strong>Purchasing Power:</strong> Your savings lose value if interest rates are lower than inflation.</li>
-            <li><strong>Cost of Living:</strong> Families have to spend more on basic needs.</li>
-            <li><strong>Economic Growth:</strong> Moderate inflation is normal, but high inflation can be dangerous for the economy.</li>
+            <li><strong>Rising Prices:</strong> Goods and services become more expensive over time.</li>
+            <li><strong>Erosion of Savings:</strong> If your money doesn't grow faster than inflation, you lose purchasing power.</li>
+            <li><strong>Interest Rates:</strong> Central banks often raise interest rates to control high inflation.</li>
           </ul>
         `
       }

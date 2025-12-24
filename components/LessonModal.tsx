@@ -1,7 +1,7 @@
 
 import React, { useMemo, useState, useEffect } from 'react';
 import { X, WifiOff, ArrowLeft, Sparkles, Volume2, VolumeX } from 'lucide-react';
-import { Lesson, Language } from '../types';
+import type { Lesson, Language } from '../types';
 import { getIcon } from './Icons';
 import { LESSONS, UI_TRANSLATIONS } from '../constants';
 
@@ -27,7 +27,7 @@ const LessonModal: React.FC<LessonModalProps> = ({
   language = 'he'
 }) => {
   const [isSpeaking, setIsSpeaking] = useState(false);
-  const t = (key: string) => UI_TRANSLATIONS[language][key] || UI_TRANSLATIONS['he'][key] || key;
+  const t = (key: string) => UI_TRANSLATIONS[language]?.[key] || UI_TRANSLATIONS['he'][key] || key;
 
   const nextLesson = useMemo(() => {
     if (!lesson) return null;
