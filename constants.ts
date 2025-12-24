@@ -376,11 +376,75 @@ export const BADGES: Badge[] = [
 
 export const EXTERNAL_LINKS: ResourceLink[] = [
   {
-    id: 'maya',
-    title: 'מאיה - הבורסה לניירות ערך',
-    url: 'https://maya.tase.co.il/',
-    iconName: 'chart',
+    id: 'boi',
+    title: 'בנק ישראל – האתר הרשמי',
+    url: 'https://www.boi.org.il/',
+    iconName: 'bank',
     category: 'tools',
+    color: 'bg-blue-800'
+  },
+  {
+    id: 'calcalist',
+    title: 'כלכליסט (Calcalist)',
+    url: 'https://www.calcalist.co.il/',
+    iconName: 'news',
+    category: 'news',
+    color: 'bg-red-600'
+  },
+  {
+    id: 'globes',
+    title: 'גלובס (Globes)',
+    url: 'https://www.globes.co.il/',
+    iconName: 'news',
+    category: 'news',
+    color: 'bg-orange-600'
+  },
+  {
+    id: 'themarker',
+    title: 'דה מרקר (TheMarker)',
+    url: 'https://www.themarker.com/',
+    iconName: 'news',
+    category: 'news',
+    color: 'bg-green-700'
+  },
+  {
+    id: 'bizportal',
+    title: 'ביזפורטל (Bizportal)',
+    url: 'https://www.bizportal.co.il/',
+    iconName: 'chart',
+    category: 'news',
     color: 'bg-blue-600'
+  },
+  {
+    id: 'kessef-katan',
+    title: 'כסף קטן - בנק ישראל',
+    url: 'https://www.boi.org.il/he/ConsumerInformation/EconomicEducation/Pages/KessefKatan.aspx',
+    iconName: 'savings',
+    category: 'tools',
+    color: 'bg-pink-500'
+  },
+  {
+    id: 'money-kids',
+    title: 'איפה הכסף? (ממשל לילדים)',
+    url: 'https://kids.gov.il/money',
+    iconName: 'money',
+    category: 'tools',
+    color: 'bg-indigo-500'
+  },
+  {
+    id: 'tarbut-kalkalit',
+    title: 'תרבות כלכלית',
+    url: 'https://www.tarbut-kalkalit.co.il/',
+    iconName: 'learn',
+    category: 'tools',
+    color: 'bg-yellow-500'
+  },
+  {
+    id: 'paamonim',
+    title: 'עמותת פעמונים - לילדים',
+    url: 'https://www.paamonim.org/he/category/%D7%9E%D7%A9%D7%A4%D7%97%D7%94/%D7%97%D7%99%D7%A0%D7%95%D7%9A-%D7%A4%D7%99%D7%A0%D7%A0%D7%A1%D7%99-%D7%9C%D7%99%D7%9C%D7%93%D7%99%D7%9D/',
+    iconName: 'safe',
+    category: 'tools',
+    color: 'bg-teal-600'
   }
 ];

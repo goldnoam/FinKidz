@@ -1,6 +1,5 @@
 
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-// Added X to imports from lucide-react to fix line 317 error
 import { BookOpen, Trophy, Home, Flame, Award, WifiOff, Check, Sparkles, PiggyBank, Gamepad2, Coins, Search, SortAsc, Moon, Sun, Languages, Heart, ExternalLink, Info, X } from 'lucide-react';
 import LessonModal from './components/LessonModal';
 import FinancialGame from './components/FinancialGame';
@@ -37,7 +36,6 @@ function App() {
   const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null);
   const [loadingLessonId, setLoadingLessonId] = useState<string | null>(null);
   const [justCompletedId, setJustCompletedId] = useState<string | null>(null);
-  // Default theme set to dark as requested
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
   const [lang, setLang] = useState<Language>('he');
   const [showOnlyFavorites, setShowOnlyFavorites] = useState(false);
@@ -58,7 +56,7 @@ function App() {
   const [randomFact, setRandomFact] = useState('');
   const logoClickCount = useRef(0);
 
-  const t = (key: string) => UI_TRANSLATIONS[lang][key] || UI_TRANSLATIONS['he'][key] || key;
+  const t = (key: string) => UI_TRANSLATIONS[lang]?.[key] || UI_TRANSLATIONS['he']?.[key] || key;
   const isRtl = lang === 'he';
 
   const toggleTheme = () => {
@@ -152,7 +150,7 @@ function App() {
     if (!userStats.completedLessons.includes(id)) {
       playSound('success');
       setJustCompletedId(id);
-      setTimeout(() => setJustCompletedId(null), 3000);
+      setTimeout(() => setJustCompletedId(null), 3500);
       setUserStats(prev => ({
         ...prev,
         points: prev.points + 100,
@@ -276,7 +274,7 @@ function App() {
            {isRtl ? 'כלים ומשאבים חיצוניים' : 'External Tools & Resources'}
            <ExternalLink className="w-6 h-6 text-blue-400" />
         </h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {EXTERNAL_LINKS.map(link => (
             <a 
               key={link.id}
@@ -288,7 +286,7 @@ function App() {
             >
               <div className={`p-3 rounded-xl w-fit ${link.color} text-white`}>{getIcon(link.iconName)}</div>
               <div>
-                <div className="font-bold flex items-center gap-2">
+                <div className="font-bold flex items-center gap-2 text-sm md:text-base">
                   {link.title}
                   {isOnline && <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />}
                 </div>
@@ -302,7 +300,6 @@ function App() {
       {showEasterEgg && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-in fade-in duration-300">
           <div className="bg-indigo-600 text-white p-8 rounded-[2.5rem] shadow-2xl border-4 border-yellow-400 animate-in zoom-in slide-in-from-bottom-10 duration-500 flex flex-col items-center gap-6 max-w-sm text-center relative overflow-hidden">
-            {/* Confetti Animation Background */}
             <div className="absolute inset-0 pointer-events-none">
               {Array.from({length: 20}).map((_, i) => (
                 <div key={i} className="absolute w-2 h-2 rounded-full animate-celebrate" style={{
@@ -384,7 +381,7 @@ function App() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredAndSortedLessons.map((lesson, index) => {
+        {filteredAndSortedLessons.map((lesson) => {
           const isCompleted = userStats.completedLessons.includes(lesson.id);
           const isJustCompleted = justCompletedId === lesson.id;
           const isFavorite = (userStats.favorites || []).includes(lesson.id);
@@ -402,6 +399,24 @@ function App() {
                 ${isJustCompleted ? 'animate-completion-bounce ring-4 ring-green-500/70 shadow-[0_0_30px_rgba(34,197,94,0.3)]' : ''}
               `}
             >
+              {/* Card Confetti Celebration */}
+              {isJustCompleted && (
+                <div className="absolute inset-0 z-40 flex items-center justify-center pointer-events-none overflow-hidden rounded-[1.75rem]">
+                   <div className="absolute inset-0 bg-green-500/10"></div>
+                   {Array.from({ length: 40 }).map((_, i) => (
+                     <div key={i} className="absolute w-1.5 h-1.5 rounded-full animate-confetti-card" style={{
+                       '--dx': `${(Math.random() - 0.5) * 300}px`,
+                       '--dy': `${(Math.random() - 0.5) * 300}px`,
+                       '--dr': `${Math.random() * 360}deg`,
+                       left: `50%`,
+                       top: `50%`,
+                       backgroundColor: ['#f87171', '#60a5fa', '#fbbf24', '#34d399', '#a78bfa', '#ffffff'][Math.floor(Math.random() * 6)],
+                       animationDelay: `${Math.random() * 0.5}s`,
+                     } as any} />
+                   ))}
+                </div>
+              )}
+
               <div className={`flex justify-between items-start mb-4 ${isRtl ? '' : 'flex-row-reverse'}`}>
                 <div className={`p-3.5 rounded-2xl ${isCompleted ? 'bg-green-500/10 text-green-400' : 'bg-slate-900/60 text-slate-300'}`}>{getIcon(lesson.iconName)}</div>
                 <div className="flex gap-2">
@@ -425,23 +440,6 @@ function App() {
                   </span>
                 )}
               </div>
-
-              {isJustCompleted && (
-                <div className="absolute inset-0 z-40 flex items-center justify-center pointer-events-none overflow-hidden rounded-[1.75rem]">
-                   <div className="absolute inset-0 bg-green-500/10 animate-pulse"></div>
-                   {Array.from({ length: 30 }).map((_, i) => (
-                     <div key={i} className="absolute w-2 h-2 rounded-full animate-celebrate" style={{
-                       '--dx': `${(Math.random() - 0.5) * 200}px`,
-                       '--dy': `${(Math.random() - 0.5) * 200}px`,
-                       '--dr': `${Math.random() * 360}deg`,
-                       left: `50%`,
-                       top: `50%`,
-                       backgroundColor: ['#ef4444', '#3b82f6', '#fbbf24', '#10b981', '#a855f7', '#ffffff'][Math.floor(Math.random() * 6)],
-                       animationDelay: `${Math.random() * 0.4}s`,
-                     } as any} />
-                   ))}
-                </div>
-              )}
             </div>
           );
         })}
@@ -480,7 +478,6 @@ function App() {
            <select value={lang} onChange={(e) => { playSound('click'); setLang(e.target.value as Language); }} className="bg-transparent text-sm border-none focus:outline-none">
               {LANGS.map(l => <option key={l.id} value={l.id} className="text-black">{l.flag}</option>)}
            </select>
-           {/* Mobile theme toggle */}
            <button onClick={toggleTheme} className="p-2 transition-transform hover:scale-110 active:scale-90">{theme === 'dark' ? <Sun className="w-6 h-6 text-yellow-400" /> : <Moon className="w-6 h-6 text-slate-600" />}</button>
         </div>
       </div>
@@ -510,7 +507,6 @@ function App() {
                 {LANGS.map(l => <option key={l.id} value={l.id} className="text-black">{l.flag} {l.label}</option>)}
               </select>
             </div>
-            {/* Desktop theme toggle switcher */}
             <button onClick={toggleTheme} className={`w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-bold transition-all transform active:scale-95 ${theme === 'dark' ? 'bg-slate-800 text-yellow-400 border border-slate-700' : 'bg-slate-100 text-slate-600 border border-slate-200 shadow-sm'}`}>
               {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
               {theme === 'dark' ? 'Day Mode' : 'Night Mode'}
@@ -533,7 +529,6 @@ function App() {
             {currentView === 'home' ? renderHome() : currentView === 'lessons' ? renderLessons() : <FinancialGame />}
           </div>
           
-          {/* Mobile Footer with info and email */}
           <footer className={`mt-12 py-6 border-t ${theme === 'dark' ? 'border-slate-800' : 'border-slate-200'} text-center md:hidden`}>
              <p className="text-xs text-slate-500 mb-1 font-bold">(C) Noam Gold AI 2025</p>
              <div className="flex flex-col gap-1">
