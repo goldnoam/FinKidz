@@ -88,7 +88,7 @@ export const LESSONS: Lesson[] = [
       <h3>מהי אינפלציה?</h3>
       <p>אינפלציה היא עלייה מתמשכת במחירים של מוצרים ושירותים. כשיש אינפלציה, הכוח של הכסף שלנו לקנות דברים (כוח הקנייה) יורד.</p>
       
-      <div class="my-6 bg-slate-800 p-4 rounded-xl border border-slate-700">
+      <div class="my-6 not-prose bg-slate-800 p-4 rounded-xl border border-slate-700">
         <h4 class="text-blue-400 font-bold mb-3 text-center">כוח הקנייה של 100 ש"ח לאורך זמן</h4>
         <div class="h-40 flex items-end gap-4 justify-around px-2">
           <div class="flex flex-col items-center gap-1 w-full max-w-[50px]">
@@ -133,7 +133,7 @@ export const LESSONS: Lesson[] = [
         content: `
           <h3>What is Inflation?</h3>
           <p>Inflation is the general increase in prices and fall in the purchasing value of money. When inflation occurs, each unit of currency buys fewer goods and services.</p>
-          <div class="my-6 bg-slate-800 p-4 rounded-xl border border-slate-700">
+          <div class="my-6 not-prose bg-slate-800 p-4 rounded-xl border border-slate-700">
             <h4 class="text-blue-400 font-bold mb-3 text-center">Purchasing Power of $100 Over Time</h4>
             <div class="h-40 flex items-end gap-4 justify-around px-2">
               <div class="flex flex-col items-center gap-1 w-full max-w-[50px]"><div class="bg-green-500 w-full h-[90%] rounded-t-md"></div><span class="text-[10px]">1990</span></div>
@@ -172,7 +172,7 @@ export const LESSONS: Lesson[] = [
         </div>
       </div>
 
-      <div class="mt-6 bg-slate-900/50 p-6 rounded-2xl border border-indigo-500/30">
+      <div class="mt-6 not-prose bg-slate-900/50 p-6 rounded-2xl border border-indigo-500/30">
         <h4 class="text-indigo-300 font-bold mb-4 text-center">מדד המחירים לצרכן בישראל (שינוי שנתי %)</h4>
         <div class="h-44 flex items-end gap-3 px-2 border-b border-slate-700 relative">
           <!-- Horizontal grid lines -->
@@ -209,7 +209,7 @@ export const LESSONS: Lesson[] = [
         </div>
         <div class="mt-4 flex justify-between items-center text-[10px] text-slate-500 px-1">
           <span>מקור: הלשכה המרכזית לסטטיסטיקה (מקורב)</span>
-          <span className="flex items-center gap-1"><span class="w-2 h-2 bg-pink-500 rounded-full inline-block"></span> מגמה נוכחית</span>
+          <span class="flex items-center gap-1"><span class="w-2 h-2 bg-pink-500 rounded-full inline-block"></span> מגמה נוכחית</span>
         </div>
       </div>
 
@@ -232,7 +232,7 @@ export const LESSONS: Lesson[] = [
             </div>
           </div>
           <h3>Israel CPI Trend (Annual % Change):</h3>
-          <div class="h-32 flex items-end gap-2 bg-slate-800/50 p-4 rounded-lg border border-slate-700 mt-4">
+          <div class="h-32 flex items-end gap-2 not-prose bg-slate-800/50 p-4 rounded-lg border border-slate-700 mt-4">
             <div class="flex-1 flex flex-col items-center gap-1"><div class="bg-indigo-500 w-full h-[20%] rounded-t-md"></div><span class="text-[9px]">2019</span></div>
             <div class="flex-1 flex flex-col items-center gap-1"><div class="bg-indigo-500 w-full h-[10%] rounded-t-md"></div><span class="text-[9px]">2020</span></div>
             <div class="flex-1 flex flex-col items-center gap-1"><div class="bg-indigo-500 w-full h-[40%] rounded-t-md"></div><span class="text-[9px]">2021</span></div>
