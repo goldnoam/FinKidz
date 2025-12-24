@@ -23,10 +23,10 @@ import {
   Trophy
 } from 'lucide-react';
 
-export const getIcon = (name: string, className?: string, title?: string) => {
+export const getIcon = (name: string, className?: string, tooltipText?: string) => {
   const props = { 
     className: className || "w-6 h-6",
-    ...(title ? { title } : {}) 
+    ...(tooltipText ? { title: tooltipText } : {}) 
   };
   
   switch (name) {

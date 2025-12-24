@@ -1,5 +1,5 @@
 import React from 'react';
-import { X } from 'lucide-react';
+import { X, WifiOff } from 'lucide-react';
 import { Lesson } from '../types';
 import { getIcon } from './Icons';
 
@@ -9,9 +9,10 @@ interface LessonModalProps {
   onClose: () => void;
   onComplete: (id: string) => void;
   isCompleted: boolean;
+  isOnline?: boolean;
 }
 
-const LessonModal: React.FC<LessonModalProps> = ({ lesson, isOpen, onClose, onComplete, isCompleted }) => {
+const LessonModal: React.FC<LessonModalProps> = ({ lesson, isOpen, onClose, onComplete, isCompleted, isOnline = true }) => {
   if (!isOpen || !lesson) return null;
 
   return (
@@ -25,7 +26,15 @@ const LessonModal: React.FC<LessonModalProps> = ({ lesson, isOpen, onClose, onCo
               {getIcon(lesson.iconName, "w-8 h-8 text-white")}
             </div>
             <div>
-              <h2 className="text-2xl font-bold">{lesson.title}</h2>
+              <div className="flex items-center gap-2">
+                <h2 className="text-2xl font-bold">{lesson.title}</h2>
+                {!isOnline && (
+                  <div className="bg-red-500/20 px-2 py-0.5 rounded text-xs font-bold text-red-200 flex items-center gap-1 border border-red-500/30" title="מצב לא מקוון">
+                    <WifiOff className="w-3 h-3" />
+                    <span>offline</span>
+                  </div>
+                )}
+              </div>
               <span className="text-blue-100 text-sm bg-blue-900/50 px-2 py-1 rounded-full border border-blue-400/30">
                 {lesson.difficulty}
               </span>
