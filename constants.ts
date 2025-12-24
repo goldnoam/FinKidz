@@ -49,7 +49,7 @@ export const UI_TRANSLATIONS: Record<Language, Record<string, string>> = {
   zh: { home: '首页', lessons: '课程', siteTitle: 'FinKidz', heroTitle: '儿童理财', heroSubtitle: '年轻一代的金融教育' },
   hi: { home: 'होम', lessons: 'पाठ', siteTitle: 'FinKidz', heroTitle: 'बच्चों के लिए निवेश', heroSubtitle: 'युवा पीढ़ी के लिए वित्तीय शिक्षा' },
   de: { home: 'Startseite', lessons: 'Lektionen', siteTitle: 'FinKidz', heroTitle: 'Investitionen für Kinder', heroSubtitle: 'Finanzielle Bildung für die junge Generation' },
-  es: { home: 'Inicio', lessons: 'Lecciones', siteTitle: 'FinKidz', heroTitle: 'Inversiones para Niños', heroSubtitle: 'Educación Financiera para la Generación Joven' },
+  es: { home: 'Inicio', lessons: 'Lecciones', siteTitle: 'FinKidz', heroTitle: 'Inversiones para Niños', heroSubtitle: 'Educación Financiera para la Generation Joven' },
   fr: { home: 'Accueil', lessons: 'Leçons', siteTitle: 'FinKidz', heroTitle: 'Investissements pour Enfants', heroSubtitle: 'Éducation financière pour la jeune génération' }
 };
 
@@ -418,18 +418,10 @@ export const EXTERNAL_LINKS: ResourceLink[] = [
   {
     id: 'kessef-katan',
     title: 'כסף קטן - בנק ישראל',
-    url: 'https://www.boi.org.il/he/ConsumerInformation/EconomicEducation/Pages/KessefKatan.aspx',
+    url: 'https://www.boi.org.il/information/community-relations/small-moneyar/',
     iconName: 'savings',
     category: 'tools',
     color: 'bg-pink-500'
-  },
-  {
-    id: 'money-kids',
-    title: 'איפה הכסף? (ממשל לילדים)',
-    url: 'https://kids.gov.il/money',
-    iconName: 'money',
-    category: 'tools',
-    color: 'bg-indigo-500'
   },
   {
     id: 'tarbut-kalkalit',

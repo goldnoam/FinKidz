@@ -27,7 +27,7 @@ const LessonModal: React.FC<LessonModalProps> = ({
   language = 'he'
 }) => {
   const [isSpeaking, setIsSpeaking] = useState(false);
-  const t = (key: string) => UI_TRANSLATIONS[language]?.[key] || UI_TRANSLATIONS['he'][key] || key;
+  const t = (key: string) => UI_TRANSLATIONS[language]?.[key] || UI_TRANSLATIONS['he']?.[key] || key;
 
   const nextLesson = useMemo(() => {
     if (!lesson) return null;
