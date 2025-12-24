@@ -1,104 +1,56 @@
+
 import { Lesson, Badge, ResourceLink, Language } from './types';
 
 export const UI_TRANSLATIONS: Record<Language, Record<string, string>> = {
   he: {
+    siteTitle: 'FinKidz - חינוך פיננסי לדור הבא',
+    heroTitle: 'השקעות לקטנטנים',
+    heroSubtitle: 'חינוך פיננסי לגיל הצעיר',
     home: 'בית',
     lessons: 'שיעורים',
     game: 'מרוץ החיסכון',
     points: 'נקודות',
     completed: 'הושלם',
     learnMore: 'למד עוד',
-    nextLesson: 'השיעור הבא',
+    nextLesson: 'השיעור הבא:',
+    finishLesson: 'סיימתי ללמוד ✓',
     streak: 'ימי רצף',
     search: 'חפש שיעור...',
     feedback: 'שלח משוב',
     all: 'הכל',
-    favorites: 'מועדפים'
+    favorites: 'מועדפים',
+    cat_basics: 'הבסיס',
+    cat_banking: 'בנקים וכלכלה',
+    cat_investing: 'השקעות',
+    cat_advanced: 'מתקדם'
   },
   en: {
+    siteTitle: 'FinKidz - Financial Education',
+    heroTitle: 'Investments for Kids',
+    heroSubtitle: 'Financial Education for the Young Generation',
     home: 'Home',
     lessons: 'Lessons',
     game: 'Saving Race',
     points: 'Points',
     completed: 'Completed',
     learnMore: 'Learn More',
-    nextLesson: 'Next Lesson',
+    nextLesson: 'Next Lesson:',
+    finishLesson: 'Finish Lesson ✓',
     streak: 'Streak',
     search: 'Search lesson...',
     feedback: 'Feedback',
     all: 'All',
-    favorites: 'Favorites'
+    favorites: 'Favorites',
+    cat_basics: 'Basics',
+    cat_banking: 'Banking',
+    cat_investing: 'Investing',
+    cat_advanced: 'Advanced'
   },
-  zh: {
-    home: '首页',
-    lessons: '课程',
-    game: '储蓄竞赛',
-    points: '积分',
-    completed: '已完成',
-    learnMore: '了解更多',
-    nextLesson: '下一课',
-    streak: '连续天数',
-    search: '搜索课程...',
-    feedback: '反馈',
-    all: '全部',
-    favorites: '收藏'
-  },
-  hi: {
-    home: 'होम',
-    lessons: 'पाठ',
-    game: 'बचत दौड़',
-    points: 'अंक',
-    completed: 'पूरा हुआ',
-    learnMore: 'और जानें',
-    nextLesson: 'अगला पाठ',
-    streak: 'लगातार दिन',
-    search: 'पाठ खोजें...',
-    feedback: 'प्रतिक्रिया',
-    all: 'सभी',
-    favorites: 'पसंदीदा'
-  },
-  de: {
-    home: 'Startseite',
-    lessons: 'Lektionen',
-    game: 'Spar-Rennen',
-    points: 'Punkte',
-    completed: 'Abgeschlossen',
-    learnMore: 'Mehr erfahren',
-    nextLesson: 'Nächste Lektion',
-    streak: 'Serie',
-    search: 'Lektion suchen...',
-    feedback: 'Feedback',
-    all: 'Alle',
-    favorites: 'Favoriten'
-  },
-  es: {
-    home: 'Inicio',
-    lessons: 'Lecciones',
-    game: 'Carrera de Ahorro',
-    points: 'Puntos',
-    completed: 'Completado',
-    learnMore: 'Leer más',
-    nextLesson: 'Siguiente lección',
-    streak: 'Racha',
-    search: 'Buscar lección...',
-    feedback: 'Comentarios',
-    all: 'Todos',
-    favorites: 'Favoritos'
-  },
-  fr: {
-    home: 'Accueil',
-    lessons: 'Leçons',
-    game: 'Course à l’Épargne',
-    points: 'Points',
-    completed: 'Terminé',
-    learnMore: 'En savoir plus',
-    nextLesson: 'Leçon suivante',
-    streak: 'Série',
-    search: 'Chercher une leçon...',
-    feedback: 'Commentaires',
-    all: 'Tout',
-    favorites: 'Favoris'
-  }
+  zh: { home: '首页', lessons: '课程', siteTitle: 'FinKidz', heroTitle: '儿童理财', heroSubtitle: '年轻一代的金融教育' },
+  hi: { home: 'होम', lessons: 'पाठ', siteTitle: 'FinKidz', heroTitle: 'बच्चों के लिए निवेश', heroSubtitle: 'युवा पीढ़ी के लिए वित्तीय शिक्षा' },
+  de: { home: 'Startseite', lessons: 'Lektionen', siteTitle: 'FinKidz', heroTitle: 'Investitionen für Kinder', heroSubtitle: 'Finanzielle Bildung für die junge Generation' },
+  es: { home: 'Inicio', lessons: 'Lecciones', siteTitle: 'FinKidz', heroTitle: 'Inversiones para Niños', heroSubtitle: 'Educación Financiera para la Generación Joven' },
+  fr: { home: 'Accueil', lessons: 'Leçons', siteTitle: 'FinKidz', heroTitle: 'Investissements pour Enfants', heroSubtitle: 'Éducation financière pour la jeune génération' }
 };
 
 export const LESSONS: Lesson[] = [
@@ -126,6 +78,173 @@ export const LESSONS: Lesson[] = [
     }
   },
   {
+    id: 'cpi',
+    title: 'מדד המחירים לצרכן',
+    description: 'איך המדינה מודדת אם הכל מתייקר? הכירו את "הסל" של כולנו.',
+    category: 'basics',
+    difficulty: 'מתקדם',
+    iconName: 'chart',
+    content: `
+      <p>המדד בודק כמה עולה "סל מוצרים" ממוצע של משפחה. אם מחיר הסל עולה - יש <strong>אינפלציה</strong>.</p>
+      
+      <div class="bg-slate-800 p-4 rounded-xl my-4 border border-slate-700 shadow-inner">
+        <h4 class="text-indigo-400 font-bold mb-3 text-center">מה יש בתוך "סל המדד"?</h4>
+        <div class="grid grid-cols-4 gap-3 text-center">
+          <div class="flex flex-col items-center"><span class="text-3xl mb-1">🏠</span><span class="text-[10px]">דיור</span></div>
+          <div class="flex flex-col items-center"><span class="text-3xl mb-1">🍕</span><span class="text-[10px]">מזון</span></div>
+          <div class="flex flex-col items-center"><span class="text-3xl mb-1">🚌</span><span class="text-[10px]">תחבורה</span></div>
+          <div class="flex flex-col items-center"><span class="text-3xl mb-1">🎭</span><span class="text-[10px]">תרבות</span></div>
+        </div>
+      </div>
+
+      <h3>למה זה חשוב?</h3>
+      <p>כשהמדד עולה, הכסף שלנו "שווה פחות" כי אפשר לקנות איתו פחות דברים מאותו סל.</p>
+      
+      <div class="mt-6">
+        <h4 class="text-blue-400 font-bold mb-2">שינוי המדד לאורך זמן (דוגמה):</h4>
+        <div class="h-32 flex items-end gap-2 bg-slate-800/50 p-4 rounded-lg border border-slate-700">
+          <div class="flex-1 flex flex-col items-center gap-1">
+            <div class="bg-indigo-500 w-full h-[30%] rounded-t-md opacity-60"></div>
+            <span class="text-[9px]">2021</span>
+          </div>
+          <div class="flex-1 flex flex-col items-center gap-1">
+            <div class="bg-indigo-500 w-full h-[65%] rounded-t-md opacity-80"></div>
+            <span class="text-[9px]">2022</span>
+          </div>
+          <div class="flex-1 flex flex-col items-center gap-1">
+            <div class="bg-indigo-500 w-full h-[45%] rounded-t-md"></div>
+            <span class="text-[9px]">2023</span>
+          </div>
+          <div class="flex-1 flex flex-col items-center gap-1">
+            <div class="bg-pink-500 w-full h-[85%] rounded-t-md animate-pulse"></div>
+            <span class="text-[9px]">היום</span>
+          </div>
+        </div>
+      </div>
+    `,
+    translations: {
+      en: {
+        title: 'Consumer Price Index (CPI)',
+        description: 'How do we measure if prices are going up? Meet the national "Basket".',
+        content: `
+          <p>The CPI measures the average price of a "basket of goods". If prices go up, it is called <strong>inflation</strong>.</p>
+          <div class="bg-slate-800 p-4 rounded-xl my-4 border border-slate-700 shadow-inner">
+            <h4 class="text-indigo-400 font-bold mb-3 text-center">What is inside the "CPI Basket"?</h4>
+            <div class="grid grid-cols-4 gap-3 text-center">
+              <div class="flex flex-col items-center"><span class="text-3xl mb-1">🏠</span><span class="text-[10px]">Housing</span></div>
+              <div class="flex flex-col items-center"><span class="text-3xl mb-1">🍕</span><span class="text-[10px]">Food</span></div>
+              <div class="flex flex-col items-center"><span class="text-3xl mb-1">🚌</span><span class="text-[10px]">Transport</span></div>
+              <div class="flex flex-col items-center"><span class="text-3xl mb-1">🎭</span><span class="text-[10px]">Culture</span></div>
+            </div>
+          </div>
+          <h3>Historical Changes (Example):</h3>
+          <div class="h-32 flex items-end gap-2 bg-slate-800/50 p-4 rounded-lg border border-slate-700 mt-4">
+            <div class="flex-1 flex flex-col items-center gap-1"><div class="bg-indigo-500 w-full h-[30%] rounded-t-md"></div><span class="text-[9px]">2021</span></div>
+            <div class="flex-1 flex flex-col items-center gap-1"><div class="bg-indigo-500 w-full h-[65%] rounded-t-md"></div><span class="text-[9px]">2022</span></div>
+            <div class="flex-1 flex flex-col items-center gap-1"><div class="bg-indigo-500 w-full h-[45%] rounded-t-md"></div><span class="text-[9px]">2023</span></div>
+            <div class="flex-1 flex flex-col items-center gap-1"><div class="bg-pink-500 w-full h-[85%] rounded-t-md"></div><span class="text-[9px]">Now</span></div>
+          </div>
+        `
+      }
+    }
+  },
+  {
+    id: 'forex',
+    title: 'מטבע חוץ (מט"ח)',
+    description: 'דולר, אירו או שקל? איך מחליטים כמה שווה כל מטבע.',
+    category: 'banking',
+    difficulty: 'מתקדם',
+    iconName: 'exchange',
+    content: `
+      <h3>מה זה מט"ח?</h3>
+      <p>אלו מטבעות של מדינות אחרות. כשאנחנו טסים לחו"ל, אנחנו צריכים להחליף את השקלים שלנו במטבע המקומי.</p>
+      <br>
+      <div class="flex justify-center gap-6 text-4xl my-4">
+        <span>💵</span><span>↔️</span><span>₪</span>
+      </div>
+      <h3>שער החליפין</h3>
+      <p>זהו המחיר של מטבע אחד במונחים של מטבע אחר. השער משתנה כל הזמן לפי הביקוש וההיצע בעולם. אם כולם רוצים שקלים, השקל מתחזק!</p>
+    `,
+    translations: {
+      en: {
+        title: 'Foreign Exchange (Forex)',
+        description: 'Dollar, Euro or Shekel? How currency values are determined.',
+        content: `
+          <h3>What is Forex?</h3>
+          <p>Forex stands for Foreign Exchange. It is the global market where currencies are traded.</p>
+          <div class="flex justify-center gap-6 text-4xl my-4">
+            <span>💵</span><span>↔️</span><span>💷</span>
+          </div>
+          <h3>The Exchange Rate</h3>
+          <p>The exchange rate is the price of one currency in terms of another. It fluctuates based on supply and demand.</p>
+        `
+      }
+    }
+  },
+  {
+    id: 'unemployment',
+    title: 'תעסוקה ואבטלה',
+    description: 'מה זה אומר לעבוד, ומה קורה כשאנשים לא מוצאים עבודה?',
+    category: 'basics',
+    difficulty: 'מתחיל',
+    iconName: 'goals',
+    content: `
+      <h3>כוח העבודה</h3>
+      <p>אלו כל האנשים בגיל העבודה שרוצים ויכולים לעבוד.</p>
+      <h3>מהי אבטלה?</h3>
+      <p>מצב שבו אדם רוצה לעבוד ומחפש עבודה, אך לא מוצא. אחוז האבטלה הוא מדד חשוב לבריאות של הכלכלה.</p>
+      <br>
+      <p class="bg-blue-900/30 p-4 rounded-lg border-l-4 border-blue-500 italic">"כשיש הרבה עבודה, לאנשים יש כסף לבזבז, והעסקים צומחים!"</p>
+    `,
+    translations: {
+      en: {
+        title: 'Employment & Unemployment',
+        description: 'What it means to work, and what happens when people cannot find jobs.',
+        content: `
+          <h3>Labor Force</h3>
+          <p>The labor force includes everyone who is working or actively looking for a job.</p>
+          <h3>What is Unemployment?</h3>
+          <p>Unemployment occurs when someone wants a job but cannot find one. High unemployment is usually a sign of a struggling economy.</p>
+        `
+      }
+    }
+  },
+  {
+    id: 'bonds',
+    title: 'אגרות חוב (אג"ח)',
+    description: 'להלוות כסף לממשלה ולקבל עליו ריבית. הכירו את ההשקעה הסולידית.',
+    category: 'investing',
+    difficulty: 'מומחה',
+    iconName: 'safe',
+    content: `
+      <h3>מה זה אג"ח?</h3>
+      <p>זו בעצם "תעודת התחייבות". כשאתם קונים אג"ח, אתם מלווים כסף למי שהנפיק אותה (מדינה או חברה).</p>
+      <br>
+      <ul class="list-disc list-inside space-y-2">
+        <li><strong>הלווה:</strong> המדינה או החברה שמקבלת את הכסף.</li>
+        <li><strong>המלווה:</strong> אתם!</li>
+        <li><strong>התמורה:</strong> ריבית קבועה מראש לאורך זמן.</li>
+      </ul>
+      <p>בסוף התקופה, הלווה מחזיר לכם את כל סכום ההלוואה המקורי פלוס הריבית שנצברה.</p>
+    `,
+    translations: {
+      en: {
+        title: 'Bonds',
+        description: 'Lending money to the government or companies. A solid investment tool.',
+        content: `
+          <h3>What is a Bond?</h3>
+          <p>A bond is like a loan that you provide to a government or a corporation. In return, they pay you interest over time.</p>
+          <h3>Key Terms:</h3>
+          <ul class="list-disc list-inside">
+            <li><strong>Issuer:</strong> The one who borrows the money.</li>
+            <li><strong>Investor:</strong> You, the one who lends.</li>
+            <li><strong>Coupon:</strong> The interest rate paid.</li>
+          </ul>
+        `
+      }
+    }
+  },
+  {
     id: 'budget',
     title: 'מהו תקציב?',
     description: 'איך לתכנן מראש כדי שיהיה לנו כסף למה שאנחנו באמת רוצים.',
@@ -141,88 +260,14 @@ export const LESSONS: Lesson[] = [
         <li>כמה נוציא על בילויים?</li>
         <li>כמה נשמור למקרה חירום?</li>
       </ul>
-      <br>
-      <p class="bg-indigo-50 p-4 rounded-lg border-r-4 border-indigo-400 text-indigo-900 font-medium">טיפ: נסו את שיטת ה-50/30/20. 50% לדברים שחייבים, 30% לכיף, ו-20% לחיסכון.</p>
-    `
-  },
-  {
-    id: 'entrepreneurship',
-    title: 'יזמות צעירה',
-    description: 'איך הופכים רעיון לעסק קטן שמרוויח כסף?',
-    category: 'basics',
-    difficulty: 'מתחיל',
-    iconName: 'goals',
-    content: `
-      <h3>מה זה יזם?</h3>
-      <p>יזם הוא מישהו שמזהה בעיה או צורך, ומוצא להם פתרון יצירתי.</p>
-      <p>למשל: למכור לימונדה ביום חם, להציע שירותי הוצאת כלבים בשכונה, או לבנות אתר אינטרנט לעסק של ההורים.</p>
-      <br>
-      <h3>צעדים ראשונים בעסק:</h3>
-      <ul class="list-disc list-inside space-y-2">
-        <li><strong>המוצר:</strong> מה אני מוכר?</li>
-        <li><strong>הלקוחות:</strong> מי יקנה ממני?</li>
-        <li><strong>המחיר:</strong> כמה זה עולה לי לייצר וכמה ארוויח?</li>
-        <li><strong>שיווק:</strong> איך אנשים ידעו שאני קיים?</li>
-      </ul>
-    `
-  },
-  {
-    id: 'interest',
-    title: 'מהי ריבית?',
-    description: 'למה כסף גדל בבנק? ומה קורה כשלוקחים הלוואה?',
-    category: 'banking',
-    difficulty: 'מתקדם',
-    iconName: 'chart',
-    content: `
-      <h3>מה זה ריבית?</h3>
-      <p>ריבית היא בעצם ה"מחיר" של הכסף. כשאתם מפקידים כסף בבנק, הבנק "שוכר" מכם את הכסף ומשלם לכם על כך - זו <strong>ריבית זכות</strong>.</p>
-      <p>כשאתם לוקחים כסף מהבנק (הלוואה), אתם משלמים לבנק על הזכות להשתמש בכסף - זו <strong>ריבית חובה</strong>.</p>
-      <br>
-      <p>הריבית היא הכלי המרכזי של הבנקים ושל בנק ישראל כדי להשפיע על המשק.</p>
-    `
-  },
-  {
-    id: 'taxes',
-    title: 'מיסים - למה זה טוב?',
-    description: 'לאן נעלם חלק מהכסף של המבוגרים ומה המדינה עושה איתו?',
-    category: 'basics',
-    difficulty: 'מתקדם',
-    iconName: 'safe',
-    content: `
-      <h3>מהם מיסים?</h3>
-      <p>מס הוא תשלום חובה למדינה. כל מי שמרוויח כסף או קונה מוצרים משלם חלק קטן למדינה.</p>
-      <br>
-      <h3>מה עושים עם הכסף?</h3>
-      <p>המיסים מממנים את כל השירותים שכולנו משתמשים בהם:</p>
-      <ul class="list-disc list-inside space-y-2">
-        <li>בתי ספר וגני ילדים</li>
-        <li>כבישים ומדרכות</li>
-        <li>בתי חולים ומרפאות</li>
-        <li>הצבא והמשטרה</li>
-        <li>פארקים וגינות ציבוריות</li>
-      </ul>
-      <p>בלי מיסים, המדינה לא הייתה יכולה לתפקד ולדאוג לאזרחים.</p>
-    `
-  },
-  {
-    id: 'insurance',
-    title: 'ביטוח - הגנה לעתיד',
-    description: 'איך מגנים על עצמנו מהפסדים כספיים גדולים כשמשהו משתבש?',
-    category: 'banking',
-    difficulty: 'מתקדם',
-    iconName: 'safe',
-    content: `
-      <h3>מה זה ביטוח?</h3>
-      <p>ביטוח הוא הסכם שבו אנחנו משלמים סכום קטן בכל חודש (פרמיה), ובתמורה חברת הביטוח מבטיחה לשלם לנו סכום גדול אם יקרה נזק.</p>
-      <br>
-      <h3>דוגמאות נפוצות:</h3>
-      <ul class="list-disc list-inside space-y-2">
-        <li><strong>ביטוח רכב:</strong> אם הרכב נהרס בתאונה, הביטוח עוזר לקנות חדש.</li>
-        <li><strong>ביטוח בריאות:</strong> עוזר לממן טיפולים יקרים או תרופות.</li>
-        <li><strong>ביטוח נסיעות:</strong> מגן עלינו כשאנחנו בחו"ל.</li>
-      </ul>
-      <p>ביטוח הוא דרך "לקנות שקט נפשי" ולהימנע מחובות פתאומיים.</p>
-    `
+    `,
+    translations: {
+      en: {
+        title: 'What is a Budget?',
+        description: 'How to plan ahead so we have money for what we really want.',
+        content: '<p>A budget is an action plan for your money. Instead of just spending, you decide in advance where your money goes.</p>'
+      }
+    }
   },
   {
     id: 'stock-market',
@@ -232,89 +277,24 @@ export const LESSONS: Lesson[] = [
     difficulty: 'מתקדם',
     iconName: 'investing',
     content: `
-      <p>הבורסה היא מקום (בעיקר דיגיטלי היום) שבו אנשים יכולים לקנות ולמכור חלקים קטנים מחברות.</p>
-      <p>חלק קטן כזה נקרא <strong>מניה</strong>. אם קניתם מניה של חברה, אתם שותפים בחברה הזו!</p>
-      <br>
+      <p>הבורסה היא מקום שבו אנשים יכולים לקנות ולמכור חלקים קטנים מחברות. חלק קטן כזה נקרא <strong>מניה</strong>.</p>
       <p>אם החברה מצליחה ומרוויחה, ערך המניה עולה. אם החברה נכשלת, ערך המניה יורד ואפשר להפסיד כסף.</p>
-    `
-  },
-  {
-    id: 'crypto',
-    title: 'ביטקוין ומטבעות דיגיטליים',
-    description: "מה זה כסף דיגיטלי ולמה כולם מדברים על בלוקצ'יין?",
-    category: 'investing',
-    difficulty: 'מומחה',
-    iconName: 'global',
-    content: `
-      <h3>מה זה מטבע דיגיטלי?</h3>
-      <p>זהו כסף שקיים רק במחשב, ולא מודפס על ידי שום ממשלה או בנק מרכזי. המפורסם מכולם הוא <strong>הביטקוין</strong>.</p>
-      <br>
-      <h3>איך זה עובד? (בלוקצ'יין)</h3>
-      <p>הטכנולוגיה מאחורי המטבעות נקראת בלוקצ'יין. זהו "יומן" ענק שבו רשומות כל ההעברות, והוא משותף לאלפי מחשבים בעולם, כך שאי אפשר לרמות או לשנות אותו.</p>
-      <br>
-      <p class="text-red-400 font-bold">זהירות: השקעה במטבעות דיגיטליים היא מאוד מסוכנת כי הערך שלהם יכול לעלות ולרדת בצורה קיצונית תוך דקות!</p>
-    `
-  },
-  {
-    id: 'real-estate',
-    title: 'נדל"ן - להשקיע בקירות',
-    description: 'איך קונים דירה ואיך מרוויחים מזה כסף לאורך זמן?',
-    category: 'investing',
-    difficulty: 'מומחה',
-    iconName: 'bank',
-    content: `
-      <h3>מה זה נדל"ן?</h3>
-      <p>נדל"ן (נכסי דלא ניידי) הם נכסים שאי אפשר להזיז - קרקעות, דירות, חנויות ומשרדים.</p>
-      <br>
-      <h3>איך מרוויחים מנדל"ן?</h3>
-      <ol class="list-decimal list-inside space-y-2">
-        <li><strong>עליית ערך:</strong> אם קניתם דירה והאזור הפך למבוקש יותר, מחיר הדירה יעלה ותוכלו למכור ברווח.</li>
-        <li><strong>שכירות:</strong> אם אתם משכירים את הדירה למישהו אחר, הוא משלם לכם כסף בכל חודש.</li>
-      </ol>
-      <p>זו נחשבת השקעה יציבה יחסית, אבל היא דורשת הרבה מאוד כסף מראש.</p>
-    `
-  },
-  {
-    id: 'compound-interest-deep',
-    title: 'ריבית דריבית - הפלא השמיני',
-    description: 'איך הזמן הופך כסף קטן לכסף גדול (אפקט כדור השלג).',
-    category: 'investing',
-    difficulty: 'מומחה',
-    iconName: 'investing',
-    content: `
-      <p>אלברט איינשטיין אמר פעם שריבית דריבית היא "הפלא השמיני של העולם". מי שמבין אותה - מרוויח אותה, ומי שלא - משלם אותה.</p>
-      <br>
-      <h3>איך זה עובד?</h3>
-      <p>בריבית רגילה, מקבלים כסף רק על הסכום המקורי שהפקדתם. <strong>בריבית דריבית</strong>, אתם מקבלים ריבית גם על הריבית שכבר צברתם!</p>
-      <br>
-      <h3>הכוח של הזמן</h3>
-      <p>זה כמו כדור שלג שמתגלגל במורד ההר וגדל. בשנים הראשונות השינוי נראה קטן, אבל אחרי 10 או 20 שנה, הכסף גדל בצורה אדירה. לכן, הדבר הכי חשוב בהשקעות הוא <strong>להתחיל מוקדם</strong>.</p>
-    `
-  },
-  {
-    id: 'pensions',
-    title: 'פנסיה - דואגים לעצמנו בעתיד',
-    description: 'למה חשוב לחסוך עכשיו לתקופה שבה כבר לא נעבוד?',
-    category: 'advanced',
-    difficulty: 'מומחה',
-    iconName: 'savings',
-    content: `
-      <h3>מהי פנסיה?</h3>
-      <p>פנסיה היא קצבה חודשית שנקבל כשנהיה זקנים ונפסיק לעבוד. כדי שתהיה לנו פנסיה, אנחנו צריכים לחסוך כסף בכל חודש במהלך כל שנות העבודה שלנו.</p>
-      <br>
-      <h3>למה לחסוך 40 שנה מראש?</h3>
-      <p>1. <strong>כוח הריבית דריבית:</strong> ככל שנתחיל מוקדם יותר, הכסף יגדל להרבה יותר.<br>
-      2. <strong>הטבות מס:</strong> המדינה מעודדת אותנו לחסוך לפנסיה ונותנת לנו "הנחות" במיסים על הכסף הזה.</p>
-      <p>פנסיה היא הביטחון הכלכלי הכי חשוב של כל אדם מבוגר.</p>
-    `
+    `,
+    translations: {
+      en: {
+        title: 'The Stock Market',
+        description: 'The supermarket for big companies.',
+        content: '<p>The stock market is a place where shares of public companies are issued and traded. A share represents ownership in a company.</p>'
+      }
+    }
   }
 ];
 
 export const CATEGORIES = [
-  { id: 'basics', name: 'הבסיס', color: 'bg-green-500' },
-  { id: 'banking', name: 'בנקים וכלכלה', color: 'bg-blue-500' },
-  { id: 'investing', name: 'השקעות', color: 'bg-purple-500' },
-  { id: 'advanced', name: 'מתקדם', color: 'bg-indigo-500' },
+  { id: 'basics', translationKey: 'cat_basics', color: 'bg-green-500' },
+  { id: 'banking', translationKey: 'cat_banking', color: 'bg-blue-500' },
+  { id: 'investing', translationKey: 'cat_investing', color: 'bg-purple-500' },
+  { id: 'advanced', translationKey: 'cat_advanced', color: 'bg-indigo-500' },
 ];
 
 export const BADGES: Badge[] = [
@@ -343,30 +323,6 @@ export const BADGES: Badge[] = [
     condition: (stats) => stats.completedLessons.length === LESSONS.length
   },
   {
-    id: 'rank_beginner',
-    name: 'מתחיל',
-    description: 'השלמת שיעור למתחילים',
-    icon: 'medal',
-    color: 'from-green-400 to-emerald-600',
-    condition: (stats) => stats.completedLessons.some(id => LESSONS.find(l => l.id === id)?.difficulty === 'מתחיל')
-  },
-  {
-    id: 'rank_advanced',
-    name: 'מתקדם',
-    description: 'השלמת שיעור למתקדמים',
-    icon: 'crown',
-    color: 'from-blue-400 to-indigo-600',
-    condition: (stats) => stats.completedLessons.some(id => LESSONS.find(l => l.id === id)?.difficulty === 'מתקדם')
-  },
-  {
-    id: 'rank_expert',
-    name: 'מומחה',
-    description: 'השלמת שיעור למומחים',
-    icon: 'star',
-    color: 'from-purple-400 to-pink-600',
-    condition: (stats) => stats.completedLessons.some(id => LESSONS.find(l => l.id === id)?.difficulty === 'מומחה')
-  },
-  {
     id: 'streak_3',
     name: 'על הגל',
     description: 'למדת 3 ימים ברציפות',
@@ -384,61 +340,5 @@ export const EXTERNAL_LINKS: ResourceLink[] = [
     iconName: 'chart',
     category: 'tools',
     color: 'bg-blue-600'
-  },
-  {
-    id: 'virtual-portfolio-tase',
-    title: 'תיק אישי TASE',
-    url: 'https://plus.tase.co.il/he/add-portfolio',
-    iconName: 'pie',
-    category: 'tools',
-    color: 'bg-emerald-600'
-  },
-  {
-    id: 'virtual-portfolio-globes',
-    title: 'משחק ההשקעות (גלובס)',
-    url: 'https://www.globes.co.il/portal/portfolio/',
-    iconName: 'game',
-    category: 'tools',
-    color: 'bg-green-600'
-  },
-  {
-    id: 'virtual-portfolio-bizportal',
-    title: 'תיק אישי Bizportal',
-    url: 'https://www.bizportal.co.il/myportfolio',
-    iconName: 'pie',
-    category: 'tools',
-    color: 'bg-orange-500'
-  },
-  {
-    id: 'calcalist',
-    title: 'כלכליסט',
-    url: 'https://www.calcalist.co.il/',
-    iconName: 'news',
-    category: 'news',
-    color: 'bg-red-600'
-  },
-  {
-    id: 'globes',
-    title: 'גלובס',
-    url: 'https://www.globes.co.il/',
-    iconName: 'news',
-    category: 'news',
-    color: 'bg-pink-600'
-  },
-  {
-    id: 'bizportal',
-    title: 'Bizportal',
-    url: 'https://www.bizportal.co.il/',
-    iconName: 'news',
-    category: 'news',
-    color: 'bg-orange-600'
-  },
-  {
-    id: 'funder',
-    title: 'Funder',
-    url: 'https://www.funder.co.il/',
-    iconName: 'news',
-    category: 'news',
-    color: 'bg-indigo-600'
   }
 ];

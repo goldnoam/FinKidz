@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { BookOpen, Trophy, Home, Mail, Flame, Award, WifiOff, Globe, Loader2, Share2, Check, ArrowRight, Sparkles, X, PiggyBank, Gamepad2, Coins, Search, SortAsc, Filter, Moon, Sun, Languages, Heart } from 'lucide-react';
 import LessonModal from './components/LessonModal';
@@ -9,16 +10,6 @@ import { playSound } from './utils/sounds';
 
 declare var AOS: any;
 
-const EASTER_EGG_FACTS = [
-  "הידעת? המטבעות הראשונים הומצאו בממלכת לידיה (טורקיה של היום) לפני כ-2,600 שנה!",
-  "הידעת? שטרות כסף עשויים בכלל מכותנה ופשתן, לא מנייר רגיל, כדי שישרדו כביסה בטעות.",
-  "הידעת? המילה 'בנק' מגיעה מהמילה האיטלקית 'banco', שפירושה ספסל או שולחן שעליו היו סופרים כסף בשווקים.",
-  "הידעת? הריבית דריבית כונתה על ידי אלברט איינשטיין 'הפלא השמיני של העולם'.",
-  "הידעת? בעבר השתמשו בצדפות, מלח, תה ואפילו בשיני לוויתן בתור כסף!",
-  "הידעת? מונופול מדפיס יותר כסף כל שנה מאשר ארה״ב מדפיסה דולרים אמיתיים.",
-  "הידעת? כרטיס האשראי הראשון הומצא כשאיש עסקים שכח את הארנק שלו במסעדה והחליט שזה לא יקרה שוב."
-];
-
 const LANGS: { id: Language; label: string; flag: string }[] = [
   { id: 'he', label: 'עברית', flag: '🇮🇱' },
   { id: 'en', label: 'English', flag: '🇺🇸' },
@@ -29,13 +20,19 @@ const LANGS: { id: Language; label: string; flag: string }[] = [
   { id: 'fr', label: 'Français', flag: '🇫🇷' },
 ];
 
+const EASTER_EGG_FACTS = [
+  "הידעת? המטבעות הראשונים הומצאו בממלכת לידיה לפני כ-2,600 שנה!",
+  "הידעת? שטרות כסף עשויים בדרך כלל מכותנה ופשתן, לא מנייר רגיל.",
+  "הידעת? המילה 'בנק' מגיעה מהמילה האיטלקית 'banco' שפירושה ספסל.",
+  "הידעת? מונופול מדפיס יותר כסף בשנה מאשר הבנק המרכזי של ארה״ב!"
+];
+
 type SortOption = 'default' | 'difficulty-asc' | 'difficulty-desc' | 'title';
 
 function App() {
   const [currentView, setCurrentView] = useState<'home' | 'lessons' | 'game'>('home');
   const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null);
   const [loadingLessonId, setLoadingLessonId] = useState<string | null>(null);
-  const [copiedLessonId, setCopiedLessonId] = useState<string | null>(null);
   const [justCompletedId, setJustCompletedId] = useState<string | null>(null);
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
   const [lang, setLang] = useState<Language>('he');
@@ -55,28 +52,41 @@ function App() {
   
   const [showEasterEgg, setShowEasterEgg] = useState(false);
   const [randomFact, setRandomFact] = useState('');
-  const logoClickTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const logoClickCount = useRef(0);
 
   const t = (key: string) => UI_TRANSLATIONS[lang][key] || UI_TRANSLATIONS['he'][key] || key;
   const isRtl = lang === 'he';
 
+  // Fix: Added missing toggleTheme function
   const toggleTheme = () => {
-    setTheme(prev => prev === 'dark' ? 'light' : 'dark');
     playSound('click');
+    setTheme(prev => prev === 'dark' ? 'light' : 'dark');
   };
 
+  // Fix: Added missing handleToggleFavorite function
   const handleToggleFavorite = (e: React.MouseEvent, lessonId: string) => {
     e.stopPropagation();
     playSound('click');
     setUserStats(prev => {
-      const isFav = prev.favorites.includes(lessonId);
-      return {
-        ...prev,
-        favorites: isFav 
-          ? prev.favorites.filter(id => id !== lessonId)
-          : [...prev.favorites, lessonId]
-      };
+      const favorites = prev.favorites || [];
+      const newFavorites = favorites.includes(lessonId)
+        ? favorites.filter(id => id !== lessonId)
+        : [...favorites, lessonId];
+      return { ...prev, favorites: newFavorites };
     });
+  };
+
+  const triggerEasterEgg = () => {
+    logoClickCount.current += 1;
+    if (logoClickCount.current >= 5) {
+      playSound('success');
+      setRandomFact(EASTER_EGG_FACTS[Math.floor(Math.random() * EASTER_EGG_FACTS.length)]);
+      setShowEasterEgg(true);
+      logoClickCount.current = 0;
+      setTimeout(() => setShowEasterEgg(false), 5000);
+    } else {
+      playSound('click');
+    }
   };
 
   useEffect(() => {
@@ -84,6 +94,10 @@ function App() {
       AOS.init({ duration: 800, once: true, easing: 'ease-out-quad' });
     }
   }, []);
+
+  useEffect(() => {
+    document.title = t('siteTitle');
+  }, [lang]);
 
   useEffect(() => {
     const handleOnline = () => setIsOnline(true);
@@ -169,26 +183,33 @@ function App() {
       const lessonDesc = lesson.translations?.[lang]?.description || lesson.description;
       const matchesSearch = lessonTitle.toLowerCase().includes(searchQuery.toLowerCase()) || 
                             lessonDesc.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchesFavorite = !showOnlyFavorites || userStats.favorites.includes(lesson.id);
+      const matchesFavorite = !showOnlyFavorites || (userStats.favorites && userStats.favorites.includes(lesson.id));
       
       return matchesCategory && matchesSearch && matchesFavorite;
     });
     const difficultyMap = { 'מתחיל': 1, 'מתקדם': 2, 'מומחה': 3 };
-    if (sortBy === 'difficulty-asc') result.sort((a, b) => difficultyMap[a.difficulty] - difficultyMap[b.difficulty]);
-    else if (sortBy === 'difficulty-desc') result.sort((a, b) => difficultyMap[b.difficulty] - difficultyMap[a.difficulty]);
+    if (sortBy === 'difficulty-asc') result.sort((a, b) => (difficultyMap[a.difficulty] || 0) - (difficultyMap[b.difficulty] || 0));
+    else if (sortBy === 'difficulty-desc') result.sort((a, b) => (difficultyMap[b.difficulty] || 0) - (difficultyMap[a.difficulty] || 0));
     else if (sortBy === 'title') result.sort((a, b) => (a.translations?.[lang]?.title || a.title).localeCompare(b.translations?.[lang]?.title || b.title));
     return result;
   }, [selectedCategory, searchQuery, sortBy, lang, showOnlyFavorites, userStats.favorites]);
 
   const renderHome = () => (
     <div className="space-y-10 animate-in fade-in duration-500">
-      {/* Brand Title Section */}
+      {/* Offline Banner */}
+      {!isOnline && (
+        <div className="bg-red-600 text-white p-3 rounded-xl text-center font-bold flex items-center justify-center gap-2 animate-pulse sticky top-4 z-50 shadow-lg">
+          <WifiOff className="w-5 h-5" />
+          {isRtl ? 'אתה במצב לא מקוון. השיעורים שכבר נטענו זמינים, אך קישורים חיצוניים חסומים.' : 'You are offline. Loaded lessons are available, but external links are disabled.'}
+        </div>
+      )}
+
       <div className="text-center py-6" data-aos="fade-down">
         <h1 className={`text-4xl md:text-6xl font-black mb-2 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 drop-shadow-sm`}>
-          השקעות לקטנטנים
+          {t('heroTitle')}
         </h1>
         <p className={`text-lg md:text-2xl font-bold ${theme === 'dark' ? 'text-slate-400' : 'text-slate-600'}`}>
-          חינוך פיננסי לגיל הצעיר
+          {t('heroSubtitle')}
         </p>
       </div>
 
@@ -244,16 +265,36 @@ function App() {
           </h3>
           <div className={`flex gap-3 overflow-x-auto pb-2 scrollbar-hide ${isRtl ? 'flex-row-reverse' : 'flex-row'}`}>
             {BADGES.map(badge => {
-              const isEarned = userStats.badges.includes(badge.id);
+              const isEarned = (userStats.badges || []).includes(badge.id);
               return (
                 <div key={badge.id} className={`flex-shrink-0 w-16 h-16 rounded-2xl flex items-center justify-center border-2 transition-all ${isEarned ? `bg-gradient-to-br ${badge.color} border-white/20 shadow-lg` : 'bg-slate-700/50 grayscale opacity-40'}`}>
-                  {getIcon(badge.icon, "w-8 h-8 text-white drop-shadow-md")}
+                  {getIcon(badge.icon, "w-8 h-8 text-white drop-shadow-md", badge.name)}
                 </div>
               );
             })}
           </div>
         </div>
       </div>
+
+      {showEasterEgg && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center pointer-events-none">
+          <div className="bg-indigo-600 text-white p-8 rounded-3xl shadow-2xl border-4 border-yellow-400 animate-in zoom-in slide-in-from-bottom-10 duration-500 flex flex-col items-center gap-4 max-w-sm text-center">
+            <Sparkles className="w-12 h-12 text-yellow-300 animate-bounce" />
+            <h3 className="text-2xl font-black">בונוס סודי!</h3>
+            <p className="text-lg font-medium">{randomFact}</p>
+          </div>
+          <div className="absolute inset-0 overflow-hidden">
+             {Array.from({length: 30}).map((_, i) => (
+               <div key={i} className="absolute w-4 h-4 rounded-full animate-celebrate" style={{
+                 left: `${Math.random() * 100}%`,
+                 top: `110%`,
+                 backgroundColor: ['#fbbf24', '#f59e0b', '#6366f1', '#ec4899'][Math.floor(Math.random() * 4)],
+                 animationDelay: `${Math.random() * 2}s`
+               }} />
+             ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 
@@ -282,16 +323,16 @@ function App() {
            </div>
            <div className={`flex gap-3 overflow-x-auto pb-2 scrollbar-hide ${isRtl ? 'flex-row-reverse' : 'flex-row'}`}>
             <button 
-              onClick={() => setShowOnlyFavorites(!showOnlyFavorites)} 
+              onClick={() => { playSound('click'); setShowOnlyFavorites(!showOnlyFavorites); }} 
               className={`px-5 py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all flex items-center gap-2 ${showOnlyFavorites ? 'bg-pink-600 text-white shadow-lg ring-2 ring-pink-400/30' : 'bg-slate-800 text-slate-400'}`}
             >
               <Heart className={`w-4 h-4 ${showOnlyFavorites ? 'fill-current' : ''}`} />
               {t('favorites')}
             </button>
             <div className="w-px h-8 bg-slate-700 self-center" />
-            <button onClick={() => setSelectedCategory('all')} className={`px-5 py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all ${selectedCategory === 'all' ? 'bg-indigo-600 text-white' : 'bg-slate-800 text-slate-400'}`}>{t('all')} ({LESSONS.length})</button>
+            <button onClick={() => { playSound('click'); setSelectedCategory('all'); }} className={`px-5 py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all ${selectedCategory === 'all' ? 'bg-indigo-600 text-white' : 'bg-slate-800 text-slate-400'}`}>{t('all')} ({LESSONS.length})</button>
             {CATEGORIES.map(cat => (
-              <button key={cat.id} onClick={() => setSelectedCategory(cat.id as Category)} className={`px-5 py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all ${selectedCategory === cat.id ? 'bg-indigo-600 text-white' : 'bg-slate-800 text-slate-400'}`}>{cat.name}</button>
+              <button key={cat.id} onClick={() => { playSound('click'); setSelectedCategory(cat.id as Category); }} className={`px-5 py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all ${selectedCategory === cat.id ? 'bg-indigo-600 text-white' : 'bg-slate-800 text-slate-400'}`}>{t(cat.translationKey)}</button>
             ))}
           </div>
         </div>
@@ -301,7 +342,7 @@ function App() {
         {filteredAndSortedLessons.map((lesson, index) => {
           const isCompleted = userStats.completedLessons.includes(lesson.id);
           const isJustCompleted = justCompletedId === lesson.id;
-          const isFavorite = userStats.favorites.includes(lesson.id);
+          const isFavorite = (userStats.favorites || []).includes(lesson.id);
           const activeTitle = lesson.translations?.[lang]?.title || lesson.title;
           const activeDesc = lesson.translations?.[lang]?.description || lesson.description;
 
@@ -313,7 +354,7 @@ function App() {
               className={`group relative h-full flex flex-col p-6 rounded-[1.75rem] border shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer 
                 ${theme === 'dark' ? 'bg-[#1e293b] border-slate-700' : 'bg-white border-slate-200'} 
                 ${isCompleted ? 'ring-2 ring-green-500/30' : ''}
-                ${isJustCompleted ? 'animate-completion-bounce ring-4 ring-green-500/50' : ''}
+                ${isJustCompleted ? 'animate-completion-bounce ring-4 ring-green-500/70 shadow-[0_0_30px_rgba(34,197,94,0.3)]' : ''}
               `}
             >
               <div className={`flex justify-between items-start mb-4 ${isRtl ? '' : 'flex-row-reverse'}`}>
@@ -332,19 +373,24 @@ function App() {
               <p className={`text-sm leading-relaxed mb-6 flex-1 font-light ${theme === 'dark' ? 'text-slate-400' : 'text-slate-600'} ${isRtl ? 'text-right' : 'text-left'}`}>{activeDesc}</p>
               <div className={`mt-auto pt-5 border-t flex items-center justify-between text-sm ${isRtl ? 'flex-row-reverse' : 'flex-row'}`}>
                 <button className="bg-blue-600 text-white text-sm font-bold py-2.5 px-6 rounded-full transition-all">{t('learnMore')}</button>
-                {isCompleted && <span className="flex items-center gap-1.5 text-green-400 font-bold"><Check className="w-3.5 h-3.5" />{t('completed')}</span>}
+                {isCompleted && (
+                  <span className={`flex items-center gap-1.5 font-bold transition-all ${isJustCompleted ? 'text-green-300 scale-110' : 'text-green-400'}`}>
+                    <Check className={`w-3.5 h-3.5 ${isJustCompleted ? 'animate-glow-checkmark' : ''}`} />
+                    {t('completed')}
+                  </span>
+                )}
               </div>
 
               {isJustCompleted && (
                 <div className="absolute inset-0 z-40 flex items-center justify-center pointer-events-none overflow-hidden rounded-[1.75rem]">
                    <div className="absolute inset-0 bg-green-500/10 animate-pulse"></div>
-                   {Array.from({ length: 15 }).map((_, i) => (
+                   {Array.from({ length: 20 }).map((_, i) => (
                      <div key={i} className="absolute w-2 h-2 rounded-full animate-celebrate" style={{
                        left: `${Math.random() * 100}%`,
                        top: `${Math.random() * 100}%`,
-                       backgroundColor: ['#ef4444', '#3b82f6', '#fbbf24', '#10b981', '#a855f7'][Math.floor(Math.random() * 5)],
-                       animationDelay: `${Math.random() * 0.5}s`,
-                       animationDuration: `${0.5 + Math.random() * 1}s`
+                       backgroundColor: ['#ef4444', '#3b82f6', '#fbbf24', '#10b981', '#a855f7', '#ffffff'][Math.floor(Math.random() * 6)],
+                       animationDelay: `${Math.random() * 0.4}s`,
+                       animationDuration: `${0.8 + Math.random() * 1}s`
                      }} />
                    ))}
                 </div>
@@ -359,12 +405,12 @@ function App() {
   return (
     <div className={`min-h-screen pb-20 md:pb-0 font-sans transition-colors duration-300 ${theme === 'dark' ? 'bg-slate-900 text-slate-100' : 'bg-slate-50 text-slate-900'}`}>
       <div className={`md:hidden p-4 sticky top-0 z-40 flex justify-between items-center backdrop-blur-lg border-b ${theme === 'dark' ? 'bg-slate-900/80 border-slate-800' : 'bg-white/80 border-slate-200'}`}>
-        <div className="flex items-center gap-2 font-black text-xl tracking-tighter cursor-pointer" onClick={() => setCurrentView('home')}>
+        <div className="flex items-center gap-2 font-black text-xl tracking-tighter cursor-pointer" onClick={triggerEasterEgg}>
           <div className="bg-gradient-to-tr from-indigo-500 to-purple-600 p-2 rounded-lg text-white"><PiggyBank className="w-6 h-6" /></div>
           <span className={`bg-clip-text text-transparent bg-gradient-to-r ${theme === 'dark' ? 'from-white to-slate-400' : 'from-slate-900 to-slate-600'}`}>FinKidz</span>
         </div>
         <div className="flex items-center gap-2">
-           <select value={lang} onChange={(e) => setLang(e.target.value as Language)} className="bg-transparent text-sm border-none focus:outline-none">
+           <select value={lang} onChange={(e) => { playSound('click'); setLang(e.target.value as Language); }} className="bg-transparent text-sm border-none focus:outline-none">
               {LANGS.map(l => <option key={l.id} value={l.id} className="text-black">{l.flag}</option>)}
            </select>
            <button onClick={toggleTheme} className="p-2">{theme === 'dark' ? <Sun className="w-5 h-5 text-yellow-400" /> : <Moon className="w-5 h-5 text-slate-600" />}</button>
@@ -373,7 +419,7 @@ function App() {
 
       <div className="flex">
         <div className={`hidden md:flex flex-col w-72 h-screen border-l fixed ${isRtl ? 'right-0' : 'left-0'} top-0 z-50 p-6 transition-colors ${theme === 'dark' ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 shadow-xl'}`}>
-           <div className={`flex items-center gap-3 font-black text-2xl tracking-tighter mb-10 cursor-pointer ${isRtl ? 'flex-row' : 'flex-row-reverse'}`} onClick={() => setCurrentView('home')}>
+           <div className={`flex items-center gap-3 font-black text-2xl tracking-tighter mb-10 cursor-pointer ${isRtl ? 'flex-row' : 'flex-row-reverse'}`} onClick={triggerEasterEgg}>
             <div className="bg-gradient-to-tr from-indigo-500 to-purple-600 p-2.5 rounded-xl text-white shadow-lg"><PiggyBank className="w-8 h-8" /></div>
             <span className={`bg-clip-text text-transparent bg-gradient-to-r ${theme === 'dark' ? 'from-white to-slate-400' : 'from-slate-900 to-slate-600'}`}>FinKidz</span>
           </div>
@@ -392,7 +438,7 @@ function App() {
           <div className="space-y-4">
             <div className={`flex items-center gap-2 p-3 rounded-xl border ${theme === 'dark' ? 'bg-slate-800 border-slate-700' : 'bg-slate-50 border-slate-200'}`}>
               <Languages className="w-5 h-5 text-indigo-400" />
-              <select value={lang} onChange={(e) => setLang(e.target.value as Language)} className={`bg-transparent text-sm w-full focus:outline-none ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>
+              <select value={lang} onChange={(e) => { playSound('click'); setLang(e.target.value as Language); }} className={`bg-transparent text-sm w-full focus:outline-none ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>
                 {LANGS.map(l => <option key={l.id} value={l.id} className="text-black">{l.flag} {l.label}</option>)}
               </select>
             </div>
