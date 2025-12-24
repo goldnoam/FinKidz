@@ -76,7 +76,11 @@ function App() {
     });
   };
 
-  const triggerEasterEgg = () => {
+  const handleLogoClick = () => {
+    // Navigate home
+    handleNavClick('home');
+    
+    // Hidden Easter Egg Logic: 5 rapid clicks
     logoClickCount.current += 1;
     if (logoClickCount.current >= 5) {
       playSound('success');
@@ -84,9 +88,12 @@ function App() {
       setShowEasterEgg(true);
       logoClickCount.current = 0;
       setTimeout(() => setShowEasterEgg(false), 8000);
-    } else {
-      playSound('click');
     }
+    
+    // Reset counter if too slow (hidden requirement)
+    setTimeout(() => {
+        if (logoClickCount.current > 0) logoClickCount.current = 0;
+    }, 2000);
   };
 
   useEffect(() => {
@@ -163,6 +170,7 @@ function App() {
     if (currentView !== view) {
       playSound('click');
       setCurrentView(view);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
@@ -268,7 +276,6 @@ function App() {
         </div>
       </div>
 
-      {/* External Resources Section - Disabled when offline */}
       <div className="mt-12">
         <h3 className={`text-2xl font-bold mb-6 flex items-center gap-2 ${isRtl ? 'justify-end' : 'justify-start'} ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>
            {isRtl ? 'כלים ומשאבים חיצוניים' : 'External Tools & Resources'}
@@ -393,7 +400,7 @@ function App() {
               key={lesson.id} 
               data-aos="fade-up" 
               onClick={() => handleOpenLesson(lesson)} 
-              className={`group relative h-full flex flex-col p-6 rounded-[1.75rem] border shadow-lg hover:-translate-y-2 hover:scale-[1.02] hover:shadow-2xl transition-all duration-300 cursor-pointer 
+              className={`group relative h-full flex flex-col p-6 rounded-[1.75rem] border shadow-lg hover:-translate-y-2 hover:scale-[1.03] hover:shadow-2xl transition-all duration-300 cursor-pointer 
                 ${theme === 'dark' ? 'bg-[#1e293b] border-slate-700' : 'bg-white border-slate-200'} 
                 ${isCompleted ? 'ring-2 ring-green-500/30' : ''}
                 ${isJustCompleted ? 'animate-completion-bounce ring-4 ring-green-500/70 shadow-[0_0_30px_rgba(34,197,94,0.3)]' : ''}
@@ -470,7 +477,7 @@ function App() {
       )}
 
       <div className={`md:hidden p-4 sticky ${!isOnline ? 'top-[52px]' : 'top-0'} z-40 flex justify-between items-center backdrop-blur-lg border-b ${theme === 'dark' ? 'bg-slate-900/80 border-slate-800' : 'bg-white/80 border-slate-200'}`}>
-        <div className="flex items-center gap-2 font-black text-xl tracking-tighter cursor-pointer" onClick={triggerEasterEgg}>
+        <div className="flex items-center gap-2 font-black text-xl tracking-tighter cursor-pointer" onClick={handleLogoClick}>
           <div className="bg-gradient-to-tr from-indigo-500 to-purple-600 p-2 rounded-lg text-white"><PiggyBank className="w-6 h-6" /></div>
           <span className={`bg-clip-text text-transparent bg-gradient-to-r ${theme === 'dark' ? 'from-white to-slate-400' : 'from-slate-900 to-slate-600'}`}>FinKidz</span>
         </div>
@@ -484,7 +491,7 @@ function App() {
 
       <div className="flex">
         <div className={`hidden md:flex flex-col w-72 h-screen border-l fixed ${isRtl ? 'right-0' : 'left-0'} top-0 z-50 p-6 transition-colors ${theme === 'dark' ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 shadow-xl'}`}>
-           <div className={`flex items-center gap-3 font-black text-2xl tracking-tighter mb-10 cursor-pointer ${isRtl ? 'flex-row' : 'flex-row-reverse'}`} onClick={triggerEasterEgg}>
+           <div className={`flex items-center gap-3 font-black text-2xl tracking-tighter mb-10 cursor-pointer ${isRtl ? 'flex-row' : 'flex-row-reverse'}`} onClick={handleLogoClick}>
             <div className="bg-gradient-to-tr from-indigo-500 to-purple-600 p-2.5 rounded-xl text-white shadow-lg"><PiggyBank className="w-8 h-8" /></div>
             <span className={`bg-clip-text text-transparent bg-gradient-to-r ${theme === 'dark' ? 'from-white to-slate-400' : 'from-slate-900 to-slate-600'}`}>FinKidz</span>
           </div>
