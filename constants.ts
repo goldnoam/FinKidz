@@ -1,7 +1,100 @@
-import { Lesson, Badge, ResourceLink } from './types';
+import { Lesson, Badge, ResourceLink, Language } from './types';
+
+export const UI_TRANSLATIONS: Record<Language, Record<string, string>> = {
+  he: {
+    home: 'בית',
+    lessons: 'שיעורים',
+    game: 'מרוץ החיסכון',
+    points: 'נקודות',
+    completed: 'הושלם',
+    learnMore: 'למד עוד',
+    nextLesson: 'השיעור הבא',
+    streak: 'ימי רצף',
+    search: 'חפש שיעור...',
+    feedback: 'שלח משוב',
+    all: 'הכל'
+  },
+  en: {
+    home: 'Home',
+    lessons: 'Lessons',
+    game: 'Saving Race',
+    points: 'Points',
+    completed: 'Completed',
+    learnMore: 'Learn More',
+    nextLesson: 'Next Lesson',
+    streak: 'Streak',
+    search: 'Search lesson...',
+    feedback: 'Feedback',
+    all: 'All'
+  },
+  zh: {
+    home: '首页',
+    lessons: '课程',
+    game: '储蓄竞赛',
+    points: '积分',
+    completed: '已完成',
+    learnMore: '了解更多',
+    nextLesson: '下一课',
+    streak: '连续天数',
+    search: '搜索课程...',
+    feedback: '反馈',
+    all: '全部'
+  },
+  hi: {
+    home: 'होम',
+    lessons: 'पाठ',
+    game: 'बचत दौड़',
+    points: 'अंक',
+    completed: 'पूरा हुआ',
+    learnMore: 'और जानें',
+    nextLesson: 'अगला पाठ',
+    streak: 'लगातार दिन',
+    search: 'पाठ खोजें...',
+    feedback: 'प्रतिक्रिया',
+    all: 'सभी'
+  },
+  de: {
+    home: 'Startseite',
+    lessons: 'Lektionen',
+    game: 'Spar-Rennen',
+    points: 'Punkte',
+    completed: 'Abgeschlossen',
+    learnMore: 'Mehr erfahren',
+    nextLesson: 'Nächste Lektion',
+    streak: 'Serie',
+    search: 'Lektion suchen...',
+    feedback: 'Feedback',
+    all: 'Alle'
+  },
+  es: {
+    home: 'Inicio',
+    lessons: 'Lecciones',
+    game: 'Carrera de Ahorro',
+    points: 'Puntos',
+    completed: 'Completado',
+    learnMore: 'Leer más',
+    nextLesson: 'Siguiente lección',
+    streak: 'Racha',
+    search: 'Buscar lección...',
+    feedback: 'Comentarios',
+    all: 'Todos'
+  },
+  fr: {
+    home: 'Accueil',
+    lessons: 'Leçons',
+    game: 'Course à l’Épargne',
+    points: 'Points',
+    completed: 'Terminé',
+    learnMore: 'En savoir plus',
+    nextLesson: 'Leçon suivante',
+    streak: 'Série',
+    search: 'Chercher une leçon...',
+    feedback: 'Commentaires',
+    all: 'Tout'
+  }
+};
 
 export const LESSONS: Lesson[] = [
-  // Basics
   {
     id: 'income-expense',
     title: 'הכנסות והוצאות',
@@ -16,7 +109,14 @@ export const LESSONS: Lesson[] = [
       <h3>המשוואה הפשוטה:</h3>
       <p>אם ההוצאות שלנו גדולות מההכנסות, אנחנו במינוס (חוב).<br>
       אם ההכנסות גדולות מההוצאות, נשאר לנו <strong>חיסכון</strong>!</p>
-    `
+    `,
+    translations: {
+      en: {
+        title: 'Income and Expenses',
+        description: 'What is the difference between money coming in and money going out?',
+        content: '<p><strong>Income</strong> is any money we receive. <strong>Expenses</strong> are the money we pay for things.</p>'
+      }
+    }
   },
   {
     id: 'budget',
@@ -59,8 +159,6 @@ export const LESSONS: Lesson[] = [
       </ul>
     `
   },
-  
-  // Banking & Economy
   {
     id: 'interest',
     title: 'מהי ריבית?',
@@ -119,8 +217,6 @@ export const LESSONS: Lesson[] = [
       <p>ביטוח הוא דרך "לקנות שקט נפשי" ולהימנע מחובות פתאומיים.</p>
     `
   },
-  
-  // Investing
   {
     id: 'stock-market',
     title: 'הבורסה',

@@ -1,5 +1,5 @@
-import React, { useMemo } from 'react';
-import { X, WifiOff, ArrowLeft, Sparkles } from 'lucide-react';
+import React, { useMemo, useState, useEffect } from 'react';
+import { X, WifiOff, ArrowLeft, Sparkles, Volume2, VolumeX } from 'lucide-react';
 import { Lesson } from '../types';
 import { getIcon } from './Icons';
 import { LESSONS } from '../constants';
@@ -12,6 +12,7 @@ interface LessonModalProps {
   onSelectNext?: (lesson: Lesson) => void;
   isCompleted: boolean;
   isOnline?: boolean;
+  language?: string;
 }
 
 const LessonModal: React.FC<LessonModalProps> = ({ 
@@ -21,20 +22,21 @@ const LessonModal: React.FC<LessonModalProps> = ({
   onComplete, 
   onSelectNext,
   isCompleted, 
-  isOnline = true 
+  isOnline = true,
+  language = 'he'
 }) => {
+  const [isSpeaking, setIsSpeaking] = useState(false);
+
   const nextLesson = useMemo(() => {
     if (!lesson) return null;
     const currentIndex = LESSONS.findIndex(l => l.id === lesson.id);
     
-    // 1. Try to find the next lesson in the same category
     const sameCategoryLessons = LESSONS.filter(l => l.category === lesson.category);
     const indexInCat = sameCategoryLessons.findIndex(l => l.id === lesson.id);
     if (indexInCat !== -1 && indexInCat < sameCategoryLessons.length - 1) {
       return sameCategoryLessons[indexInCat + 1];
     }
     
-    // 2. Otherwise, just the next one in the overall list
     if (currentIndex !== -1 && currentIndex < LESSONS.length - 1) {
       return LESSONS[currentIndex + 1];
     }
@@ -42,7 +44,49 @@ const LessonModal: React.FC<LessonModalProps> = ({
     return null;
   }, [lesson]);
 
-  if (!isOpen || !lesson) return null;
+  const activeContent = useMemo(() => {
+    if (!lesson) return null;
+    if (language === 'he' || !lesson.translations?.[language]) {
+      return { title: lesson.title, content: lesson.content };
+    }
+    return lesson.translations[language];
+  }, [lesson, language]);
+
+  const toggleSpeech = () => {
+    if (!activeContent) return;
+
+    if (isSpeaking) {
+      window.speechSynthesis.cancel();
+      setIsSpeaking(false);
+    } else {
+      // Clean HTML tags for speech
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = activeContent.content;
+      const plainText = `${activeContent.title}. ${tempDiv.textContent || tempDiv.innerText}`;
+      
+      const utterance = new SpeechSynthesisUtterance(plainText);
+      utterance.lang = language === 'he' ? 'he-IL' : 
+                       language === 'en' ? 'en-US' : 
+                       language === 'fr' ? 'fr-FR' : 
+                       language === 'de' ? 'de-DE' : 
+                       language === 'es' ? 'es-ES' : 
+                       language === 'zh' ? 'zh-CN' : 'hi-IN';
+      
+      utterance.onend = () => setIsSpeaking(false);
+      utterance.onerror = () => setIsSpeaking(false);
+      
+      window.speechSynthesis.speak(utterance);
+      setIsSpeaking(true);
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      window.speechSynthesis.cancel();
+    };
+  }, []);
+
+  if (!isOpen || !lesson || !activeContent) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-70 backdrop-blur-sm">
@@ -62,37 +106,49 @@ const LessonModal: React.FC<LessonModalProps> = ({
                     <span>offline</span>
                   </div>
                 )}
-                <h2 className="text-2xl font-bold">{lesson.title}</h2>
+                <h2 className="text-2xl font-bold">{activeContent.title}</h2>
               </div>
               <span className="text-blue-100 text-sm bg-blue-900/50 px-2 py-1 rounded-full border border-blue-400/30 inline-block mt-1">
                 {lesson.difficulty}
               </span>
             </div>
           </div>
-          <button onClick={onClose} className="p-2 hover:bg-white/10 rounded-full transition-colors">
-            <X className="w-6 h-6" />
-          </button>
+          <div className="flex gap-2">
+            <button 
+              onClick={toggleSpeech}
+              title={isSpeaking ? "עצור הקראה" : "הקרא שיעור"}
+              className={`p-2 rounded-full transition-all ${isSpeaking ? 'bg-red-500 text-white animate-pulse' : 'bg-white/10 text-white hover:bg-white/20'}`}
+            >
+              {isSpeaking ? <VolumeX className="w-6 h-6" /> : <Volume2 className="w-6 h-6" />}
+            </button>
+            <button onClick={onClose} className="p-2 hover:bg-white/10 rounded-full transition-colors text-white">
+              <X className="w-6 h-6" />
+            </button>
+          </div>
         </div>
 
         {/* Content */}
         <div className="p-6 overflow-y-auto flex-1 text-slate-300 leading-relaxed text-lg">
-          <div className="prose prose-lg prose-invert max-w-none text-right [&>h3]:text-blue-400 [&>strong]:text-white" dangerouslySetInnerHTML={{ __html: lesson.content }} />
+          <div 
+            className={`prose prose-lg prose-invert max-w-none [&>h3]:text-blue-400 [&>strong]:text-white ${language === 'he' ? 'text-right' : 'text-left'}`} 
+            dangerouslySetInnerHTML={{ __html: activeContent.content }} 
+          />
         </div>
 
         {/* Footer */}
-        <div className="p-6 border-t border-slate-800 bg-slate-900/50 flex flex-row-reverse justify-between items-center gap-4">
-          <div className="flex flex-row-reverse items-center gap-3">
+        <div className={`p-6 border-t border-slate-800 bg-slate-900/50 flex items-center gap-4 justify-between ${language === 'he' ? 'flex-row-reverse' : 'flex-row'}`}>
+          <div className={`flex items-center gap-3 ${language === 'he' ? 'flex-row-reverse' : 'flex-row'}`}>
             {!isCompleted ? (
               <button
                 onClick={() => onComplete(lesson.id)}
                 className="bg-indigo-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-indigo-500 shadow-lg shadow-indigo-500/30 transition-all transform active:scale-95 flex items-center gap-2"
               >
-                סיימתי ללמוד ✓
+                {language === 'he' ? 'סיימתי ללמוד ✓' : 'Finish Lesson ✓'}
               </button>
             ) : (
-              <div className="flex flex-row-reverse items-center gap-4">
+              <div className={`flex items-center gap-4 ${language === 'he' ? 'flex-row-reverse' : 'flex-row'}`}>
                 <span className="text-green-400 font-bold flex items-center gap-1.5 bg-green-500/10 px-4 py-2 rounded-xl border border-green-500/20">
-                  הושלם! 🎉
+                  {language === 'he' ? 'הושלם! 🎉' : 'Completed! 🎉'}
                 </span>
                 
                 {nextLesson && onSelectNext && (
@@ -100,17 +156,14 @@ const LessonModal: React.FC<LessonModalProps> = ({
                     onClick={() => onSelectNext(nextLesson)}
                     className="bg-white text-indigo-900 px-6 py-3 rounded-xl font-black hover:bg-blue-50 shadow-xl shadow-white/5 transition-all transform active:scale-95 flex items-center gap-2 animate-in slide-in-from-right-4"
                   >
-                    <ArrowLeft className="w-5 h-5" />
-                    השיעור הבא: {nextLesson.title}
+                    {language !== 'he' && <ArrowLeft className="w-5 h-5 rotate-180" />}
+                    {language === 'he' ? 'השיעור הבא:' : 'Next Lesson:'} {nextLesson.translations?.[language]?.title || nextLesson.title}
+                    {language === 'he' && <ArrowLeft className="w-5 h-5" />}
                     <Sparkles className="w-4 h-4 text-yellow-500" />
                   </button>
                 )}
               </div>
             )}
-          </div>
-          
-          <div className="text-sm text-slate-500 text-right hidden sm:block">
-             {!isCompleted ? 'קראת הכל? סמן כהושלם וקבל נקודות!' : 'מעולה! אתה בדרך הנכונה.'}
           </div>
         </div>
       </div>

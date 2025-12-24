@@ -1,5 +1,7 @@
 export type Category = 'basics' | 'banking' | 'investing' | 'advanced';
 
+export type Language = 'he' | 'en' | 'zh' | 'hi' | 'de' | 'es' | 'fr';
+
 export interface Lesson {
   id: string;
   title: string;
@@ -8,6 +10,7 @@ export interface Lesson {
   iconName: string;
   category: Category;
   difficulty: 'מתחיל' | 'מתקדם' | 'מומחה';
+  translations?: Record<string, { title: string; description: string; content: string }>;
 }
 
 export interface ChatMessage {

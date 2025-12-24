@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Play, Pause, RotateCcw, Coins, Skull, ArrowUp, ArrowDown, ArrowLeft, ArrowRight } from 'lucide-react';
 
@@ -221,36 +222,40 @@ const FinancialGame: React.FC = () => {
         />
         
         {/* On-screen Controls (WASD) for Mobile */}
-        <div className="mt-6 grid grid-cols-3 gap-3 w-full max-w-[200px] md:hidden mb-4 mx-auto">
+        <div className="mt-6 grid grid-cols-3 gap-3 w-full max-w-[220px] md:hidden mb-4 mx-auto">
           <div />
           <button 
             onTouchStart={(e) => { e.preventDefault(); movePlayer('up'); }}
             onMouseDown={(e) => { e.preventDefault(); movePlayer('up'); }}
-            className="p-5 bg-slate-700/80 backdrop-blur rounded-2xl active:bg-indigo-600 active:scale-95 transition-all flex justify-center shadow-lg border border-slate-600"
+            className="p-4 bg-slate-700/80 backdrop-blur rounded-2xl active:bg-indigo-600 active:scale-95 transition-all flex flex-col items-center justify-center shadow-lg border border-slate-600 gap-1"
           >
-            <ArrowUp className="w-6 h-6 text-white" />
+            <ArrowUp className="w-5 h-5 text-white" />
+            <span className="text-[10px] text-slate-400 font-bold leading-none">W</span>
           </button>
           <div />
           <button 
             onTouchStart={(e) => { e.preventDefault(); movePlayer('left'); }}
             onMouseDown={(e) => { e.preventDefault(); movePlayer('left'); }}
-            className="p-5 bg-slate-700/80 backdrop-blur rounded-2xl active:bg-indigo-600 active:scale-95 transition-all flex justify-center shadow-lg border border-slate-600"
+            className="p-4 bg-slate-700/80 backdrop-blur rounded-2xl active:bg-indigo-600 active:scale-95 transition-all flex flex-col items-center justify-center shadow-lg border border-slate-600 gap-1"
           >
-            <ArrowLeft className="w-6 h-6 text-white" />
+            <ArrowLeft className="w-5 h-5 text-white" />
+            <span className="text-[10px] text-slate-400 font-bold leading-none">A</span>
           </button>
           <button 
             onTouchStart={(e) => { e.preventDefault(); movePlayer('down'); }}
             onMouseDown={(e) => { e.preventDefault(); movePlayer('down'); }}
-            className="p-5 bg-slate-700/80 backdrop-blur rounded-2xl active:bg-indigo-600 active:scale-95 transition-all flex justify-center shadow-lg border border-slate-600"
+            className="p-4 bg-slate-700/80 backdrop-blur rounded-2xl active:bg-indigo-600 active:scale-95 transition-all flex flex-col items-center justify-center shadow-lg border border-slate-600 gap-1"
           >
-            <ArrowDown className="w-6 h-6 text-white" />
+            <ArrowDown className="w-5 h-5 text-white" />
+            <span className="text-[10px] text-slate-400 font-bold leading-none">S</span>
           </button>
           <button 
             onTouchStart={(e) => { e.preventDefault(); movePlayer('right'); }}
             onMouseDown={(e) => { e.preventDefault(); movePlayer('right'); }}
-            className="p-5 bg-slate-700/80 backdrop-blur rounded-2xl active:bg-indigo-600 active:scale-95 transition-all flex justify-center shadow-lg border border-slate-600"
+            className="p-4 bg-slate-700/80 backdrop-blur rounded-2xl active:bg-indigo-600 active:scale-95 transition-all flex flex-col items-center justify-center shadow-lg border border-slate-600 gap-1"
           >
-            <ArrowRight className="w-6 h-6 text-white" />
+            <ArrowRight className="w-5 h-5 text-white" />
+            <span className="text-[10px] text-slate-400 font-bold leading-none">D</span>
           </button>
         </div>
       </div>
@@ -275,9 +280,9 @@ const FinancialGame: React.FC = () => {
         </button>
       </div>
 
-      <div className="text-slate-500 text-xs text-center flex items-center gap-2">
+      <div className="text-slate-500 text-xs text-center flex flex-col gap-1">
         <span className="hidden md:inline">השתמש ב-WASD או במקשי החיצים כדי לזוז</span>
-        <span className="md:hidden">השתמש בכפתורי החיצים כדי לזוז</span>
+        <span className="md:hidden">השתמש בכפתורי ה-WASD כדי לזוז</span>
       </div>
     </div>
   );
