@@ -393,7 +393,7 @@ function App() {
               key={lesson.id} 
               data-aos="fade-up" 
               onClick={() => handleOpenLesson(lesson)} 
-              className={`group relative h-full flex flex-col p-6 rounded-[1.75rem] border shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer 
+              className={`group relative h-full flex flex-col p-6 rounded-[1.75rem] border shadow-lg hover:-translate-y-2 hover:scale-[1.02] hover:shadow-2xl transition-all duration-300 cursor-pointer 
                 ${theme === 'dark' ? 'bg-[#1e293b] border-slate-700' : 'bg-white border-slate-200'} 
                 ${isCompleted ? 'ring-2 ring-green-500/30' : ''}
                 ${isJustCompleted ? 'animate-completion-bounce ring-4 ring-green-500/70 shadow-[0_0_30px_rgba(34,197,94,0.3)]' : ''}

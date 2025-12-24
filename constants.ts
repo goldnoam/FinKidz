@@ -422,21 +422,5 @@ export const EXTERNAL_LINKS: ResourceLink[] = [
     iconName: 'savings',
     category: 'tools',
     color: 'bg-pink-500'
-  },
-  {
-    id: 'tarbut-kalkalit',
-    title: 'תרבות כלכלית',
-    url: 'https://www.tarbut-kalkalit.co.il/',
-    iconName: 'learn',
-    category: 'tools',
-    color: 'bg-yellow-500'
-  },
-  {
-    id: 'paamonim',
-    title: 'עמותת פעמונים - לילדים',
-    url: 'https://www.paamonim.org/he/category/%D7%9E%D7%A9%D7%A4%D7%97%D7%94/%D7%97%D7%99%D7%A0%D7%95%D7%9A-%D7%A4%D7%99%D7%A0%D7%A0%D7%A1%D7%99-%D7%9C%D7%99%D7%9C%D7%93%D7%99%D7%9D/',
-    iconName: 'safe',
-    category: 'tools',
-    color: 'bg-teal-600'
   }
 ];
