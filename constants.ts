@@ -87,10 +87,38 @@ export const LESSONS: Lesson[] = [
     content: `
       <h3>מהי אינפלציה?</h3>
       <p>אינפלציה היא עלייה מתמשכת במחירים של מוצרים ושירותים. כשיש אינפלציה, הכוח של הכסף שלנו לקנות דברים (כוח הקנייה) יורד.</p>
-      <br>
-      <h3>איך מודדים אותה?</h3>
-      <p>המדד המפורסם ביותר הוא <strong>מדד המחירים לצרכן (CPI)</strong>. המדינה בודקת "סל" של מוצרים ושירותים שמשפחה ממוצעת צורכת (אוכל, דיור, בגדים) ובודקת כמה הוא התייקר.</p>
-      <br>
+      
+      <div class="my-6 bg-slate-800 p-4 rounded-xl border border-slate-700">
+        <h4 class="text-blue-400 font-bold mb-3 text-center">כוח הקנייה של 100 ש"ח לאורך זמן</h4>
+        <div class="h-40 flex items-end gap-4 justify-around px-2">
+          <div class="flex flex-col items-center gap-1 w-full max-w-[50px]">
+            <div class="bg-green-500 w-full h-[90%] rounded-t-md opacity-90 relative group">
+              <span class="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] font-bold">100%</span>
+            </div>
+            <span class="text-[10px] font-bold text-slate-400 mt-1">1990</span>
+          </div>
+          <div class="flex flex-col items-center gap-1 w-full max-w-[50px]">
+            <div class="bg-yellow-500 w-full h-[65%] rounded-t-md opacity-90 relative">
+               <span class="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] font-bold">72%</span>
+            </div>
+            <span class="text-[10px] font-bold text-slate-400 mt-1">2005</span>
+          </div>
+          <div class="flex flex-col items-center gap-1 w-full max-w-[50px]">
+            <div class="bg-orange-500 w-full h-[45%] rounded-t-md opacity-90 relative">
+               <span class="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] font-bold">50%</span>
+            </div>
+            <span class="text-[10px] font-bold text-slate-400 mt-1">2015</span>
+          </div>
+          <div class="flex flex-col items-center gap-1 w-full max-w-[50px]">
+            <div class="bg-red-500 w-full h-[30%] rounded-t-md animate-pulse relative">
+               <span class="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] font-bold">35%</span>
+            </div>
+            <span class="text-[10px] font-bold text-slate-400 mt-1">היום</span>
+          </div>
+        </div>
+        <p class="text-[11px] text-center text-slate-500 mt-4 italic">הגרף ממחיש כמה מוצרים ניתן לקנות באותם 100 שקלים ככל שהמחירים עולים.</p>
+      </div>
+
       <h3>השפעות האינפלציה:</h3>
       <ul class="list-disc list-inside space-y-2">
         <li><strong>עליית מחירים:</strong> הכל נהיה יקר יותר.</li>
@@ -105,10 +133,15 @@ export const LESSONS: Lesson[] = [
         content: `
           <h3>What is Inflation?</h3>
           <p>Inflation is the general increase in prices and fall in the purchasing value of money. When inflation occurs, each unit of currency buys fewer goods and services.</p>
-          <br>
-          <h3>How is it measured?</h3>
-          <p>Economists use the <strong>Consumer Price Index (CPI)</strong>. This index tracks the price of a "basket" of common goods and services like housing, food, and transportation.</p>
-          <br>
+          <div class="my-6 bg-slate-800 p-4 rounded-xl border border-slate-700">
+            <h4 class="text-blue-400 font-bold mb-3 text-center">Purchasing Power of $100 Over Time</h4>
+            <div class="h-40 flex items-end gap-4 justify-around px-2">
+              <div class="flex flex-col items-center gap-1 w-full max-w-[50px]"><div class="bg-green-500 w-full h-[90%] rounded-t-md"></div><span class="text-[10px]">1990</span></div>
+              <div class="flex flex-col items-center gap-1 w-full max-w-[50px]"><div class="bg-yellow-500 w-full h-[65%] rounded-t-md"></div><span class="text-[10px]">2005</span></div>
+              <div class="flex flex-col items-center gap-1 w-full max-w-[50px]"><div class="bg-orange-500 w-full h-[45%] rounded-t-md"></div><span class="text-[10px]">2015</span></div>
+              <div class="flex flex-col items-center gap-1 w-full max-w-[50px]"><div class="bg-red-500 w-full h-[30%] rounded-t-md"></div><span class="text-[10px]">Now</span></div>
+            </div>
+          </div>
           <h3>Effects of Inflation:</h3>
           <ul class="list-disc list-inside space-y-2">
             <li><strong>Rising Prices:</strong> Goods and services become more expensive over time.</li>
@@ -121,13 +154,13 @@ export const LESSONS: Lesson[] = [
   },
   {
     id: 'cpi',
-    title: 'מדד המחירים לצרכן',
+    title: 'מדד המחירים לצרכן (Israel CPI)',
     description: 'איך המדינה מודדת אם הכל מתייקר? הכירו את "הסל" של כולנו.',
     category: 'basics',
     difficulty: 'מתקדם',
     iconName: 'chart',
     content: `
-      <p>המדד בודק כמה עולה "סל מוצרים" ממוצע של משפחה. אם מחיר הסל עולה - יש <strong>אינפלציה</strong>.</p>
+      <p>המדד בודק כמה עולה "סל מוצרים" ממוצע של משפחה בישראל. אם מחיר הסל עולה - יש <strong>אינפלציה</strong>.</p>
       
       <div class="bg-slate-800 p-4 rounded-xl my-4 border border-slate-700 shadow-inner">
         <h4 class="text-indigo-400 font-bold mb-3 text-center">מה יש בתוך "סל המדד"?</h4>
@@ -139,37 +172,56 @@ export const LESSONS: Lesson[] = [
         </div>
       </div>
 
-      <h3>למה זה חשוב?</h3>
-      <p>כשהמדד עולה, הכסף שלנו "שווה פחות" כי אפשר לקנות איתו פחות דברים מאותו סל.</p>
-      
-      <div class="mt-6">
-        <h4 class="text-blue-400 font-bold mb-2">שינוי המדד לאורך זמן (דוגמה):</h4>
-        <div class="h-32 flex items-end gap-2 bg-slate-800/50 p-4 rounded-lg border border-slate-700">
-          <div class="flex-1 flex flex-col items-center gap-1">
-            <div class="bg-indigo-500 w-full h-[30%] rounded-t-md opacity-60"></div>
-            <span class="text-[9px]">2021</span>
+      <div class="mt-6 bg-slate-900/50 p-6 rounded-2xl border border-indigo-500/30">
+        <h4 class="text-indigo-300 font-bold mb-4 text-center">מדד המחירים לצרכן בישראל (שינוי שנתי %)</h4>
+        <div class="h-44 flex items-end gap-3 px-2 border-b border-slate-700 relative">
+          <!-- Horizontal grid lines -->
+          <div class="absolute w-full h-px bg-slate-800 top-0"></div>
+          <div class="absolute w-full h-px bg-slate-800 top-1/4"></div>
+          <div class="absolute w-full h-px bg-slate-800 top-2/4"></div>
+          <div class="absolute w-full h-px bg-slate-800 top-3/4"></div>
+          
+          <div class="flex-1 flex flex-col items-center gap-2 group relative">
+            <div class="bg-indigo-500/40 w-full h-[20%] rounded-t-md transition-all group-hover:h-[25%] group-hover:bg-indigo-400"></div>
+            <span class="text-[9px] font-bold">2019</span>
+            <span class="absolute -top-6 text-[10px] opacity-0 group-hover:opacity-100 transition-opacity">0.6%</span>
           </div>
-          <div class="flex-1 flex flex-col items-center gap-1">
-            <div class="bg-indigo-500 w-full h-[65%] rounded-t-md opacity-80"></div>
-            <span class="text-[9px]">2022</span>
+          <div class="flex-1 flex flex-col items-center gap-2 group relative">
+            <div class="bg-indigo-500/40 w-full h-[15%] rounded-t-md transition-all group-hover:h-[20%] group-hover:bg-indigo-400"></div>
+            <span class="text-[9px] font-bold">2020</span>
+            <span class="absolute -top-6 text-[10px] opacity-0 group-hover:opacity-100 transition-opacity">-0.7%</span>
           </div>
-          <div class="flex-1 flex flex-col items-center gap-1">
-            <div class="bg-indigo-500 w-full h-[45%] rounded-t-md"></div>
-            <span class="text-[9px]">2023</span>
+          <div class="flex-1 flex flex-col items-center gap-2 group relative">
+            <div class="bg-indigo-500/40 w-full h-[40%] rounded-t-md transition-all group-hover:h-[45%] group-hover:bg-indigo-400"></div>
+            <span class="text-[9px] font-bold">2021</span>
+            <span class="absolute -top-6 text-[10px] opacity-0 group-hover:opacity-100 transition-opacity">2.8%</span>
           </div>
-          <div class="flex-1 flex flex-col items-center gap-1">
-            <div class="bg-pink-500 w-full h-[85%] rounded-t-md animate-pulse"></div>
-            <span class="text-[9px]">היום</span>
+          <div class="flex-1 flex flex-col items-center gap-2 group relative">
+            <div class="bg-indigo-500/60 w-full h-[75%] rounded-t-md transition-all group-hover:h-[80%] group-hover:bg-indigo-400"></div>
+            <span class="text-[9px] font-bold">2022</span>
+            <span class="absolute -top-6 text-[10px] opacity-0 group-hover:opacity-100 transition-opacity">5.3%</span>
+          </div>
+          <div class="flex-1 flex flex-col items-center gap-2 group relative">
+            <div class="bg-pink-500/80 w-full h-[55%] rounded-t-md transition-all group-hover:h-[60%] animate-pulse"></div>
+            <span class="text-[9px] font-bold">2023</span>
+            <span class="absolute -top-6 text-[10px] opacity-0 group-hover:opacity-100 transition-opacity">3.0%</span>
           </div>
         </div>
+        <div class="mt-4 flex justify-between items-center text-[10px] text-slate-500 px-1">
+          <span>מקור: הלשכה המרכזית לסטטיסטיקה (מקורב)</span>
+          <span className="flex items-center gap-1"><span class="w-2 h-2 bg-pink-500 rounded-full inline-block"></span> מגמה נוכחית</span>
+        </div>
       </div>
+
+      <h3 class="mt-8">למה זה חשוב?</h3>
+      <p>כשהמדד עולה, הכסף שלנו "שווה פחות" כי אפשר לקנות איתו פחות דברים מאותו סל. בנק ישראל עוקב אחרי המדד הזה כדי להחליט אם להעלות את הריבית במשק.</p>
     `,
     translations: {
       en: {
         title: 'Consumer Price Index (CPI)',
         description: 'How do we measure if prices are going up? Meet the national "Basket".',
         content: `
-          <p>The CPI measures the average price of a "basket of goods". If prices go up, it is called <strong>inflation</strong>.</p>
+          <p>The CPI measures the average price of a "basket of goods" in Israel. If prices go up, it is called <strong>inflation</strong>.</p>
           <div class="bg-slate-800 p-4 rounded-xl my-4 border border-slate-700 shadow-inner">
             <h4 class="text-indigo-400 font-bold mb-3 text-center">What is inside the "CPI Basket"?</h4>
             <div class="grid grid-cols-4 gap-3 text-center">
@@ -179,12 +231,13 @@ export const LESSONS: Lesson[] = [
               <div class="flex flex-col items-center"><span class="text-3xl mb-1">🎭</span><span class="text-[10px]">Culture</span></div>
             </div>
           </div>
-          <h3>Historical Changes (Example):</h3>
+          <h3>Israel CPI Trend (Annual % Change):</h3>
           <div class="h-32 flex items-end gap-2 bg-slate-800/50 p-4 rounded-lg border border-slate-700 mt-4">
-            <div class="flex-1 flex flex-col items-center gap-1"><div class="bg-indigo-500 w-full h-[30%] rounded-t-md"></div><span class="text-[9px]">2021</span></div>
-            <div class="flex-1 flex flex-col items-center gap-1"><div class="bg-indigo-500 w-full h-[65%] rounded-t-md"></div><span class="text-[9px]">2022</span></div>
-            <div class="flex-1 flex flex-col items-center gap-1"><div class="bg-indigo-500 w-full h-[45%] rounded-t-md"></div><span class="text-[9px]">2023</span></div>
-            <div class="flex-1 flex flex-col items-center gap-1"><div class="bg-pink-500 w-full h-[85%] rounded-t-md"></div><span class="text-[9px]">Now</span></div>
+            <div class="flex-1 flex flex-col items-center gap-1"><div class="bg-indigo-500 w-full h-[20%] rounded-t-md"></div><span class="text-[9px]">2019</span></div>
+            <div class="flex-1 flex flex-col items-center gap-1"><div class="bg-indigo-500 w-full h-[10%] rounded-t-md"></div><span class="text-[9px]">2020</span></div>
+            <div class="flex-1 flex flex-col items-center gap-1"><div class="bg-indigo-500 w-full h-[40%] rounded-t-md"></div><span class="text-[9px]">2021</span></div>
+            <div class="flex-1 flex flex-col items-center gap-1"><div class="bg-indigo-500 w-full h-[75%] rounded-t-md"></div><span class="text-[9px]">2022</span></div>
+            <div class="flex-1 flex flex-col items-center gap-1"><div class="bg-pink-500 w-full h-[55%] rounded-t-md"></div><span class="text-[9px]">2023</span></div>
           </div>
         `
       }
