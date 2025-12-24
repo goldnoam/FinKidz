@@ -45,32 +45,49 @@ const FinancialGame: React.FC = () => {
     setItems(prev => [...prev, newItem]);
   }, [score]);
 
+  const movePlayer = useCallback((direction: 'up' | 'down' | 'left' | 'right') => {
+    if (isPaused || gameOver) return;
+    const step = 20;
+    switch (direction) {
+      case 'up':
+        setPlayer(p => ({ ...p, y: Math.max(0, p.y - step) }));
+        break;
+      case 'down':
+        setPlayer(p => ({ ...p, y: Math.min(CANVAS_HEIGHT - PLAYER_SIZE, p.y + step) }));
+        break;
+      case 'left':
+        setPlayer(p => ({ ...p, x: Math.max(0, p.x - step) }));
+        break;
+      case 'right':
+        setPlayer(p => ({ ...p, x: Math.min(CANVAS_WIDTH - PLAYER_SIZE, p.x + step) }));
+        break;
+    }
+  }, [isPaused, gameOver]);
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (isPaused || gameOver) return;
-      const step = 20;
       switch (e.key.toLowerCase()) {
         case 'w':
         case 'arrowup':
-          setPlayer(p => ({ ...p, y: Math.max(0, p.y - step) }));
+          movePlayer('up');
           break;
         case 's':
         case 'arrowdown':
-          setPlayer(p => ({ ...p, y: Math.min(CANVAS_HEIGHT - PLAYER_SIZE, p.y + step) }));
+          movePlayer('down');
           break;
         case 'a':
         case 'arrowleft':
-          setPlayer(p => ({ ...p, x: Math.max(0, p.x - step) }));
+          movePlayer('left');
           break;
         case 'd':
         case 'arrowright':
-          setPlayer(p => ({ ...p, x: Math.min(CANVAS_WIDTH - PLAYER_SIZE, p.x + step) }));
+          movePlayer('right');
           break;
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isPaused, gameOver]);
+  }, [movePlayer]);
 
   const update = useCallback((time: number) => {
     if (lastTimeRef.current !== undefined) {
@@ -158,21 +175,24 @@ const FinancialGame: React.FC = () => {
     });
 
     if (gameOver) {
-      ctx.fillStyle = 'rgba(0,0,0,0.7)';
+      ctx.fillStyle = 'rgba(0,0,0,0.8)';
       ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-      ctx.fillStyle = 'white';
-      ctx.font = 'bold 30px Rubik';
+      ctx.fillStyle = '#ef4444';
+      ctx.font = 'bold 36px Rubik';
       ctx.textAlign = 'center';
-      ctx.fillText('המשחק נגמר!', CANVAS_WIDTH/2, CANVAS_HEIGHT/2 - 20);
+      ctx.fillText('הפסדת!', CANVAS_WIDTH/2, CANVAS_HEIGHT/2 - 20);
+      ctx.fillStyle = 'white';
       ctx.font = '20px Rubik';
-      ctx.fillText(`ניקוד סופי: ${score}`, CANVAS_WIDTH/2, CANVAS_HEIGHT/2 + 20);
+      ctx.fillText(`ניקוד סופי: ${score}`, CANVAS_WIDTH/2, CANVAS_HEIGHT/2 + 25);
     } else if (isPaused) {
-      ctx.fillStyle = 'rgba(0,0,0,0.5)';
+      ctx.fillStyle = 'rgba(0,0,0,0.6)';
       ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
       ctx.fillStyle = 'white';
-      ctx.font = 'bold 24px Rubik';
+      ctx.font = 'bold 28px Rubik';
       ctx.textAlign = 'center';
       ctx.fillText('משחק מושהה', CANVAS_WIDTH/2, CANVAS_HEIGHT/2);
+      ctx.font = '16px Rubik';
+      ctx.fillText('לחץ על "המשך" כדי לשחק', CANVAS_WIDTH/2, CANVAS_HEIGHT/2 + 35);
     }
   }, [player, items, isPaused, gameOver, score]);
 
@@ -192,39 +212,43 @@ const FinancialGame: React.FC = () => {
         </div>
       </div>
 
-      <div className="relative group">
+      <div className="relative group overflow-hidden rounded-2xl shadow-inner border border-slate-700">
         <canvas 
           ref={canvasRef} 
           width={CANVAS_WIDTH} 
           height={CANVAS_HEIGHT} 
-          className="bg-slate-900 rounded-2xl shadow-inner border border-slate-700"
+          className="bg-slate-900"
         />
         
         {/* On-screen Controls (WASD) for Mobile */}
-        <div className="mt-6 grid grid-cols-3 gap-2 w-full max-w-[200px] md:hidden">
+        <div className="mt-6 grid grid-cols-3 gap-3 w-full max-w-[200px] md:hidden mb-4 mx-auto">
           <div />
           <button 
-            onMouseDown={() => window.dispatchEvent(new KeyboardEvent('keydown', { key: 'w' }))}
-            className="p-4 bg-slate-700 rounded-xl active:bg-slate-600 flex justify-center"
+            onTouchStart={(e) => { e.preventDefault(); movePlayer('up'); }}
+            onMouseDown={(e) => { e.preventDefault(); movePlayer('up'); }}
+            className="p-5 bg-slate-700/80 backdrop-blur rounded-2xl active:bg-indigo-600 active:scale-95 transition-all flex justify-center shadow-lg border border-slate-600"
           >
             <ArrowUp className="w-6 h-6 text-white" />
           </button>
           <div />
           <button 
-            onMouseDown={() => window.dispatchEvent(new KeyboardEvent('keydown', { key: 'a' }))}
-            className="p-4 bg-slate-700 rounded-xl active:bg-slate-600 flex justify-center"
+            onTouchStart={(e) => { e.preventDefault(); movePlayer('left'); }}
+            onMouseDown={(e) => { e.preventDefault(); movePlayer('left'); }}
+            className="p-5 bg-slate-700/80 backdrop-blur rounded-2xl active:bg-indigo-600 active:scale-95 transition-all flex justify-center shadow-lg border border-slate-600"
           >
             <ArrowLeft className="w-6 h-6 text-white" />
           </button>
           <button 
-            onMouseDown={() => window.dispatchEvent(new KeyboardEvent('keydown', { key: 's' }))}
-            className="p-4 bg-slate-700 rounded-xl active:bg-slate-600 flex justify-center"
+            onTouchStart={(e) => { e.preventDefault(); movePlayer('down'); }}
+            onMouseDown={(e) => { e.preventDefault(); movePlayer('down'); }}
+            className="p-5 bg-slate-700/80 backdrop-blur rounded-2xl active:bg-indigo-600 active:scale-95 transition-all flex justify-center shadow-lg border border-slate-600"
           >
             <ArrowDown className="w-6 h-6 text-white" />
           </button>
           <button 
-            onMouseDown={() => window.dispatchEvent(new KeyboardEvent('keydown', { key: 'd' }))}
-            className="p-4 bg-slate-700 rounded-xl active:bg-slate-600 flex justify-center"
+            onTouchStart={(e) => { e.preventDefault(); movePlayer('right'); }}
+            onMouseDown={(e) => { e.preventDefault(); movePlayer('right'); }}
+            className="p-5 bg-slate-700/80 backdrop-blur rounded-2xl active:bg-indigo-600 active:scale-95 transition-all flex justify-center shadow-lg border border-slate-600"
           >
             <ArrowRight className="w-6 h-6 text-white" />
           </button>
@@ -235,24 +259,25 @@ const FinancialGame: React.FC = () => {
         <button 
           onClick={() => setIsPaused(!isPaused)}
           disabled={gameOver}
-          className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-bold transition-all ${
-            isPaused ? 'bg-green-600 hover:bg-green-500' : 'bg-yellow-600 hover:bg-yellow-500'
+          className={`flex-1 flex items-center justify-center gap-2 py-4 rounded-xl font-bold transition-all transform active:scale-95 ${
+            isPaused ? 'bg-green-600 hover:bg-green-500 shadow-green-900/40' : 'bg-yellow-600 hover:bg-yellow-500 shadow-yellow-900/40'
           } text-white shadow-lg disabled:opacity-50`}
         >
-          {isPaused ? <Play className="w-5 h-5" /> : <Pause className="w-5 h-5" />}
+          {isPaused ? <Play className="w-6 h-6" /> : <Pause className="w-6 h-6" />}
           {isPaused ? 'המשך' : 'השהה'}
         </button>
         <button 
           onClick={resetGame}
-          className="flex-1 flex items-center justify-center gap-2 py-3 bg-slate-700 hover:bg-slate-600 text-white rounded-xl font-bold transition-all shadow-lg"
+          className="flex-1 flex items-center justify-center gap-2 py-4 bg-slate-700 hover:bg-slate-600 text-white rounded-xl font-bold transition-all transform active:scale-95 shadow-lg shadow-black/20"
         >
-          <RotateCcw className="w-5 h-5" />
+          <RotateCcw className="w-6 h-6" />
           איפוס
         </button>
       </div>
 
-      <div className="text-slate-500 text-xs text-center">
-        השתמש ב-WASD או במקשי החיצים כדי לזוז
+      <div className="text-slate-500 text-xs text-center flex items-center gap-2">
+        <span className="hidden md:inline">השתמש ב-WASD או במקשי החיצים כדי לזוז</span>
+        <span className="md:hidden">השתמש בכפתורי החיצים כדי לזוז</span>
       </div>
     </div>
   );
