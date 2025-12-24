@@ -306,12 +306,14 @@ function App() {
             <div className="absolute inset-0 pointer-events-none">
               {Array.from({length: 20}).map((_, i) => (
                 <div key={i} className="absolute w-2 h-2 rounded-full animate-celebrate" style={{
-                  left: `${Math.random() * 100}%`,
-                  top: `110%`,
+                  '--dx': `${(Math.random() - 0.5) * 400}px`,
+                  '--dy': `${(Math.random() - 0.5) * 400}px`,
+                  '--dr': `${Math.random() * 360}deg`,
+                  left: `50%`,
+                  top: `50%`,
                   backgroundColor: ['#fbbf24', '#f59e0b', '#ffffff', '#ec4899'][Math.floor(Math.random() * 4)],
-                  animationDelay: `${Math.random() * 1.5}s`,
-                  animationDuration: `${1 + Math.random()}s`
-                }} />
+                  animationDelay: `${Math.random() * 0.5}s`,
+                } as any} />
               ))}
             </div>
 
@@ -427,14 +429,16 @@ function App() {
               {isJustCompleted && (
                 <div className="absolute inset-0 z-40 flex items-center justify-center pointer-events-none overflow-hidden rounded-[1.75rem]">
                    <div className="absolute inset-0 bg-green-500/10 animate-pulse"></div>
-                   {Array.from({ length: 20 }).map((_, i) => (
+                   {Array.from({ length: 30 }).map((_, i) => (
                      <div key={i} className="absolute w-2 h-2 rounded-full animate-celebrate" style={{
-                       left: `${Math.random() * 100}%`,
-                       top: `${Math.random() * 100}%`,
+                       '--dx': `${(Math.random() - 0.5) * 200}px`,
+                       '--dy': `${(Math.random() - 0.5) * 200}px`,
+                       '--dr': `${Math.random() * 360}deg`,
+                       left: `50%`,
+                       top: `50%`,
                        backgroundColor: ['#ef4444', '#3b82f6', '#fbbf24', '#10b981', '#a855f7', '#ffffff'][Math.floor(Math.random() * 6)],
                        animationDelay: `${Math.random() * 0.4}s`,
-                       animationDuration: `${0.8 + Math.random() * 1}s`
-                     }} />
+                     } as any} />
                    ))}
                 </div>
               )}

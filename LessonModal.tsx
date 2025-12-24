@@ -1,9 +1,9 @@
 
 import React, { useMemo, useState, useEffect } from 'react';
 import { X, WifiOff, ArrowLeft, Sparkles, Volume2, VolumeX } from 'lucide-react';
-import { Lesson, Language } from '../types';
-import { getIcon } from './Icons';
-import { LESSONS, UI_TRANSLATIONS } from '../constants';
+import type { Lesson, Language } from './types';
+import { getIcon } from './components/Icons';
+import { LESSONS, UI_TRANSLATIONS } from './constants';
 
 interface LessonModalProps {
   lesson: Lesson | null;
@@ -27,14 +27,14 @@ const LessonModal: React.FC<LessonModalProps> = ({
   language = 'he'
 }) => {
   const [isSpeaking, setIsSpeaking] = useState(false);
-  const t = (key: string) => UI_TRANSLATIONS[language][key] || UI_TRANSLATIONS['he'][key] || key;
+  const t = (key: string) => UI_TRANSLATIONS[language]?.[key] || UI_TRANSLATIONS['he'][key] || key;
 
   const nextLesson = useMemo(() => {
     if (!lesson) return null;
-    const currentIndex = LESSONS.findIndex(l => l.id === lesson.id);
+    const currentIndex = LESSONS.findIndex((l: Lesson) => l.id === lesson.id);
     
-    const sameCategoryLessons = LESSONS.filter(l => l.category === lesson.category);
-    const indexInCat = sameCategoryLessons.findIndex(l => l.id === lesson.id);
+    const sameCategoryLessons = LESSONS.filter((l: Lesson) => l.category === lesson.category);
+    const indexInCat = sameCategoryLessons.findIndex((l: Lesson) => l.id === lesson.id);
     if (indexInCat !== -1 && indexInCat < sameCategoryLessons.length - 1) {
       return sameCategoryLessons[indexInCat + 1];
     }
