@@ -48,11 +48,11 @@ export const UI_TRANSLATIONS: Record<Language, Record<string, string>> = {
     cat_investing: 'Investing',
     cat_advanced: 'Advanced'
   },
-  zh: { home: '首页', lessons: '课程', siteTitle: 'FinKidz', heroTitle: '儿童理财', heroSubtitle: '年轻一代的金融教育' },
-  hi: { home: 'होम', lessons: 'पाठ', siteTitle: 'FinKidz', heroTitle: 'बच्चों के लिए निवेश', heroSubtitle: 'युවා पीढ़ी के लिए वित्तीय शिक्षा' },
-  de: { home: 'Startseite', lessons: 'Lektionen', siteTitle: 'FinKidz', heroTitle: 'Investitionen für Kinder', heroSubtitle: 'Finanzielle Bildung für die junge Generation' },
-  es: { home: 'Inicio', lessons: 'Lecciones', siteTitle: 'FinKidz', heroTitle: 'Inversiones para Niños', heroSubtitle: 'Educación Financiera para la Generation Joven' },
-  fr: { home: 'Accueil', lessons: 'Leçons', siteTitle: 'FinKidz', heroTitle: 'Investissements pour Enfants', heroSubtitle: 'Éducation financière pour la jeune génération' }
+  zh: { home: '首页', lessons: '课程', siteTitle: 'FinKidz', heroTitle: '少儿投资课', heroSubtitle: '为年轻一代提供的金融教育', all: '全部', favorites: '收藏', points: '积分', completed: '已完成' },
+  hi: { home: 'होम', lessons: 'पाठ', siteTitle: 'FinKidz', heroTitle: 'बच्चों के लिए निवेश', heroSubtitle: 'युवा पीढ़ी के लिए वित्तीय शिक्षा', all: 'सभी', favorites: 'पसंदीदा', points: 'अंक', completed: 'पूरा हुआ' },
+  de: { home: 'Startseite', lessons: 'Lektionen', siteTitle: 'FinKidz', heroTitle: 'Investitionen für Kinder', heroSubtitle: 'Finanzielle Bildung für die junge Generation', all: 'Alle', favorites: 'Favoriten', points: 'Punkte', completed: 'Abgeschlossen' },
+  es: { home: 'Inicio', lessons: 'Lecciones', siteTitle: 'FinKidz', heroTitle: 'Inversiones para Niños', heroSubtitle: 'Educación financiera para la generación joven', all: 'Todo', favorites: 'Favoritos', points: 'Puntos', completed: 'Completado' },
+  fr: { home: 'Accueil', lessons: 'Leçons', siteTitle: 'FinKidz', heroTitle: 'Investissements pour Enfants', heroSubtitle: 'Éducation financière pour la jeune génération', all: 'Tout', favorites: 'Favoris', points: 'Points', completed: 'Terminé' }
 };
 
 export const LESSONS: Lesson[] = [
@@ -76,269 +76,173 @@ export const LESSONS: Lesson[] = [
     translations: {
       en: {
         title: 'What is Money Anyway?',
-        description: 'First things first - where did money come from and why do we need it?',
-        content: '<p>Long ago, there was no money. People used to swap things. This was called bartering. Money was invented to make trading easier!</p>'
-      }
-    }
-  },
-  {
-    id: 'piggy-bank-secrets',
-    title: 'סודות קופת החיסכון',
-    description: 'למה כדאי לשמור כסף במקום לבזבז אותו מיד?',
-    category: 'starter',
-    difficulty: 'מתחיל',
-    iconName: 'savings',
-    content: `
-      <h3>מה זה חיסכון?</h3>
-      <p>חיסכון הוא כסף שאנחנו מחליטים <strong>לא לבזבז</strong> עכשיו, כדי שנוכל להשתמש בו למשהו גדול וחשוב יותר בעתיד.</p>
-      <div class="my-4 bg-indigo-900/40 p-4 rounded-xl border border-indigo-500/30">
-        <p>דמיינו שאתם מקבלים 10 שקלים. אם תקנו סוכריה ב-10 שקלים, הכסף נעלם. אם תשימו אותו בקופה, ובכל שבוע תשימו עוד 10 שקלים, אחרי חודשיים תוכלו לקנות משחק שרציתם המון זמן!</p>
-      </div>
-      <h3>למה לחסוך?</h3>
-      <ul class="list-disc list-inside space-y-2">
-        <li><strong>מטרה גדולה:</strong> לקנות אופניים, מחשב או מתנה מיוחדת.</li>
-        <li><strong>ביטחון:</strong> שיהיה כסף אם משהו יתקלקל ונצטרך לתקן אותו.</li>
-        <li><strong>חופש:</strong> כשיש חיסכון, אתם יכולים לבחור מה לעשות איתו אחר כך.</li>
-      </ul>
-    `,
-    translations: {
-      en: {
-        title: 'Piggy Bank Secrets',
-        description: 'Why save money instead of spending it all at once?',
-        content: '<p>Saving is choosing not to spend money now so you can have it for something more important later.</p>'
-      }
-    }
-  },
-  {
-    id: 'income-expense',
-    title: 'הכנסות והוצאות',
-    description: 'הבסיס לכל ארנק: מה נכנס ומה יוצא?',
-    category: 'basics',
-    difficulty: 'מתחיל',
-    iconName: 'money',
-    content: `
-      <p><strong>הכנסה</strong> היא כל כסף שאנחנו מקבלים. למשל: דמי כיס, מתנה מסבתא, או משכורת מעבודה.</p>
-      <p><strong>הוצאה</strong> היא כסף שאנחנו משלמים כדי לקנות דברים. למשל: לקנות משחק מחשב, פיצה או בגדים.</p>
-      <br>
-      <h3>המשוואה הפשוטה:</h3>
-      <p>אם ההוצאות שלנו גדולות מההכנסות, אנחנו במינוס (חוב).<br>
-      אם ההכנסות גדולות מההוצאות, נשאר לנו <strong>חיסכון</strong>!</p>
-    `,
-    translations: {
-      en: {
-        title: 'Income and Expenses',
-        description: 'The foundation of every wallet: what comes in and what goes out?',
-        content: '<p><strong>Income</strong> is any money we receive. <strong>Expenses</strong> are the money we pay for things.</p>'
-      }
-    }
-  },
-  {
-    id: 'budget',
-    title: 'תכנון תקציב חכם',
-    description: 'איך לתכנן מראש כדי שיהיה לנו כסף למה שאנחנו באמת רוצים.',
-    category: 'basics',
-    difficulty: 'מתחיל',
-    iconName: 'budget',
-    content: `
-      <p>תקציב הוא בעצם <strong>תוכנית פעולה</strong> לכסף שלנו.</p>
-      <p>במקום סתם לבזבז ולקוות שנשאר משהו, אנחנו מחליטים מראש כמה כסף נקצה לכל דבר.</p>
-      <br>
-      <ul class="list-disc list-inside space-y-2">
-        <li>כמה נשמור לחיסכון?</li>
-        <li>כמה נוציא על בילויים?</li>
-        <li>כמה נשמור למקרה חירום?</li>
-      </ul>
-    `,
-    translations: {
-      en: {
-        title: 'Smart Budgeting',
-        description: 'How to plan ahead so we have money for what we really want.',
-        content: '<p>A budget is an action plan for your money. Instead of just spending, you decide in advance where your money goes.</p>'
-      }
-    }
-  },
-  {
-    id: 'unemployment',
-    title: 'עולם העבודה',
-    description: 'מה זה אומר לעבוד, ולמה כדאי ללמוד מקצוע?',
-    category: 'basics',
-    difficulty: 'מתחיל',
-    iconName: 'goals',
-    content: `
-      <h3>למה אנשים עובדים?</h3>
-      <p>רוב האנשים עובדים כדי לקבל <strong>שכר</strong> (כסף) שמאפשר להם לקנות אוכל, לשלם על הבית ולצאת לחופשות.</p>
-      <h3>מהי אבטלה?</h3>
-      <p>מצב שבו אדם רוצה לעבוד ומחפש עבודה, אך לא מוצא. כשיש פחות אבטלה, הכלכלה של המדינה חזקה יותר.</p>
-      <br>
-      <p class="bg-blue-900/30 p-4 rounded-lg border-l-4 border-blue-500 italic">"לימודים עוזרים לנו למצוא עבודה מעניינת שמרוויחים בה יותר!"</p>
-    `,
-    translations: {
-      en: {
-        title: 'The World of Work',
-        description: 'What it means to work, and why it\'s good to learn a profession.',
+        description: 'Where did money come from and why do we need it?',
         content: `
-          <h3>Why do people work?</h3>
-          <p>Most people work to earn a salary, which allows them to pay for their needs and wants.</p>
-          <h3>Education and Work</h3>
-          <p>Learning new skills usually helps people find better-paying and more interesting jobs.</p>
+          <p>Long ago, money didn't exist. People used to swap things like apples for eggs. This was called <strong>bartering</strong>.</p>
+          <p>But what if you want an apple, but the seller already has enough eggs? That's why money was invented!</p>
+          <h3>Why is money useful?</h3>
+          <ul class="list-disc list-inside space-y-2">
+            <li>It lets us buy what we need.</li>
+            <li>It's easy to keep in a pocket or a bank.</li>
+            <li>Everyone agrees on its value.</li>
+          </ul>
         `
       }
     }
   },
   {
-    id: 'inflation',
-    title: 'אינפלציה: למה המחירים עולים?',
-    description: 'למה שוקולד שעלה פעם שקל עולה היום חמישה?',
-    category: 'basics',
-    difficulty: 'מתקדם',
-    iconName: 'chart',
-    content: `
-      <h3>מהי אינפלציה?</h3>
-      <p>אינפלציה היא מצב שבו המחירים של כמעט הכל עולים לאט לאט. זה אומר שעם אותו שקל, אפשר לקנות פחות דברים מבעבר.</p>
-      
-      <div class="my-6 not-prose bg-slate-800 p-4 rounded-xl border border-slate-700">
-        <h4 class="text-blue-400 font-bold mb-3 text-center">כוח הקנייה של 100 ש"ח לאורך זמן</h4>
-        <div class="h-40 flex items-end gap-4 justify-around px-2">
-          <div class="flex flex-col items-center gap-1 w-full max-w-[50px]">
-            <div class="bg-green-500 w-full h-[90%] rounded-t-md opacity-90 relative group">
-              <span class="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] font-bold">100%</span>
-            </div>
-            <span class="text-[10px] font-bold text-slate-400 mt-1">1990</span>
-          </div>
-          <div class="flex flex-col items-center gap-1 w-full max-w-[50px]">
-            <div class="bg-yellow-500 w-full h-[65%] rounded-t-md opacity-90 relative">
-               <span class="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] font-bold">72%</span>
-            </div>
-            <span class="text-[10px] font-bold text-slate-400 mt-1">2005</span>
-          </div>
-          <div class="flex flex-col items-center gap-1 w-full max-w-[50px]">
-            <div class="bg-orange-500 w-full h-[45%] rounded-t-md opacity-90 relative">
-               <span class="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] font-bold">50%</span>
-            </div>
-            <span class="text-[10px] font-bold text-slate-400 mt-1">2015</span>
-          </div>
-          <div class="flex flex-col items-center gap-1 w-full max-w-[50px]">
-            <div class="bg-red-500 w-full h-[30%] rounded-t-md animate-pulse relative">
-               <span class="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] font-bold">35%</span>
-            </div>
-            <span class="text-[10px] font-bold text-slate-400 mt-1">היום</span>
-          </div>
-        </div>
-        <p class="text-[11px] text-center text-slate-500 mt-4 italic">הגרף ממחיש כמה מוצרים ניתן לקנות באותם 100 שקלים ככל שהמחירים עולים.</p>
-      </div>
-    `,
-    translations: {
-      en: {
-        title: 'Inflation: Why Prices Rise',
-        description: 'Why does chocolate cost more today than it used to?',
-        content: `
-          <h3>What is Inflation?</h3>
-          <p>Inflation is when prices for most things go up slowly. It means your money has less "purchasing power" over time.</p>
-        `
-      }
-    }
-  },
-  {
-    id: 'cpi',
-    title: 'המדד לצרכן',
-    description: 'איך המדינה מודדת אם הכל מתייקר? הכירו את "הסל" שלנו.',
-    category: 'basics',
-    difficulty: 'מתקדם',
-    iconName: 'chart',
-    content: `
-      <p>המדד בודק כמה עולה "סל מוצרים" ממוצע של משפחה בישראל. אם מחיר הסל עולה - יש <strong>אינפלציה</strong>.</p>
-      
-      <div class="bg-slate-800 p-4 rounded-xl my-4 border border-slate-700 shadow-inner">
-        <h4 class="text-indigo-400 font-bold mb-3 text-center">מה יש בתוך "סל המדד"?</h4>
-        <div class="grid grid-cols-4 gap-3 text-center">
-          <div class="flex flex-col items-center"><span class="text-3xl mb-1">🏠</span><span class="text-[10px]">דיור</span></div>
-          <div class="flex flex-col items-center"><span class="text-3xl mb-1">🍕</span><span class="text-[10px]">מזון</span></div>
-          <div class="flex flex-col items-center"><span class="text-3xl mb-1">🚌</span><span class="text-[10px]">תחבורה</span></div>
-          <div class="flex flex-col items-center"><span class="text-3xl mb-1">🎭</span><span class="text-[10px]">תרבות</span></div>
-        </div>
-      </div>
-    `,
-    translations: {
-      en: {
-        title: 'The Price Index',
-        description: 'How do we measure if prices are going up? Meet our "Basket".',
-        content: `<p>The CPI measures the average price of a "basket of goods". If it goes up, we have inflation.</p>`
-      }
-    }
-  },
-  {
-    id: 'forex',
-    title: 'מטבע חוץ (מט"ח)',
-    description: 'דולר, אירו או שקל? איך מחליטים כמה שווה כל מטבע.',
+    id: 'interest',
+    title: 'מהי ריבית?',
+    description: 'הכירו את "דמי השכירות" של הכסף.',
     category: 'banking',
     difficulty: 'מתקדם',
-    iconName: 'exchange',
+    iconName: 'chart',
     content: `
-      <h3>מה זה מט"ח?</h3>
-      <p>אלו מטבעות של מדינות אחרות. כשאנחנו טסים לחו"ל, אנחנו צריכים להחליף את השקלים שלנו במטבע המקומי.</p>
-      <br>
-      <div class="flex justify-center gap-6 text-4xl my-4">
-        <span>💵</span><span>↔️</span><span>₪</span>
+      <h3>כסף לא עובר בחינם</h3>
+      <p>ריבית היא המחיר שמשלמים על שימוש בכסף של מישהו אחר. תחשבו על זה כמו על "שכר דירה" שמשלמים על הכסף.</p>
+      <div class="bg-blue-900/20 p-4 rounded-xl my-4 border-r-4 border-blue-500">
+        <p><strong>ריבית בזכות:</strong> כשאתם שמים כסף בבנק, הבנק משתמש בו ומשלם לכם קצת כסף בתמורה. הכסף שלכם "עובד" בשבילכם!</p>
+        <p class="mt-2"><strong>ריבית בחובה:</strong> כשאתם לוקחים הלוואה מהבנק, אתם צריכים להחזיר לו את הסכום שלקחתם פלוס תוספת של ריבית.</p>
       </div>
-      <h3>שער החליפין</h3>
-      <p>זהו המחיר של מטבע אחד במונחים של מטבע אחר. השער משתנה כל הזמן לפי הביקוש וההיצע בעולם. אם כולם רוצים שקלים, השקל מתחזק!</p>
     `,
     translations: {
       en: {
-        title: 'Foreign Exchange (Forex)',
-        description: 'Dollar, Euro or Shekel? How currency values are determined.',
+        title: 'What is Interest?',
+        description: 'Meet the "rent" for money.',
         content: `
-          <h3>What is Forex?</h3>
-          <p>Forex stands for Foreign Exchange. It is the global market where currencies are traded.</p>
+          <h3>Money isn't free to borrow</h3>
+          <p>Interest is the price you pay to use someone else's money. Think of it like "rent" paid for cash.</p>
+          <div class="bg-blue-900/20 p-4 rounded-xl my-4 border-l-4 border-blue-500">
+            <p><strong>Earning Interest:</strong> When you put money in a bank, the bank pays you interest. Your money is working for you!</p>
+            <p class="mt-2"><strong>Paying Interest:</strong> When you borrow money, you pay it back plus an extra amount called interest.</p>
+          </div>
         `
       }
     }
   },
   {
-    id: 'bonds',
-    title: 'אגרות חוב (אג"ח)',
-    description: 'להלוות כסף לממשלה ולקבל עליו ריבית. הכירו את ההשקעה הסולידית.',
-    category: 'investing',
+    id: 'bank-of-israel',
+    title: 'בנק ישראל: הבנק של הבנקים',
+    description: 'מי שומר על הכסף של המדינה וקובע את הריבית?',
+    category: 'banking',
+    difficulty: 'מתקדם',
+    iconName: 'bank',
+    content: `
+      <h3>הלב הפועם של הכלכלה</h3>
+      <p>בנק ישראל הוא הבנק המרכזי של המדינה. הוא אחראי על הדפסת השקלים ועל היציבות הכלכלית שלנו.</p>
+      <ul class="list-disc list-inside space-y-2">
+        <li><strong>קביעת הריבית:</strong> הוא מחליט אם להעלות או להוריד את הריבית במשק.</li>
+        <li><strong>פיקוח:</strong> הוא שומר שהבנקים האחרים יתנהלו באחריות.</li>
+      </ul>
+    `,
+    translations: {
+      en: {
+        title: 'Bank of Israel: The Central Bank',
+        description: 'Who guards the country\'s money and sets the rates?',
+        content: `
+          <h3>The Heart of the Economy</h3>
+          <p>The Bank of Israel is the country's central bank. It is responsible for printing Shekels and ensuring financial stability.</p>
+          <ul class="list-disc list-inside space-y-2">
+            <li><strong>Setting Interest Rates:</strong> It decides whether to raise or lower the basic interest rate.</li>
+            <li><strong>Supervision:</strong> It makes sure other banks operate responsibly.</li>
+          </ul>
+        `
+      }
+    }
+  },
+  {
+    id: 'deficit',
+    title: 'מהו גרעון?',
+    description: 'כשמדינה מבזבזת יותר ממה שהיא מרוויחה.',
+    category: 'advanced',
+    difficulty: 'מומחה',
+    iconName: 'chart',
+    content: `
+      <h3>החשבון של המדינה</h3>
+      <p>המדינה מקבלת כסף ממיסים (הכנסות) ומוציאה כסף על ביטחון, חינוך ובריאות (הוצאות).</p>
+      <p><strong>גרעון</strong> קורה כשההוצאות גדולות מההכנסות. המדינה צריכה להלוות כסף כדי לסגור את הפער.</p>
+    `,
+    translations: {
+      en: {
+        title: 'What is a Deficit?',
+        description: 'When a country spends more than it earns.',
+        content: `
+          <h3>The National Balance Sheet</h3>
+          <p>A government gets money from taxes (income) and spends it on defense, education, and health (expenses).</p>
+          <p>A <strong>deficit</strong> occurs when expenses are higher than income. The government must borrow money to close the gap.</p>
+        `
+      }
+    }
+  },
+  {
+    id: 'devaluation-appreciation',
+    title: 'פיחות ותיסוף',
+    description: 'למה השקל לפעמים חזק ולפעמים חלש מול הדולר?',
+    category: 'banking',
+    difficulty: 'מומחה',
+    iconName: 'exchange',
+    content: `
+      <h3>כוחו של השקל</h3>
+      <p><strong>תיסוף:</strong> כשערך השקל עולה מול הדולר. זה טוב לנו כשאנחנו קונים מוצרים מחו"ל (הם זולים יותר).</p>
+      <p><strong>פיחות:</strong> כשערך השקל יורד. זה מייקר את הקניות שלנו בחו"ל אבל עוזר ליצואנים הישראלים.</p>
+    `,
+    translations: {
+      en: {
+        title: 'Devaluation & Appreciation',
+        description: 'Why is the Shekel sometimes strong and sometimes weak?',
+        content: `
+          <h3>The Power of the Shekel</h3>
+          <p><strong>Appreciation:</strong> When the Shekel's value rises against the Dollar. Importing goods becomes cheaper.</p>
+          <p><strong>Devaluation:</strong> When the Shekel's value falls. Imports become more expensive, but it helps Israeli exporters sell abroad.</p>
+        `
+      }
+    }
+  },
+  {
+    id: 'mortgage',
+    title: 'מהי משכנתא?',
+    description: 'איך קונים בית בישראל?',
+    category: 'banking',
     difficulty: 'מומחה',
     iconName: 'safe',
     content: `
-      <h3>מה זה אג"ח?</h3>
-      <p>זו בעצם "תעודת התחייבות". כשאתם קונים אג"ח, אתם מלווים כסף למי שהנפיק אותה (מדינה או חברה).</p>
-      <br>
-      <ul class="list-disc list-inside space-y-2">
-        <li><strong>הלווה:</strong> המדינה או החברה שמקבלת את הכסף.</li>
-        <li><strong>המלווה:</strong> אתם!</li>
-        <li><strong>התמורה:</strong> ריבית קבועה מראש לאורך זמן.</li>
-      </ul>
-      <p>בסוף התקופה, הלווה מחזיר לכם את כל סכום ההלוואה המקורי פלוס הריבית שנצברה.</p>
+      <h3>לקנות קירות משלכם</h3>
+      <p>בית עולה המון כסף. משכנתא היא הלוואה גדולה וארוכה מאוד (עד 30 שנה) שמיועדת רק לקניית נכס.</p>
+      <p>הבית עצמו משמש כביטחון לבנק - אם לא מחזירים את ההלוואה, הבנק יכול לקחת את הבית.</p>
     `,
     translations: {
       en: {
-        title: 'Bonds',
-        description: 'Lending money to the government or companies.',
+        title: 'What is a Mortgage?',
+        description: 'How do people buy a home?',
         content: `
-          <h3>What is a Bond?</h3>
-          <p>A bond is like a loan that you provide to a government or a corporation. In return, they pay you interest over time.</p>
+          <h3>Buying Your Own Walls</h3>
+          <p>Homes are very expensive. A mortgage is a very large, long-term loan (up to 30 years) specifically for buying property.</p>
+          <p>The house serves as collateral - if you don't pay back the loan, the bank can take the house.</p>
         `
       }
     }
   },
   {
-    id: 'stock-market',
-    title: 'הבורסה',
-    description: 'הסופרמרקט של החברות הגדולות.',
-    category: 'investing',
+    id: 'loan',
+    title: 'מהי הלוואה?',
+    description: 'לקבל כסף היום ולהחזיר אותו בעתיד.',
+    category: 'banking',
     difficulty: 'מתקדם',
-    iconName: 'investing',
+    iconName: 'money',
     content: `
-      <p>הבורסה היא מקום שבו אנשים יכולים לקנות ולמכור חלקים קטנים מחברות. חלק קטן כזה נקרא <strong>מניה</strong>.</p>
-      <p>אם החברה מצליחה ומרוויחה, ערך המניה עולה. אם החברה נכשלת, ערך המניה יורד ואפשר להפסיד כסף.</p>
+      <h3>צריכים משהו עכשיו?</h3>
+      <p>הלוואה היא כסף שמקבלים מגוף מסוים (בנק) ומבטיחים להחזיר בתשלומים לאורך זמן פלוס ריבית.</p>
+      <p><strong>כלל חשוב:</strong> לוקחים הלוואה רק אם בטוחים שנוכל להחזיר אותה בכל חודש!</p>
     `,
     translations: {
       en: {
-        title: 'The Stock Market',
-        description: 'The supermarket for big companies.',
-        content: '<p>The stock market is a place where shares of public companies are issued and traded.</p>'
+        title: 'What is a Loan?',
+        description: 'Get money today, pay it back in the future.',
+        content: `
+          <h3>Need something now?</h3>
+          <p>A loan is money borrowed from a bank with the promise to pay it back in installments over time, plus interest.</p>
+          <p><strong>Golden Rule:</strong> Only take a loan if you are certain you can afford the monthly payments!</p>
+        `
       }
     }
   }
@@ -411,29 +315,5 @@ export const EXTERNAL_LINKS: ResourceLink[] = [
     iconName: 'news',
     category: 'news',
     color: 'bg-orange-600'
-  },
-  {
-    id: 'themarker',
-    title: 'דה מרקר (TheMarker)',
-    url: 'https://www.themarker.com/',
-    iconName: 'news',
-    category: 'news',
-    color: 'bg-green-700'
-  },
-  {
-    id: 'bizportal',
-    title: 'ביזפורטל (Bizportal)',
-    url: 'https://www.bizportal.co.il/',
-    iconName: 'chart',
-    category: 'news',
-    color: 'bg-blue-600'
-  },
-  {
-    id: 'kessef-katan',
-    title: 'כסף קטן - בנק ישראל',
-    url: 'https://www.boi.org.il/information/community-relations/small-moneyar/',
-    iconName: 'savings',
-    category: 'tools',
-    color: 'bg-pink-500'
   }
 ];

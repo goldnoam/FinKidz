@@ -31,7 +31,7 @@ const EASTER_EGG_FACTS = [
 
 // Helper for AdSense Ad slots
 const AdSlot = ({ className }: { className?: string }) => (
-  <div className={`my-8 overflow-hidden rounded-xl bg-slate-800/20 border border-slate-700/30 flex items-center justify-center p-4 min-h-[100px] ${className}`}>
+  <div className={`my-8 overflow-hidden rounded-xl bg-slate-800/20 border border-slate-700/30 flex items-center justify-center p-4 min-h-[100px] relative ${className}`}>
     <ins className="adsbygoogle"
          style={{ display: 'block', width: '100%' }}
          data-ad-client="ca-pub-0274741291001288"
@@ -39,7 +39,7 @@ const AdSlot = ({ className }: { className?: string }) => (
          data-ad-format="auto"
          data-full-width-responsive="true"></ins>
     <script>{`(adsbygoogle = window.adsbygoogle || []).push({});`}</script>
-    <span className="text-slate-600 text-[10px] uppercase font-bold tracking-widest absolute">Advertisement</span>
+    <span className="text-slate-600 text-[10px] uppercase font-bold tracking-widest absolute bottom-2">Advertisement</span>
   </div>
 );
 
@@ -111,8 +111,18 @@ function App() {
     }
   }, []);
 
+  // Effect for setting document title and description meta for SEO
   useEffect(() => {
     document.title = t('siteTitle');
+    
+    // Inject or update meta description for SEO
+    let metaDesc = document.querySelector('meta[name="description"]');
+    if (!metaDesc) {
+      metaDesc = document.createElement('meta');
+      metaDesc.setAttribute('name', 'description');
+      document.head.appendChild(metaDesc);
+    }
+    metaDesc.setAttribute('content', t('heroSubtitle'));
   }, [lang]);
 
   useEffect(() => {

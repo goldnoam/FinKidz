@@ -1,11 +1,12 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Play, Pause, RotateCcw, Coins, Skull, ArrowUp, ArrowDown, ArrowLeft, ArrowRight } from 'lucide-react';
+import { Play, Pause, RotateCcw, Coins, Skull, ArrowUp, ArrowDown, ArrowLeft, ArrowRight, Heart } from 'lucide-react';
 
 const CANVAS_WIDTH = 400;
 const CANVAS_HEIGHT = 400;
 const PLAYER_SIZE = 40;
 const ITEM_SIZE = 25;
+const INITIAL_LIVES = 5;
 
 interface GameObject {
   x: number;
@@ -17,21 +18,25 @@ interface GameObject {
 const FinancialGame: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [score, setScore] = useState(0);
+  const [lives, setLives] = useState(INITIAL_LIVES);
   const [isPaused, setIsPaused] = useState(true);
   const [gameOver, setGameOver] = useState(false);
   const [player, setPlayer] = useState({ x: CANVAS_WIDTH / 2 - PLAYER_SIZE / 2, y: CANVAS_HEIGHT - 60 });
   const [items, setItems] = useState<GameObject[]>([]);
   const [highScore, setHighScore] = useState(Number(localStorage.getItem('finkidz_high_score') || 0));
+  const [hitFlash, setHitFlash] = useState(false);
 
   const requestRef = useRef<number>();
   const lastTimeRef = useRef<number>();
 
   const resetGame = () => {
     setScore(0);
+    setLives(INITIAL_LIVES);
     setGameOver(false);
     setIsPaused(false);
     setPlayer({ x: CANVAS_WIDTH / 2 - PLAYER_SIZE / 2, y: CANVAS_HEIGHT - 60 });
     setItems([]);
+    setHitFlash(false);
   };
 
   const spawnItem = useCallback(() => {
@@ -41,7 +46,7 @@ const FinancialGame: React.FC = () => {
       x: Math.random() * (CANVAS_WIDTH - ITEM_SIZE),
       y: -ITEM_SIZE,
       type,
-      speed: 2 + Math.random() * 2 + (score / 1000), // Speed up as score increases
+      speed: 2 + Math.random() * 2 + (score / 2000), // Speed up slightly as score increases
     };
     setItems(prev => [...prev, newItem]);
   }, [score]);
@@ -100,6 +105,8 @@ const FinancialGame: React.FC = () => {
 
           // Collision detection
           let newScore = score;
+          let newLives = lives;
+          
           const remainingItems = nextItems.filter(item => {
             const hasCollided = 
               item.x < player.x + PLAYER_SIZE &&
@@ -111,8 +118,13 @@ const FinancialGame: React.FC = () => {
               if (item.type === 'income') {
                 newScore += 100;
               } else {
-                setGameOver(true);
-                setIsPaused(true);
+                newLives -= 1;
+                setHitFlash(true);
+                setTimeout(() => setHitFlash(false), 200);
+                if (newLives <= 0) {
+                  setGameOver(true);
+                  setIsPaused(true);
+                }
               }
               return false;
             }
@@ -120,15 +132,16 @@ const FinancialGame: React.FC = () => {
           });
 
           if (newScore !== score) setScore(newScore);
+          if (newLives !== lives) setLives(newLives);
           return remainingItems;
         });
 
-        if (Math.random() < 0.03) spawnItem();
+        if (Math.random() < 0.035) spawnItem();
       }
     }
     lastTimeRef.current = time;
     requestRef.current = requestAnimationFrame(update);
-  }, [isPaused, gameOver, player, score, spawnItem]);
+  }, [isPaused, gameOver, player, score, lives, spawnItem]);
 
   useEffect(() => {
     requestRef.current = requestAnimationFrame(update);
@@ -151,6 +164,12 @@ const FinancialGame: React.FC = () => {
 
     ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
+    // Flash background on hit
+    if (hitFlash) {
+      ctx.fillStyle = 'rgba(239, 68, 68, 0.2)';
+      ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+    }
+
     // Draw background grid
     ctx.strokeStyle = '#334155';
     ctx.lineWidth = 0.5;
@@ -159,31 +178,31 @@ const FinancialGame: React.FC = () => {
       ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(CANVAS_WIDTH, i); ctx.stroke();
     }
 
-    // Draw Player (Piggy Bank style)
-    ctx.fillStyle = '#f472b6'; // Pink-400
+    // Draw Player
+    ctx.fillStyle = hitFlash ? '#ef4444' : '#f472b6'; 
     ctx.beginPath();
     ctx.roundRect(player.x, player.y, PLAYER_SIZE, PLAYER_SIZE, 10);
     ctx.fill();
-    ctx.fillStyle = '#db2777'; // Pink-600
+    ctx.fillStyle = '#db2777';
     ctx.font = '24px Arial';
     ctx.textAlign = 'center';
     ctx.fillText('🐖', player.x + PLAYER_SIZE/2, player.y + PLAYER_SIZE/1.4);
 
     // Draw Items
     items.forEach(item => {
-      ctx.font = '20px Arial';
+      ctx.font = '22px Arial';
       ctx.fillText(item.type === 'income' ? '💰' : '💸', item.x + ITEM_SIZE/2, item.y + ITEM_SIZE/1.2);
     });
 
     if (gameOver) {
-      ctx.fillStyle = 'rgba(0,0,0,0.8)';
+      ctx.fillStyle = 'rgba(0,0,0,0.85)';
       ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
       ctx.fillStyle = '#ef4444';
-      ctx.font = 'bold 36px Rubik';
+      ctx.font = 'bold 40px Rubik';
       ctx.textAlign = 'center';
-      ctx.fillText('הפסדת!', CANVAS_WIDTH/2, CANVAS_HEIGHT/2 - 20);
+      ctx.fillText('המשחק נגמר!', CANVAS_WIDTH/2, CANVAS_HEIGHT/2 - 20);
       ctx.fillStyle = 'white';
-      ctx.font = '20px Rubik';
+      ctx.font = '22px Rubik';
       ctx.fillText(`ניקוד סופי: ${score}`, CANVAS_WIDTH/2, CANVAS_HEIGHT/2 + 25);
     } else if (isPaused) {
       ctx.fillStyle = 'rgba(0,0,0,0.6)';
@@ -191,25 +210,29 @@ const FinancialGame: React.FC = () => {
       ctx.fillStyle = 'white';
       ctx.font = 'bold 28px Rubik';
       ctx.textAlign = 'center';
-      ctx.fillText('משחק מושהה', CANVAS_WIDTH/2, CANVAS_HEIGHT/2);
+      ctx.fillText('מוכן להתחיל?', CANVAS_WIDTH/2, CANVAS_HEIGHT/2);
       ctx.font = '16px Rubik';
       ctx.fillText('לחץ על "המשך" כדי לשחק', CANVAS_WIDTH/2, CANVAS_HEIGHT/2 + 35);
     }
-  }, [player, items, isPaused, gameOver, score]);
+  }, [player, items, isPaused, gameOver, score, hitFlash]);
 
   return (
     <div className="flex flex-col items-center gap-6 p-6 bg-slate-800 rounded-3xl border border-slate-700 shadow-2xl max-w-lg mx-auto">
       <div className="w-full flex justify-between items-center text-white">
         <div>
           <h2 className="text-2xl font-black text-indigo-400">מרוץ החיסכון</h2>
-          <p className="text-sm text-slate-400">אסוף הכנסות, הימנע מהוצאות!</p>
+          <div className="flex gap-1 mt-1">
+            {[...Array(INITIAL_LIVES)].map((_, i) => (
+              <Heart key={i} className={`w-4 h-4 ${i < lives ? 'fill-red-500 text-red-500' : 'text-slate-600'}`} />
+            ))}
+          </div>
         </div>
         <div className="text-right">
           <div className="text-xl font-bold text-yellow-400 flex items-center justify-end gap-2">
              <Coins className="w-5 h-5" />
              {score}
           </div>
-          <div className="text-xs text-slate-500">שיא: {highScore}</div>
+          <div className="text-xs text-slate-500 uppercase tracking-tighter">High Score: {highScore}</div>
         </div>
       </div>
 
@@ -218,44 +241,44 @@ const FinancialGame: React.FC = () => {
           ref={canvasRef} 
           width={CANVAS_WIDTH} 
           height={CANVAS_HEIGHT} 
-          className="bg-slate-900"
+          className={`bg-slate-900 transition-all ${hitFlash ? 'scale-95' : 'scale-100'}`}
         />
         
-        {/* On-screen Controls (WASD) for Mobile */}
+        {/* WASD/Arrows Controls for Mobile */}
         <div className="mt-6 grid grid-cols-3 gap-3 w-full max-w-[220px] md:hidden mb-4 mx-auto">
           <div />
           <button 
             onTouchStart={(e) => { e.preventDefault(); movePlayer('up'); }}
             onMouseDown={(e) => { e.preventDefault(); movePlayer('up'); }}
-            className="p-4 bg-slate-700/80 backdrop-blur rounded-2xl active:bg-indigo-600 active:scale-95 transition-all flex flex-col items-center justify-center shadow-lg border border-slate-600 gap-1"
+            className="p-4 bg-slate-700/80 backdrop-blur rounded-2xl active:bg-indigo-600 active:scale-90 transition-all flex flex-col items-center justify-center shadow-lg border border-slate-600 gap-1"
           >
             <ArrowUp className="w-5 h-5 text-white" />
-            <span className="text-[10px] text-slate-400 font-bold leading-none">W</span>
+            <span className="text-[10px] text-slate-400 font-bold leading-none uppercase">W</span>
           </button>
           <div />
           <button 
             onTouchStart={(e) => { e.preventDefault(); movePlayer('left'); }}
             onMouseDown={(e) => { e.preventDefault(); movePlayer('left'); }}
-            className="p-4 bg-slate-700/80 backdrop-blur rounded-2xl active:bg-indigo-600 active:scale-95 transition-all flex flex-col items-center justify-center shadow-lg border border-slate-600 gap-1"
+            className="p-4 bg-slate-700/80 backdrop-blur rounded-2xl active:bg-indigo-600 active:scale-90 transition-all flex flex-col items-center justify-center shadow-lg border border-slate-600 gap-1"
           >
             <ArrowLeft className="w-5 h-5 text-white" />
-            <span className="text-[10px] text-slate-400 font-bold leading-none">A</span>
+            <span className="text-[10px] text-slate-400 font-bold leading-none uppercase">A</span>
           </button>
           <button 
             onTouchStart={(e) => { e.preventDefault(); movePlayer('down'); }}
             onMouseDown={(e) => { e.preventDefault(); movePlayer('down'); }}
-            className="p-4 bg-slate-700/80 backdrop-blur rounded-2xl active:bg-indigo-600 active:scale-95 transition-all flex flex-col items-center justify-center shadow-lg border border-slate-600 gap-1"
+            className="p-4 bg-slate-700/80 backdrop-blur rounded-2xl active:bg-indigo-600 active:scale-90 transition-all flex flex-col items-center justify-center shadow-lg border border-slate-600 gap-1"
           >
             <ArrowDown className="w-5 h-5 text-white" />
-            <span className="text-[10px] text-slate-400 font-bold leading-none">S</span>
+            <span className="text-[10px] text-slate-400 font-bold leading-none uppercase">S</span>
           </button>
           <button 
             onTouchStart={(e) => { e.preventDefault(); movePlayer('right'); }}
             onMouseDown={(e) => { e.preventDefault(); movePlayer('right'); }}
-            className="p-4 bg-slate-700/80 backdrop-blur rounded-2xl active:bg-indigo-600 active:scale-95 transition-all flex flex-col items-center justify-center shadow-lg border border-slate-600 gap-1"
+            className="p-4 bg-slate-700/80 backdrop-blur rounded-2xl active:bg-indigo-600 active:scale-90 transition-all flex flex-col items-center justify-center shadow-lg border border-slate-600 gap-1"
           >
             <ArrowRight className="w-5 h-5 text-white" />
-            <span className="text-[10px] text-slate-400 font-bold leading-none">D</span>
+            <span className="text-[10px] text-slate-400 font-bold leading-none uppercase">D</span>
           </button>
         </div>
       </div>
@@ -282,7 +305,7 @@ const FinancialGame: React.FC = () => {
 
       <div className="text-slate-500 text-xs text-center flex flex-col gap-1">
         <span className="hidden md:inline">השתמש ב-WASD או במקשי החיצים כדי לזוז</span>
-        <span className="md:hidden">השתמש בכפתורי ה-WASD כדי לזוז</span>
+        <span className="md:hidden italic font-medium">הימנע מ-💸 כדי לא לאבד חיים!</span>
       </div>
     </div>
   );
