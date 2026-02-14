@@ -45,4 +45,5 @@ export interface UserStats {
   currentStreak: number;
   lastLoginDate: string; // ISO date string
   badges: string[]; // Array of badge IDs
+  gameHighScores?: number[]; // Top 5 scores
 }

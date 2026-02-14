@@ -59,7 +59,8 @@ function App() {
     favorites: [],
     currentStreak: 1,
     lastLoginDate: new Date().toISOString(),
-    badges: []
+    badges: [],
+    gameHighScores: [0]
   });
   const [selectedCategory, setSelectedCategory] = useState<Category | 'all'>('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -159,7 +160,8 @@ function App() {
         ...parsedStats, 
         currentStreak: newStreak, 
         lastLoginDate: today.toISOString(),
-        favorites: parsedStats.favorites || []
+        favorites: parsedStats.favorites || [],
+        gameHighScores: parsedStats.gameHighScores || [0]
       });
     }
   }, []);
@@ -421,7 +423,16 @@ function App() {
               <div 
                 data-aos="fade-up" 
                 onClick={() => handleOpenLesson(lesson)} 
-                className={`group relative h-full flex flex-col p-6 rounded-[1.75rem] border shadow-lg hover:-translate-y-2 hover:scale-[1.03] hover:shadow-2xl transition-all duration-300 cursor-pointer 
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    handleOpenLesson(lesson);
+                  }
+                }}
+                role="button"
+                tabIndex={0}
+                aria-label={`${activeTitle}. ${activeDesc}. ${isCompleted ? 'Completed' : 'Not completed'}`}
+                className={`group relative h-full flex flex-col p-6 rounded-[1.75rem] border shadow-lg hover:-translate-y-2 hover:scale-[1.03] hover:shadow-2xl transition-all duration-300 cursor-pointer outline-none focus:ring-4 focus:ring-indigo-500/50 
                   ${theme === 'dark' ? 'bg-[#1e293b] border-slate-700' : 'bg-white border-slate-200'} 
                   ${isCompleted ? 'ring-2 ring-green-500/30' : ''}
                   ${isJustCompleted ? 'animate-completion-bounce ring-4 ring-green-500/70 shadow-[0_0_30px_rgba(34,197,94,0.3)]' : ''}
@@ -449,6 +460,7 @@ function App() {
                   <div className="flex gap-2">
                     <button 
                       onClick={(e) => handleToggleFavorite(e, lesson.id)} 
+                      aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
                       className={`p-2.5 rounded-full transition-all ${isFavorite ? 'text-pink-500 bg-pink-500/10' : 'text-slate-500 bg-slate-100 hover:bg-slate-200'} ${theme === 'dark' ? 'bg-slate-800 hover:bg-slate-700' : ''}`}
                     >
                       <Heart className={`w-4 h-4 ${isFavorite ? 'fill-current' : ''}`} />
@@ -459,7 +471,7 @@ function App() {
                 <h3 className={`text-xl font-bold mb-2 ${theme === 'dark' ? 'text-slate-100' : 'text-slate-900'} ${isRtl ? 'text-right' : 'text-left'}`}>{activeTitle}</h3>
                 <p className={`text-sm leading-relaxed mb-6 flex-1 font-light ${theme === 'dark' ? 'text-slate-400' : 'text-slate-600'} ${isRtl ? 'text-right' : 'text-left'}`}>{activeDesc}</p>
                 <div className={`mt-auto pt-5 border-t flex items-center justify-between text-sm ${isRtl ? 'flex-row-reverse' : 'flex-row'}`}>
-                  <button className="bg-blue-600 text-white text-sm font-bold py-2.5 px-6 rounded-full transition-all">{t('learnMore')}</button>
+                  <button className="bg-blue-600 text-white text-sm font-bold py-2.5 px-6 rounded-full transition-all" tabIndex={-1}>{t('learnMore')}</button>
                   {isCompleted && (
                     <span className={`flex items-center gap-1.5 font-bold transition-all ${isJustCompleted ? 'text-green-300 scale-110' : 'text-green-400'}`}>
                       <Check className={`w-3.5 h-3.5 ${isJustCompleted ? 'animate-glow-checkmark' : ''}`} />
@@ -503,10 +515,10 @@ function App() {
           <span className={`bg-clip-text text-transparent bg-gradient-to-r ${theme === 'dark' ? 'from-white to-slate-400' : 'from-slate-900 to-slate-600'}`}>FinKidz</span>
         </div>
         <div className="flex items-center gap-2">
-           <select value={lang} onChange={(e) => { playSound('click'); setLang(e.target.value as Language); }} className="bg-transparent text-sm border-none focus:outline-none">
+           <select aria-label="Select Language" value={lang} onChange={(e) => { playSound('click'); setLang(e.target.value as Language); }} className="bg-transparent text-sm border-none focus:outline-none">
               {LANGS.map(l => <option key={l.id} value={l.id} className="text-black">{l.flag}</option>)}
            </select>
-           <button onClick={toggleTheme} className="p-2 transition-transform hover:scale-110 active:scale-90">{theme === 'dark' ? <Sun className="w-6 h-6 text-yellow-400" /> : <Moon className="w-6 h-6 text-slate-600" />}</button>
+           <button onClick={toggleTheme} aria-label="Toggle Theme" className="p-2 transition-transform hover:scale-110 active:scale-90">{theme === 'dark' ? <Sun className="w-6 h-6 text-yellow-400" /> : <Moon className="w-6 h-6 text-slate-600" />}</button>
         </div>
       </div>
 
@@ -531,11 +543,11 @@ function App() {
           <div className="space-y-4">
             <div className={`flex items-center gap-2 p-3 rounded-xl border ${theme === 'dark' ? 'bg-slate-800 border-slate-700' : 'bg-slate-50 border-slate-200'}`}>
               <Languages className="w-5 h-5 text-indigo-400" />
-              <select value={lang} onChange={(e) => { playSound('click'); setLang(e.target.value as Language); }} className={`bg-transparent text-sm w-full focus:outline-none ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>
+              <select aria-label="Select Language" value={lang} onChange={(e) => { playSound('click'); setLang(e.target.value as Language); }} className={`bg-transparent text-sm w-full focus:outline-none ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>
                 {LANGS.map(l => <option key={l.id} value={l.id} className="text-black">{l.flag} {l.label}</option>)}
               </select>
             </div>
-            <button onClick={toggleTheme} className={`w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-bold transition-all transform active:scale-95 ${theme === 'dark' ? 'bg-slate-800 text-yellow-400 border border-slate-700' : 'bg-slate-100 text-slate-600 border border-slate-200 shadow-sm'}`}>
+            <button onClick={toggleTheme} aria-label="Toggle Theme" className={`w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-bold transition-all transform active:scale-95 ${theme === 'dark' ? 'bg-slate-800 text-yellow-400 border border-slate-700' : 'bg-slate-100 text-slate-600 border border-slate-200 shadow-sm'}`}>
               {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
               {theme === 'dark' ? 'Day Mode' : 'Night Mode'}
             </button>
@@ -577,7 +589,6 @@ function App() {
           setTimeout(() => handleOpenLesson(next), 300);
         }}
         isCompleted={selectedLesson ? userStats.completedLessons.includes(selectedLesson.id) : false} 
-        completedLessonIds={userStats.completedLessons}
         isOnline={isOnline} 
         language={lang}
       />

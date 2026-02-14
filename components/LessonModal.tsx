@@ -47,8 +47,7 @@ const LessonModal: React.FC<LessonModalProps> = ({
   const nextLesson = useMemo(() => {
     if (!lesson) return null;
     
-    // Logic for suggesting the next lesson:
-    // 1. Next uncompleted lesson in the same category
+    // Suggest next lesson logic
     const sameCategoryUncompleted = LESSONS.filter(l => 
       l.category === lesson.category && 
       !completedLessonIds.includes(l.id) &&
@@ -56,14 +55,12 @@ const LessonModal: React.FC<LessonModalProps> = ({
     );
     if (sameCategoryUncompleted.length > 0) return sameCategoryUncompleted[0];
 
-    // 2. Next uncompleted lesson overall
     const anyUncompleted = LESSONS.find(l => 
       !completedLessonIds.includes(l.id) && 
       l.id !== lesson.id
     );
     if (anyUncompleted) return anyUncompleted;
 
-    // 3. Fallback to literal next lesson in the array
     const currentIndex = LESSONS.findIndex((l: Lesson) => l.id === lesson.id);
     if (currentIndex !== -1 && currentIndex < LESSONS.length - 1) {
       return LESSONS[currentIndex + 1];
@@ -122,7 +119,7 @@ const LessonModal: React.FC<LessonModalProps> = ({
       <div className="bg-slate-900 rounded-2xl shadow-2xl border border-slate-700 w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col relative animate-in fade-in zoom-in duration-200">
         
         {/* Header */}
-        <div className="bg-gradient-to-l from-blue-700 to-indigo-800 p-6 text-white flex justify-between items-start">
+        <div className={`bg-gradient-to-l from-blue-700 to-indigo-800 p-6 text-white flex justify-between items-start ${isRtl ? 'flex-row' : 'flex-row-reverse'}`}>
           <div className={`flex items-center gap-4 ${isRtl ? 'flex-row' : 'flex-row-reverse'}`}>
             <div className="p-3 bg-white/10 rounded-lg backdrop-blur-sm">
               {getIcon(lesson.iconName, "w-8 h-8 text-white")}
@@ -130,7 +127,7 @@ const LessonModal: React.FC<LessonModalProps> = ({
             <div className={isRtl ? 'text-right' : 'text-left'}>
               <div className={`flex items-center gap-2 ${isRtl ? 'justify-end' : 'justify-start'}`}>
                 {!isOnline && (
-                  <div className="bg-red-500/20 px-2 py-0.5 rounded text-xs font-bold text-red-200 flex items-center gap-1 border border-red-500/30" title="Offline">
+                  <div className="bg-red-500/20 px-2 py-0.5 rounded text-xs font-bold text-red-200 flex items-center gap-1 border border-red-500/30">
                     <WifiOff className="w-3 h-3" />
                     <span>offline</span>
                   </div>
@@ -145,7 +142,6 @@ const LessonModal: React.FC<LessonModalProps> = ({
           <div className="flex gap-2">
             <button 
               onClick={toggleSpeech}
-              title={isSpeaking ? "Stop" : "Speak"}
               className={`p-2 rounded-full transition-all ${isSpeaking ? 'bg-red-500 text-white animate-pulse' : 'bg-white/10 text-white hover:bg-white/20'}`}
             >
               {isSpeaking ? <VolumeX className="w-6 h-6" /> : <Volume2 className="w-6 h-6" />}
@@ -162,7 +158,6 @@ const LessonModal: React.FC<LessonModalProps> = ({
             className={`prose prose-lg prose-invert max-w-none [&>h3]:text-blue-400 [&>strong]:text-white ${isRtl ? 'text-right' : 'text-left'}`} 
             dangerouslySetInnerHTML={{ __html: activeContent.content }} 
           />
-          
           <AdSlotSmall />
         </div>
 
