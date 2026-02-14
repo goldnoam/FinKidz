@@ -12,9 +12,23 @@ interface LessonModalProps {
   onComplete: (id: string) => void;
   onSelectNext?: (lesson: Lesson) => void;
   isCompleted: boolean;
+  completedLessonIds?: string[];
   isOnline?: boolean;
   language?: Language;
 }
+
+const AdSlotSmall = () => (
+  <div className="my-4 overflow-hidden rounded-lg bg-slate-800/40 border border-slate-700/50 flex items-center justify-center p-2 min-h-[60px] relative">
+    <ins className="adsbygoogle"
+         style={{ display: 'block', width: '100%' }}
+         data-ad-client="ca-pub-0274741291001288"
+         data-ad-slot="default"
+         data-ad-format="horizontal"
+         data-full-width-responsive="true"></ins>
+    <script>{`(adsbygoogle = window.adsbygoogle || []).push({});`}</script>
+    <span className="text-slate-600 text-[8px] uppercase font-bold tracking-widest absolute bottom-1 right-2">Ad</span>
+  </div>
+);
 
 const LessonModal: React.FC<LessonModalProps> = ({ 
   lesson, 
@@ -23,6 +37,7 @@ const LessonModal: React.FC<LessonModalProps> = ({
   onComplete, 
   onSelectNext,
   isCompleted, 
+  completedLessonIds = [],
   isOnline = true,
   language = 'he'
 }) => {
@@ -31,20 +46,31 @@ const LessonModal: React.FC<LessonModalProps> = ({
 
   const nextLesson = useMemo(() => {
     if (!lesson) return null;
+    
+    // Logic for suggesting the next lesson:
+    // 1. Next uncompleted lesson in the same category
+    const sameCategoryUncompleted = LESSONS.filter(l => 
+      l.category === lesson.category && 
+      !completedLessonIds.includes(l.id) &&
+      l.id !== lesson.id
+    );
+    if (sameCategoryUncompleted.length > 0) return sameCategoryUncompleted[0];
+
+    // 2. Next uncompleted lesson overall
+    const anyUncompleted = LESSONS.find(l => 
+      !completedLessonIds.includes(l.id) && 
+      l.id !== lesson.id
+    );
+    if (anyUncompleted) return anyUncompleted;
+
+    // 3. Fallback to literal next lesson in the array
     const currentIndex = LESSONS.findIndex((l: Lesson) => l.id === lesson.id);
-    
-    const sameCategoryLessons = LESSONS.filter((l: Lesson) => l.category === lesson.category);
-    const indexInCat = sameCategoryLessons.findIndex((l: Lesson) => l.id === lesson.id);
-    if (indexInCat !== -1 && indexInCat < sameCategoryLessons.length - 1) {
-      return sameCategoryLessons[indexInCat + 1];
-    }
-    
     if (currentIndex !== -1 && currentIndex < LESSONS.length - 1) {
       return LESSONS[currentIndex + 1];
     }
     
     return null;
-  }, [lesson]);
+  }, [lesson, completedLessonIds]);
 
   const activeContent = useMemo(() => {
     if (!lesson) return null;
@@ -89,18 +115,20 @@ const LessonModal: React.FC<LessonModalProps> = ({
 
   if (!isOpen || !lesson || !activeContent) return null;
 
+  const isRtl = language === 'he';
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-70 backdrop-blur-sm">
       <div className="bg-slate-900 rounded-2xl shadow-2xl border border-slate-700 w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col relative animate-in fade-in zoom-in duration-200">
         
         {/* Header */}
         <div className="bg-gradient-to-l from-blue-700 to-indigo-800 p-6 text-white flex justify-between items-start">
-          <div className="flex items-center gap-4">
+          <div className={`flex items-center gap-4 ${isRtl ? 'flex-row' : 'flex-row-reverse'}`}>
             <div className="p-3 bg-white/10 rounded-lg backdrop-blur-sm">
               {getIcon(lesson.iconName, "w-8 h-8 text-white")}
             </div>
-            <div className={language === 'he' ? 'text-right' : 'text-left'}>
-              <div className={`flex items-center gap-2 ${language === 'he' ? 'justify-end' : 'justify-start'}`}>
+            <div className={isRtl ? 'text-right' : 'text-left'}>
+              <div className={`flex items-center gap-2 ${isRtl ? 'justify-end' : 'justify-start'}`}>
                 {!isOnline && (
                   <div className="bg-red-500/20 px-2 py-0.5 rounded text-xs font-bold text-red-200 flex items-center gap-1 border border-red-500/30" title="Offline">
                     <WifiOff className="w-3 h-3" />
@@ -131,14 +159,16 @@ const LessonModal: React.FC<LessonModalProps> = ({
         {/* Content */}
         <div className="p-6 overflow-y-auto flex-1 text-slate-300 leading-relaxed text-lg">
           <div 
-            className={`prose prose-lg prose-invert max-w-none [&>h3]:text-blue-400 [&>strong]:text-white ${language === 'he' ? 'text-right' : 'text-left'}`} 
+            className={`prose prose-lg prose-invert max-w-none [&>h3]:text-blue-400 [&>strong]:text-white ${isRtl ? 'text-right' : 'text-left'}`} 
             dangerouslySetInnerHTML={{ __html: activeContent.content }} 
           />
+          
+          <AdSlotSmall />
         </div>
 
         {/* Footer */}
-        <div className={`p-6 border-t border-slate-800 bg-slate-900/50 flex items-center gap-4 justify-between ${language === 'he' ? 'flex-row-reverse' : 'flex-row'}`}>
-          <div className={`flex items-center gap-3 w-full ${language === 'he' ? 'flex-row-reverse' : 'flex-row'}`}>
+        <div className={`p-6 border-t border-slate-800 bg-slate-900/50 flex items-center gap-4 justify-between ${isRtl ? 'flex-row-reverse' : 'flex-row'}`}>
+          <div className={`flex items-center gap-3 w-full ${isRtl ? 'flex-row-reverse' : 'flex-row'}`}>
             {!isCompleted ? (
               <button
                 onClick={() => onComplete(lesson.id)}
@@ -147,7 +177,7 @@ const LessonModal: React.FC<LessonModalProps> = ({
                 {t('finishLesson')}
               </button>
             ) : (
-              <div className={`flex items-center gap-4 w-full justify-between ${language === 'he' ? 'flex-row-reverse' : 'flex-row'}`}>
+              <div className={`flex items-center gap-4 w-full justify-between ${isRtl ? 'flex-row-reverse' : 'flex-row'}`}>
                 <span className="text-green-400 font-bold flex items-center gap-1.5 bg-green-500/10 px-4 py-2 rounded-xl border border-green-500/20">
                   {t('completed')} 🎉
                 </span>
@@ -155,12 +185,15 @@ const LessonModal: React.FC<LessonModalProps> = ({
                 {nextLesson && onSelectNext && (
                   <button
                     onClick={() => onSelectNext(nextLesson)}
-                    className="bg-white text-indigo-900 px-6 py-3 rounded-xl font-black hover:bg-blue-50 shadow-xl shadow-white/5 transition-all transform active:scale-95 flex items-center gap-2 animate-in slide-in-from-right-4"
+                    className="group bg-white text-indigo-900 px-6 py-3 rounded-xl font-black hover:bg-blue-50 shadow-xl shadow-white/5 transition-all transform active:scale-95 flex items-center gap-2 animate-in slide-in-from-bottom-4"
                   >
-                    {language !== 'he' && <ArrowLeft className="w-5 h-5 rotate-180" />}
-                    <span>{t('nextLesson')} {nextLesson.translations?.[language]?.title || nextLesson.title}</span>
-                    {language === 'he' && <ArrowLeft className="w-5 h-5" />}
-                    <Sparkles className="w-4 h-4 text-yellow-500" />
+                    {!isRtl && <ArrowLeft className="w-5 h-5 rotate-180 group-hover:-translate-x-1 transition-transform" />}
+                    <div className="flex flex-col items-start leading-tight">
+                        <span className="text-[10px] text-slate-500 uppercase tracking-widest">{t('nextLesson')}</span>
+                        <span className="text-sm md:text-base">{nextLesson.translations?.[language]?.title || nextLesson.title}</span>
+                    </div>
+                    {isRtl && <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />}
+                    <Sparkles className="w-4 h-4 text-yellow-500 animate-pulse" />
                   </button>
                 )}
               </div>

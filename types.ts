@@ -1,4 +1,5 @@
-export type Category = 'basics' | 'banking' | 'investing' | 'advanced';
+
+export type Category = 'starter' | 'basics' | 'banking' | 'investing' | 'advanced';
 
 export type Language = 'he' | 'en' | 'zh' | 'hi' | 'de' | 'es' | 'fr';
 

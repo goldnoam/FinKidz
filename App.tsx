@@ -29,6 +29,20 @@ const EASTER_EGG_FACTS = [
   "הידעת? הכספומט הראשון הותקן בלונדון בשנת 1967."
 ];
 
+// Helper for AdSense Ad slots
+const AdSlot = ({ className }: { className?: string }) => (
+  <div className={`my-8 overflow-hidden rounded-xl bg-slate-800/20 border border-slate-700/30 flex items-center justify-center p-4 min-h-[100px] ${className}`}>
+    <ins className="adsbygoogle"
+         style={{ display: 'block', width: '100%' }}
+         data-ad-client="ca-pub-0274741291001288"
+         data-ad-slot="default"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+    <script>{`(adsbygoogle = window.adsbygoogle || []).push({});`}</script>
+    <span className="text-slate-600 text-[10px] uppercase font-bold tracking-widest absolute">Advertisement</span>
+  </div>
+);
+
 type SortOption = 'default' | 'difficulty-asc' | 'difficulty-desc' | 'title';
 
 function App() {
@@ -77,10 +91,7 @@ function App() {
   };
 
   const handleLogoClick = () => {
-    // Navigate home
     handleNavClick('home');
-    
-    // Hidden Easter Egg Logic: 5 rapid clicks
     logoClickCount.current += 1;
     if (logoClickCount.current >= 5) {
       playSound('success');
@@ -89,8 +100,6 @@ function App() {
       logoClickCount.current = 0;
       setTimeout(() => setShowEasterEgg(false), 8000);
     }
-    
-    // Reset counter if too slow (hidden requirement)
     setTimeout(() => {
         if (logoClickCount.current > 0) logoClickCount.current = 0;
     }, 2000);
@@ -276,6 +285,8 @@ function App() {
         </div>
       </div>
 
+      <AdSlot />
+
       <div className="mt-12">
         <h3 className={`text-2xl font-bold mb-6 flex items-center gap-2 ${isRtl ? 'justify-end' : 'justify-start'} ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>
            {isRtl ? 'כלים ומשאבים חיצוניים' : 'External Tools & Resources'}
@@ -388,7 +399,7 @@ function App() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredAndSortedLessons.map((lesson) => {
+        {filteredAndSortedLessons.map((lesson, idx) => {
           const isCompleted = userStats.completedLessons.includes(lesson.id);
           const isJustCompleted = justCompletedId === lesson.id;
           const isFavorite = (userStats.favorites || []).includes(lesson.id);
@@ -396,58 +407,59 @@ function App() {
           const activeDesc = lesson.translations?.[lang]?.description || lesson.description;
 
           return (
-            <div 
-              key={lesson.id} 
-              data-aos="fade-up" 
-              onClick={() => handleOpenLesson(lesson)} 
-              className={`group relative h-full flex flex-col p-6 rounded-[1.75rem] border shadow-lg hover:-translate-y-2 hover:scale-[1.03] hover:shadow-2xl transition-all duration-300 cursor-pointer 
-                ${theme === 'dark' ? 'bg-[#1e293b] border-slate-700' : 'bg-white border-slate-200'} 
-                ${isCompleted ? 'ring-2 ring-green-500/30' : ''}
-                ${isJustCompleted ? 'animate-completion-bounce ring-4 ring-green-500/70 shadow-[0_0_30px_rgba(34,197,94,0.3)]' : ''}
-              `}
-            >
-              {/* Card Confetti Celebration */}
-              {isJustCompleted && (
-                <div className="absolute inset-0 z-40 flex items-center justify-center pointer-events-none overflow-hidden rounded-[1.75rem]">
-                   <div className="absolute inset-0 bg-green-500/10"></div>
-                   {Array.from({ length: 40 }).map((_, i) => (
-                     <div key={i} className="absolute w-1.5 h-1.5 rounded-full animate-confetti-card" style={{
-                       '--dx': `${(Math.random() - 0.5) * 300}px`,
-                       '--dy': `${(Math.random() - 0.5) * 300}px`,
-                       '--dr': `${Math.random() * 360}deg`,
-                       left: `50%`,
-                       top: `50%`,
-                       backgroundColor: ['#f87171', '#60a5fa', '#fbbf24', '#34d399', '#a78bfa', '#ffffff'][Math.floor(Math.random() * 6)],
-                       animationDelay: `${Math.random() * 0.5}s`,
-                     } as any} />
-                   ))}
-                </div>
-              )}
-
-              <div className={`flex justify-between items-start mb-4 ${isRtl ? '' : 'flex-row-reverse'}`}>
-                <div className={`p-3.5 rounded-2xl ${isCompleted ? 'bg-green-500/10 text-green-400' : 'bg-slate-900/60 text-slate-300'}`}>{getIcon(lesson.iconName)}</div>
-                <div className="flex gap-2">
-                  <button 
-                    onClick={(e) => handleToggleFavorite(e, lesson.id)} 
-                    className={`p-2.5 rounded-full transition-all ${isFavorite ? 'text-pink-500 bg-pink-500/10' : 'text-slate-500 bg-slate-100 hover:bg-slate-200'} ${theme === 'dark' ? 'bg-slate-800 hover:bg-slate-700' : ''}`}
-                  >
-                    <Heart className={`w-4 h-4 ${isFavorite ? 'fill-current' : ''}`} />
-                  </button>
-                  <span className={`text-xs px-2.5 py-1.5 rounded-full font-bold border ${lesson.difficulty === 'מתחיל' ? 'border-green-500/20 text-green-300' : 'border-yellow-500/20 text-yellow-300'}`}>{lesson.difficulty}</span>
-                </div>
-              </div>
-              <h3 className={`text-xl font-bold mb-2 ${theme === 'dark' ? 'text-slate-100' : 'text-slate-900'} ${isRtl ? 'text-right' : 'text-left'}`}>{activeTitle}</h3>
-              <p className={`text-sm leading-relaxed mb-6 flex-1 font-light ${theme === 'dark' ? 'text-slate-400' : 'text-slate-600'} ${isRtl ? 'text-right' : 'text-left'}`}>{activeDesc}</p>
-              <div className={`mt-auto pt-5 border-t flex items-center justify-between text-sm ${isRtl ? 'flex-row-reverse' : 'flex-row'}`}>
-                <button className="bg-blue-600 text-white text-sm font-bold py-2.5 px-6 rounded-full transition-all">{t('learnMore')}</button>
-                {isCompleted && (
-                  <span className={`flex items-center gap-1.5 font-bold transition-all ${isJustCompleted ? 'text-green-300 scale-110' : 'text-green-400'}`}>
-                    <Check className={`w-3.5 h-3.5 ${isJustCompleted ? 'animate-glow-checkmark' : ''}`} />
-                    {t('completed')}
-                  </span>
+            <React.Fragment key={lesson.id}>
+              <div 
+                data-aos="fade-up" 
+                onClick={() => handleOpenLesson(lesson)} 
+                className={`group relative h-full flex flex-col p-6 rounded-[1.75rem] border shadow-lg hover:-translate-y-2 hover:scale-[1.03] hover:shadow-2xl transition-all duration-300 cursor-pointer 
+                  ${theme === 'dark' ? 'bg-[#1e293b] border-slate-700' : 'bg-white border-slate-200'} 
+                  ${isCompleted ? 'ring-2 ring-green-500/30' : ''}
+                  ${isJustCompleted ? 'animate-completion-bounce ring-4 ring-green-500/70 shadow-[0_0_30px_rgba(34,197,94,0.3)]' : ''}
+                `}
+              >
+                {isJustCompleted && (
+                  <div className="absolute inset-0 z-40 flex items-center justify-center pointer-events-none overflow-hidden rounded-[1.75rem]">
+                    <div className="absolute inset-0 bg-green-500/10"></div>
+                    {Array.from({ length: 40 }).map((_, i) => (
+                      <div key={i} className="absolute w-1.5 h-1.5 rounded-full animate-confetti-card" style={{
+                        '--dx': `${(Math.random() - 0.5) * 300}px`,
+                        '--dy': `${(Math.random() - 0.5) * 300}px`,
+                        '--dr': `${Math.random() * 360}deg`,
+                        left: `50%`,
+                        top: `50%`,
+                        backgroundColor: ['#f87171', '#60a5fa', '#fbbf24', '#34d399', '#a78bfa', '#ffffff'][Math.floor(Math.random() * 6)],
+                        animationDelay: `${Math.random() * 0.5}s`,
+                      } as any} />
+                    ))}
+                  </div>
                 )}
+
+                <div className={`flex justify-between items-start mb-4 ${isRtl ? '' : 'flex-row-reverse'}`}>
+                  <div className={`p-3.5 rounded-2xl ${isCompleted ? 'bg-green-500/10 text-green-400' : 'bg-slate-900/60 text-slate-300'}`}>{getIcon(lesson.iconName)}</div>
+                  <div className="flex gap-2">
+                    <button 
+                      onClick={(e) => handleToggleFavorite(e, lesson.id)} 
+                      className={`p-2.5 rounded-full transition-all ${isFavorite ? 'text-pink-500 bg-pink-500/10' : 'text-slate-500 bg-slate-100 hover:bg-slate-200'} ${theme === 'dark' ? 'bg-slate-800 hover:bg-slate-700' : ''}`}
+                    >
+                      <Heart className={`w-4 h-4 ${isFavorite ? 'fill-current' : ''}`} />
+                    </button>
+                    <span className={`text-xs px-2.5 py-1.5 rounded-full font-bold border ${lesson.difficulty === 'מתחיל' ? 'border-green-500/20 text-green-300' : 'border-yellow-500/20 text-yellow-300'}`}>{lesson.difficulty}</span>
+                  </div>
+                </div>
+                <h3 className={`text-xl font-bold mb-2 ${theme === 'dark' ? 'text-slate-100' : 'text-slate-900'} ${isRtl ? 'text-right' : 'text-left'}`}>{activeTitle}</h3>
+                <p className={`text-sm leading-relaxed mb-6 flex-1 font-light ${theme === 'dark' ? 'text-slate-400' : 'text-slate-600'} ${isRtl ? 'text-right' : 'text-left'}`}>{activeDesc}</p>
+                <div className={`mt-auto pt-5 border-t flex items-center justify-between text-sm ${isRtl ? 'flex-row-reverse' : 'flex-row'}`}>
+                  <button className="bg-blue-600 text-white text-sm font-bold py-2.5 px-6 rounded-full transition-all">{t('learnMore')}</button>
+                  {isCompleted && (
+                    <span className={`flex items-center gap-1.5 font-bold transition-all ${isJustCompleted ? 'text-green-300 scale-110' : 'text-green-400'}`}>
+                      <Check className={`w-3.5 h-3.5 ${isJustCompleted ? 'animate-glow-checkmark' : ''}`} />
+                      {t('completed')}
+                    </span>
+                  )}
+                </div>
               </div>
-            </div>
+              {(idx + 1) % 6 === 0 && <div className="col-span-full"><AdSlot /></div>}
+            </React.Fragment>
           );
         })}
       </div>
@@ -457,7 +469,6 @@ function App() {
   return (
     <div className={`min-h-screen pb-20 md:pb-0 font-sans transition-colors duration-300 ${theme === 'dark' ? 'bg-slate-900 text-slate-100' : 'bg-slate-50 text-slate-900'}`}>
       
-      {/* Offline Mode Banner */}
       {!isOnline && (
         <div className="bg-gradient-to-r from-red-600 to-orange-600 text-white py-3 px-4 text-center sticky top-0 z-[60] shadow-xl flex items-center justify-center gap-4 animate-in slide-in-from-top duration-300">
           <div className="flex items-center gap-2 font-black uppercase tracking-wider text-sm">
@@ -467,7 +478,7 @@ function App() {
           <div className="h-4 w-px bg-white/30 hidden sm:block" />
           <p className="text-xs md:text-sm font-medium">
             {isRtl 
-              ? 'שיעורים ומשחקים טעונים זמינים כעת. חלק מהתכונות (קישורים, תרגום AI) מושבתות.' 
+              ? 'שיעורים ומשחקים טעונים זמינים כעת. חלק מהתכונות (קישורים) מושבתות.' 
               : 'Loaded lessons and games are available. Online features like links are disabled.'}
           </p>
           <button onClick={() => window.location.reload()} className="bg-white/20 hover:bg-white/30 px-3 py-1 rounded-lg text-xs font-bold transition-all">
@@ -522,7 +533,7 @@ function App() {
 
           <div className={`mt-6 pt-6 border-t ${theme === 'dark' ? 'border-slate-800' : 'border-slate-100'}`}>
             <div className={`rounded-xl p-4 border text-center ${theme === 'dark' ? 'bg-slate-800/50 border-slate-700/50' : 'bg-slate-50 border-slate-200'}`}>
-              <p className="text-xs text-slate-500 mb-1 font-bold">(C) Noam Gold AI 2025</p>
+              <p className="text-xs text-slate-500 mb-1 font-bold">(C) Noam Gold AI 2026</p>
               <div className="flex flex-col gap-1">
                 <span className="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Send Feedback</span>
                 <a href="mailto:goldnoamai@gmail.com" className="text-xs text-indigo-400 hover:text-indigo-300 font-bold">goldnoamai@gmail.com</a>
@@ -537,7 +548,7 @@ function App() {
           </div>
           
           <footer className={`mt-12 py-6 border-t ${theme === 'dark' ? 'border-slate-800' : 'border-slate-200'} text-center md:hidden`}>
-             <p className="text-xs text-slate-500 mb-1 font-bold">(C) Noam Gold AI 2025</p>
+             <p className="text-xs text-slate-500 mb-1 font-bold">(C) Noam Gold AI 2026</p>
              <div className="flex flex-col gap-1">
                <span className="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Send Feedback</span>
                <a href="mailto:goldnoamai@gmail.com" className="text-xs text-indigo-400 hover:text-indigo-300 font-bold">goldnoamai@gmail.com</a>
@@ -556,6 +567,7 @@ function App() {
           setTimeout(() => handleOpenLesson(next), 300);
         }}
         isCompleted={selectedLesson ? userStats.completedLessons.includes(selectedLesson.id) : false} 
+        completedLessonIds={userStats.completedLessons}
         isOnline={isOnline} 
         language={lang}
       />

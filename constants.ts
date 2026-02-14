@@ -19,6 +19,7 @@ export const UI_TRANSLATIONS: Record<Language, Record<string, string>> = {
     feedback: 'שלח משוב',
     all: 'הכל',
     favorites: 'מועדפים',
+    cat_starter: 'צעדים ראשונים',
     cat_basics: 'הבסיס',
     cat_banking: 'בנקים וכלכלה',
     cat_investing: 'השקעות',
@@ -41,13 +42,14 @@ export const UI_TRANSLATIONS: Record<Language, Record<string, string>> = {
     feedback: 'Feedback',
     all: 'All',
     favorites: 'Favorites',
+    cat_starter: 'First Steps',
     cat_basics: 'Basics',
     cat_banking: 'Banking',
     cat_investing: 'Investing',
     cat_advanced: 'Advanced'
   },
   zh: { home: '首页', lessons: '课程', siteTitle: 'FinKidz', heroTitle: '儿童理财', heroSubtitle: '年轻一代的金融教育' },
-  hi: { home: 'होम', lessons: 'पाठ', siteTitle: 'FinKidz', heroTitle: 'बच्चों के लिए निवेश', heroSubtitle: 'युवा पीढ़ी के लिए वित्तीय शिक्षा' },
+  hi: { home: 'होम', lessons: 'पाठ', siteTitle: 'FinKidz', heroTitle: 'बच्चों के लिए निवेश', heroSubtitle: 'युවා पीढ़ी के लिए वित्तीय शिक्षा' },
   de: { home: 'Startseite', lessons: 'Lektionen', siteTitle: 'FinKidz', heroTitle: 'Investitionen für Kinder', heroSubtitle: 'Finanzielle Bildung für die junge Generation' },
   es: { home: 'Inicio', lessons: 'Lecciones', siteTitle: 'FinKidz', heroTitle: 'Inversiones para Niños', heroSubtitle: 'Educación Financiera para la Generation Joven' },
   fr: { home: 'Accueil', lessons: 'Leçons', siteTitle: 'FinKidz', heroTitle: 'Investissements pour Enfants', heroSubtitle: 'Éducation financière pour la jeune génération' }
@@ -55,9 +57,62 @@ export const UI_TRANSLATIONS: Record<Language, Record<string, string>> = {
 
 export const LESSONS: Lesson[] = [
   {
+    id: 'what-is-money',
+    title: 'מה זה בכלל כסף?',
+    description: 'לפני הכל - מאיפה הכסף הגיע ולמה אנחנו צריכים אותו?',
+    category: 'starter',
+    difficulty: 'מתחיל',
+    iconName: 'money',
+    content: `
+      <p>פעם, לפני הרבה שנים, לא היה כסף. אם מישהו רצה תפוח ומישהו אחר רצה ביצה, הם היו פשוט מחליפים ביניהם. זה נקרא <strong>סחר חליפין</strong>.</p>
+      <p>אבל מה קורה אם אני רוצה תפוח, אבל למוכר התפוחים יש כבר המון ביצים? כאן הכסף נכנס לתמונה!</p>
+      <h3>למה כסף טוב?</h3>
+      <ul class="list-disc list-inside space-y-2">
+        <li>הוא מאפשר לנו לקנות מה שאנחנו צריכים.</li>
+        <li>קל לשמור אותו בכיס או בבנק.</li>
+        <li>כולם מסכימים כמה הוא שווה.</li>
+      </ul>
+    `,
+    translations: {
+      en: {
+        title: 'What is Money Anyway?',
+        description: 'First things first - where did money come from and why do we need it?',
+        content: '<p>Long ago, there was no money. People used to swap things. This was called bartering. Money was invented to make trading easier!</p>'
+      }
+    }
+  },
+  {
+    id: 'piggy-bank-secrets',
+    title: 'סודות קופת החיסכון',
+    description: 'למה כדאי לשמור כסף במקום לבזבז אותו מיד?',
+    category: 'starter',
+    difficulty: 'מתחיל',
+    iconName: 'savings',
+    content: `
+      <h3>מה זה חיסכון?</h3>
+      <p>חיסכון הוא כסף שאנחנו מחליטים <strong>לא לבזבז</strong> עכשיו, כדי שנוכל להשתמש בו למשהו גדול וחשוב יותר בעתיד.</p>
+      <div class="my-4 bg-indigo-900/40 p-4 rounded-xl border border-indigo-500/30">
+        <p>דמיינו שאתם מקבלים 10 שקלים. אם תקנו סוכריה ב-10 שקלים, הכסף נעלם. אם תשימו אותו בקופה, ובכל שבוע תשימו עוד 10 שקלים, אחרי חודשיים תוכלו לקנות משחק שרציתם המון זמן!</p>
+      </div>
+      <h3>למה לחסוך?</h3>
+      <ul class="list-disc list-inside space-y-2">
+        <li><strong>מטרה גדולה:</strong> לקנות אופניים, מחשב או מתנה מיוחדת.</li>
+        <li><strong>ביטחון:</strong> שיהיה כסף אם משהו יתקלקל ונצטרך לתקן אותו.</li>
+        <li><strong>חופש:</strong> כשיש חיסכון, אתם יכולים לבחור מה לעשות איתו אחר כך.</li>
+      </ul>
+    `,
+    translations: {
+      en: {
+        title: 'Piggy Bank Secrets',
+        description: 'Why save money instead of spending it all at once?',
+        content: '<p>Saving is choosing not to spend money now so you can have it for something more important later.</p>'
+      }
+    }
+  },
+  {
     id: 'income-expense',
     title: 'הכנסות והוצאות',
-    description: 'מה ההבדל בין כסף שנכנס לכסף שיוצא, ואיך מנהלים את זה?',
+    description: 'הבסיס לכל ארנק: מה נכנס ומה יוצא?',
     category: 'basics',
     difficulty: 'מתחיל',
     iconName: 'money',
@@ -72,21 +127,74 @@ export const LESSONS: Lesson[] = [
     translations: {
       en: {
         title: 'Income and Expenses',
-        description: 'What is the difference between money coming in and money going out?',
+        description: 'The foundation of every wallet: what comes in and what goes out?',
         content: '<p><strong>Income</strong> is any money we receive. <strong>Expenses</strong> are the money we pay for things.</p>'
       }
     }
   },
   {
+    id: 'budget',
+    title: 'תכנון תקציב חכם',
+    description: 'איך לתכנן מראש כדי שיהיה לנו כסף למה שאנחנו באמת רוצים.',
+    category: 'basics',
+    difficulty: 'מתחיל',
+    iconName: 'budget',
+    content: `
+      <p>תקציב הוא בעצם <strong>תוכנית פעולה</strong> לכסף שלנו.</p>
+      <p>במקום סתם לבזבז ולקוות שנשאר משהו, אנחנו מחליטים מראש כמה כסף נקצה לכל דבר.</p>
+      <br>
+      <ul class="list-disc list-inside space-y-2">
+        <li>כמה נשמור לחיסכון?</li>
+        <li>כמה נוציא על בילויים?</li>
+        <li>כמה נשמור למקרה חירום?</li>
+      </ul>
+    `,
+    translations: {
+      en: {
+        title: 'Smart Budgeting',
+        description: 'How to plan ahead so we have money for what we really want.',
+        content: '<p>A budget is an action plan for your money. Instead of just spending, you decide in advance where your money goes.</p>'
+      }
+    }
+  },
+  {
+    id: 'unemployment',
+    title: 'עולם העבודה',
+    description: 'מה זה אומר לעבוד, ולמה כדאי ללמוד מקצוע?',
+    category: 'basics',
+    difficulty: 'מתחיל',
+    iconName: 'goals',
+    content: `
+      <h3>למה אנשים עובדים?</h3>
+      <p>רוב האנשים עובדים כדי לקבל <strong>שכר</strong> (כסף) שמאפשר להם לקנות אוכל, לשלם על הבית ולצאת לחופשות.</p>
+      <h3>מהי אבטלה?</h3>
+      <p>מצב שבו אדם רוצה לעבוד ומחפש עבודה, אך לא מוצא. כשיש פחות אבטלה, הכלכלה של המדינה חזקה יותר.</p>
+      <br>
+      <p class="bg-blue-900/30 p-4 rounded-lg border-l-4 border-blue-500 italic">"לימודים עוזרים לנו למצוא עבודה מעניינת שמרוויחים בה יותר!"</p>
+    `,
+    translations: {
+      en: {
+        title: 'The World of Work',
+        description: 'What it means to work, and why it\'s good to learn a profession.',
+        content: `
+          <h3>Why do people work?</h3>
+          <p>Most people work to earn a salary, which allows them to pay for their needs and wants.</p>
+          <h3>Education and Work</h3>
+          <p>Learning new skills usually helps people find better-paying and more interesting jobs.</p>
+        `
+      }
+    }
+  },
+  {
     id: 'inflation',
-    title: 'אינפלציה: הכוח שמשנה מחירים',
-    description: 'למה מה שקנינו בשקל פעם עולה היום חמישה? בואו נלמד על אינפלציה.',
+    title: 'אינפלציה: למה המחירים עולים?',
+    description: 'למה שוקולד שעלה פעם שקל עולה היום חמישה?',
     category: 'basics',
     difficulty: 'מתקדם',
     iconName: 'chart',
     content: `
       <h3>מהי אינפלציה?</h3>
-      <p>אינפלציה היא עלייה מתמשכת במחירים של מוצרים ושירותים. כשיש אינפלציה, הכוח של הכסף שלנו לקנות דברים (כוח הקנייה) יורד.</p>
+      <p>אינפלציה היא מצב שבו המחירים של כמעט הכל עולים לאט לאט. זה אומר שעם אותו שקל, אפשר לקנות פחות דברים מבעבר.</p>
       
       <div class="my-6 not-prose bg-slate-800 p-4 rounded-xl border border-slate-700">
         <h4 class="text-blue-400 font-bold mb-3 text-center">כוח הקנייה של 100 ש"ח לאורך זמן</h4>
@@ -118,44 +226,22 @@ export const LESSONS: Lesson[] = [
         </div>
         <p class="text-[11px] text-center text-slate-500 mt-4 italic">הגרף ממחיש כמה מוצרים ניתן לקנות באותם 100 שקלים ככל שהמחירים עולים.</p>
       </div>
-
-      <h3>השפעות האינפלציה:</h3>
-      <ul class="list-disc list-inside space-y-2">
-        <li><strong>עליית מחירים:</strong> הכל נהיה יקר יותר.</li>
-        <li><strong>שחיקת חסכונות:</strong> אם הכסף "שוכב" בבנק בלי להרוויח ריבית, הוא שווה פחות.</li>
-        <li><strong>שינוי בריביות:</strong> הבנקים המרכזיים מעלים ריבית כדי להילחם באינפלציה גבוהה.</li>
-      </ul>
     `,
     translations: {
       en: {
-        title: 'Inflation: The Force Behind Rising Prices',
-        description: 'Why do things cost more today than they did years ago? Let\'s learn about inflation.',
+        title: 'Inflation: Why Prices Rise',
+        description: 'Why does chocolate cost more today than it used to?',
         content: `
           <h3>What is Inflation?</h3>
-          <p>Inflation is the general increase in prices and fall in the purchasing value of money. When inflation occurs, each unit of currency buys fewer goods and services.</p>
-          <div class="my-6 not-prose bg-slate-800 p-4 rounded-xl border border-slate-700">
-            <h4 class="text-blue-400 font-bold mb-3 text-center">Purchasing Power of $100 Over Time</h4>
-            <div class="h-40 flex items-end gap-4 justify-around px-2">
-              <div class="flex flex-col items-center gap-1 w-full max-w-[50px]"><div class="bg-green-500 w-full h-[90%] rounded-t-md"></div><span class="text-[10px]">1990</span></div>
-              <div class="flex flex-col items-center gap-1 w-full max-w-[50px]"><div class="bg-yellow-500 w-full h-[65%] rounded-t-md"></div><span class="text-[10px]">2005</span></div>
-              <div class="flex flex-col items-center gap-1 w-full max-w-[50px]"><div class="bg-orange-500 w-full h-[45%] rounded-t-md"></div><span class="text-[10px]">2015</span></div>
-              <div class="flex flex-col items-center gap-1 w-full max-w-[50px]"><div class="bg-red-500 w-full h-[30%] rounded-t-md"></div><span class="text-[10px]">Now</span></div>
-            </div>
-          </div>
-          <h3>Effects of Inflation:</h3>
-          <ul class="list-disc list-inside space-y-2">
-            <li><strong>Rising Prices:</strong> Goods and services become more expensive over time.</li>
-            <li><strong>Erosion of Savings:</strong> If your money doesn't grow faster than inflation, you lose purchasing power.</li>
-            <li><strong>Interest Rates:</strong> Central banks often raise interest rates to control high inflation.</li>
-          </ul>
+          <p>Inflation is when prices for most things go up slowly. It means your money has less "purchasing power" over time.</p>
         `
       }
     }
   },
   {
     id: 'cpi',
-    title: 'מדד המחירים לצרכן (Israel CPI)',
-    description: 'איך המדינה מודדת אם הכל מתייקר? הכירו את "הסל" של כולנו.',
+    title: 'המדד לצרכן',
+    description: 'איך המדינה מודדת אם הכל מתייקר? הכירו את "הסל" שלנו.',
     category: 'basics',
     difficulty: 'מתקדם',
     iconName: 'chart',
@@ -171,75 +257,12 @@ export const LESSONS: Lesson[] = [
           <div class="flex flex-col items-center"><span class="text-3xl mb-1">🎭</span><span class="text-[10px]">תרבות</span></div>
         </div>
       </div>
-
-      <div class="mt-6 not-prose bg-slate-900/50 p-6 rounded-2xl border border-indigo-500/30">
-        <h4 class="text-indigo-300 font-bold mb-4 text-center">מדד המחירים לצרכן בישראל (שינוי שנתי %)</h4>
-        <div class="h-44 flex items-end gap-3 px-2 border-b border-slate-700 relative">
-          <!-- Horizontal grid lines -->
-          <div class="absolute w-full h-px bg-slate-800 top-0"></div>
-          <div class="absolute w-full h-px bg-slate-800 top-1/4"></div>
-          <div class="absolute w-full h-px bg-slate-800 top-2/4"></div>
-          <div class="absolute w-full h-px bg-slate-800 top-3/4"></div>
-          
-          <div class="flex-1 flex flex-col items-center gap-2 group relative">
-            <div class="bg-indigo-500/40 w-full h-[20%] rounded-t-md transition-all group-hover:h-[25%] group-hover:bg-indigo-400"></div>
-            <span class="text-[9px] font-bold">2019</span>
-            <span class="absolute -top-6 text-[10px] opacity-0 group-hover:opacity-100 transition-opacity">0.6%</span>
-          </div>
-          <div class="flex-1 flex flex-col items-center gap-2 group relative">
-            <div class="bg-indigo-500/40 w-full h-[15%] rounded-t-md transition-all group-hover:h-[20%] group-hover:bg-indigo-400"></div>
-            <span class="text-[9px] font-bold">2020</span>
-            <span class="absolute -top-6 text-[10px] opacity-0 group-hover:opacity-100 transition-opacity">-0.7%</span>
-          </div>
-          <div class="flex-1 flex flex-col items-center gap-2 group relative">
-            <div class="bg-indigo-500/40 w-full h-[40%] rounded-t-md transition-all group-hover:h-[45%] group-hover:bg-indigo-400"></div>
-            <span class="text-[9px] font-bold">2021</span>
-            <span class="absolute -top-6 text-[10px] opacity-0 group-hover:opacity-100 transition-opacity">2.8%</span>
-          </div>
-          <div class="flex-1 flex flex-col items-center gap-2 group relative">
-            <div class="bg-indigo-500/60 w-full h-[75%] rounded-t-md transition-all group-hover:h-[80%] group-hover:bg-indigo-400"></div>
-            <span class="text-[9px] font-bold">2022</span>
-            <span class="absolute -top-6 text-[10px] opacity-0 group-hover:opacity-100 transition-opacity">5.3%</span>
-          </div>
-          <div class="flex-1 flex flex-col items-center gap-2 group relative">
-            <div class="bg-pink-500/80 w-full h-[55%] rounded-t-md transition-all group-hover:h-[60%] animate-pulse"></div>
-            <span class="text-[9px] font-bold">2023</span>
-            <span class="absolute -top-6 text-[10px] opacity-0 group-hover:opacity-100 transition-opacity">3.0%</span>
-          </div>
-        </div>
-        <div class="mt-4 flex justify-between items-center text-[10px] text-slate-500 px-1">
-          <span>מקור: הלשכה המרכזית לסטטיסטיקה (מקורב)</span>
-          <span class="flex items-center gap-1"><span class="w-2 h-2 bg-pink-500 rounded-full inline-block"></span> מגמה נוכחית</span>
-        </div>
-      </div>
-
-      <h3 class="mt-8">למה זה חשוב?</h3>
-      <p>כשהמדד עולה, הכסף שלנו "שווה פחות" כי אפשר לקנות איתו פחות דברים מאותו סל. בנק ישראל עוקב אחרי המדד הזה כדי להחליט אם להעלות את הריבית במשק.</p>
     `,
     translations: {
       en: {
-        title: 'Consumer Price Index (CPI)',
-        description: 'How do we measure if prices are going up? Meet the national "Basket".',
-        content: `
-          <p>The CPI measures the average price of a "basket of goods" in Israel. If prices go up, it is called <strong>inflation</strong>.</p>
-          <div class="bg-slate-800 p-4 rounded-xl my-4 border border-slate-700 shadow-inner">
-            <h4 class="text-indigo-400 font-bold mb-3 text-center">What is inside the "CPI Basket"?</h4>
-            <div class="grid grid-cols-4 gap-3 text-center">
-              <div class="flex flex-col items-center"><span class="text-3xl mb-1">🏠</span><span class="text-[10px]">Housing</span></div>
-              <div class="flex flex-col items-center"><span class="text-3xl mb-1">🍕</span><span class="text-[10px]">Food</span></div>
-              <div class="flex flex-col items-center"><span class="text-3xl mb-1">🚌</span><span class="text-[10px]">Transport</span></div>
-              <div class="flex flex-col items-center"><span class="text-3xl mb-1">🎭</span><span class="text-[10px]">Culture</span></div>
-            </div>
-          </div>
-          <h3>Israel CPI Trend (Annual % Change):</h3>
-          <div class="h-32 flex items-end gap-2 not-prose bg-slate-800/50 p-4 rounded-lg border border-slate-700 mt-4">
-            <div class="flex-1 flex flex-col items-center gap-1"><div class="bg-indigo-500 w-full h-[20%] rounded-t-md"></div><span class="text-[9px]">2019</span></div>
-            <div class="flex-1 flex flex-col items-center gap-1"><div class="bg-indigo-500 w-full h-[10%] rounded-t-md"></div><span class="text-[9px]">2020</span></div>
-            <div class="flex-1 flex flex-col items-center gap-1"><div class="bg-indigo-500 w-full h-[40%] rounded-t-md"></div><span class="text-[9px]">2021</span></div>
-            <div class="flex-1 flex flex-col items-center gap-1"><div class="bg-indigo-500 w-full h-[75%] rounded-t-md"></div><span class="text-[9px]">2022</span></div>
-            <div class="flex-1 flex flex-col items-center gap-1"><div class="bg-pink-500 w-full h-[55%] rounded-t-md"></div><span class="text-[9px]">2023</span></div>
-          </div>
-        `
+        title: 'The Price Index',
+        description: 'How do we measure if prices are going up? Meet our "Basket".',
+        content: `<p>The CPI measures the average price of a "basket of goods". If it goes up, we have inflation.</p>`
       }
     }
   },
@@ -267,39 +290,6 @@ export const LESSONS: Lesson[] = [
         content: `
           <h3>What is Forex?</h3>
           <p>Forex stands for Foreign Exchange. It is the global market where currencies are traded.</p>
-          <div class="flex justify-center gap-6 text-4xl my-4">
-            <span>💵</span><span>↔️</span><span>💷</span>
-          </div>
-          <h3>The Exchange Rate</h3>
-          <p>The exchange rate is the price of one currency in terms of another. It fluctuates based on supply and demand.</p>
-        `
-      }
-    }
-  },
-  {
-    id: 'unemployment',
-    title: 'תעסוקה ואבטלה',
-    description: 'מה זה אומר לעבוד, ומה קורה כשאנשים לא מוצאים עבודה?',
-    category: 'basics',
-    difficulty: 'מתחיל',
-    iconName: 'goals',
-    content: `
-      <h3>כוח העבודה</h3>
-      <p>אלו כל האנשים בגיל העבודה שרוצים ויכולים לעבוד.</p>
-      <h3>מהי אבטלה?</h3>
-      <p>מצב שבו אדם רוצה לעבוד ומחפש עבודה, אך לא מוצא. אחוז האבטלה הוא מדד חשוב לבריאות של הכלכלה.</p>
-      <br>
-      <p class="bg-blue-900/30 p-4 rounded-lg border-l-4 border-blue-500 italic">"כשיש הרבה עבודה, לאנשים יש כסף לבזבז, והעסקים צומחים!"</p>
-    `,
-    translations: {
-      en: {
-        title: 'Employment & Unemployment',
-        description: 'What it means to work, and what happens when people cannot find jobs.',
-        content: `
-          <h3>Labor Force</h3>
-          <p>The labor force includes everyone who is working or actively looking for a job.</p>
-          <h3>What is Unemployment?</h3>
-          <p>Unemployment occurs when someone wants a job but cannot find one. High unemployment is usually a sign of a struggling economy.</p>
         `
       }
     }
@@ -325,42 +315,11 @@ export const LESSONS: Lesson[] = [
     translations: {
       en: {
         title: 'Bonds',
-        description: 'Lending money to the government or companies. A solid investment tool.',
+        description: 'Lending money to the government or companies.',
         content: `
           <h3>What is a Bond?</h3>
           <p>A bond is like a loan that you provide to a government or a corporation. In return, they pay you interest over time.</p>
-          <h3>Key Terms:</h3>
-          <ul class="list-disc list-inside">
-            <li><strong>Issuer:</strong> The one who borrows the money.</li>
-            <li><strong>Investor:</strong> You, the one who lends.</li>
-            <li><strong>Coupon:</strong> The interest rate paid.</li>
-          </ul>
         `
-      }
-    }
-  },
-  {
-    id: 'budget',
-    title: 'מהו תקציב?',
-    description: 'איך לתכנן מראש כדי שיהיה לנו כסף למה שאנחנו באמת רוצים.',
-    category: 'basics',
-    difficulty: 'מתחיל',
-    iconName: 'budget',
-    content: `
-      <p>תקציב הוא בעצם <strong>תוכנית פעולה</strong> לכסף שלנו.</p>
-      <p>במקום סתם לבזבז ולקוות שנשאר משהו, אנחנו מחליטים מראש כמה כסף נקצה לכל דבר.</p>
-      <br>
-      <ul class="list-disc list-inside space-y-2">
-        <li>כמה נשמור לחיסכון?</li>
-        <li>כמה נוציא על בילויים?</li>
-        <li>כמה נשמור למקרה חירום?</li>
-      </ul>
-    `,
-    translations: {
-      en: {
-        title: 'What is a Budget?',
-        description: 'How to plan ahead so we have money for what we really want.',
-        content: '<p>A budget is an action plan for your money. Instead of just spending, you decide in advance where your money goes.</p>'
       }
     }
   },
@@ -379,13 +338,14 @@ export const LESSONS: Lesson[] = [
       en: {
         title: 'The Stock Market',
         description: 'The supermarket for big companies.',
-        content: '<p>The stock market is a place where shares of public companies are issued and traded. A share represents ownership in a company.</p>'
+        content: '<p>The stock market is a place where shares of public companies are issued and traded.</p>'
       }
     }
   }
 ];
 
 export const CATEGORIES = [
+  { id: 'starter', translationKey: 'cat_starter', color: 'bg-emerald-500' },
   { id: 'basics', translationKey: 'cat_basics', color: 'bg-green-500' },
   { id: 'banking', translationKey: 'cat_banking', color: 'bg-blue-500' },
   { id: 'investing', translationKey: 'cat_investing', color: 'bg-purple-500' },
